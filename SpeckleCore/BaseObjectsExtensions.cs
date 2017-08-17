@@ -30,6 +30,8 @@ namespace SpeckleCore
 
     public partial class SpeckleNumber
     {
+        public SpeckleNumber() { }
+
         public SpeckleNumber(double value)
         {
             this.Value = value;
@@ -49,6 +51,8 @@ namespace SpeckleCore
 
     public partial class SpeckleString
     {
+        public SpeckleString() { }
+
         public SpeckleString(string value)
         {
             this.Value = value;
@@ -67,6 +71,8 @@ namespace SpeckleCore
 
     public partial class SpeckleInterval
     {
+        public SpeckleInterval() { }
+
         public SpeckleInterval(double start, double end)
         {
             this.Start = start;
@@ -76,6 +82,8 @@ namespace SpeckleCore
 
     public partial class SpeckleInterval2d
     {
+        public SpeckleInterval2d() { }
+
         public SpeckleInterval2d(SpeckleInterval U, SpeckleInterval V)
         {
             this.U = U;
@@ -91,6 +99,8 @@ namespace SpeckleCore
 
     public partial class SpecklePoint
     {
+        public SpecklePoint() { }
+
         public SpecklePoint(double x, double y, double z = 0, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Value = new double[] { x, y, z };
@@ -112,6 +122,8 @@ namespace SpeckleCore
 
     public partial class SpeckleVector
     {
+        public SpeckleVector() { }
+
         public SpeckleVector(double x, double y, double z = 0, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Value = new double[] { x, y, z };
@@ -133,6 +145,8 @@ namespace SpeckleCore
 
     public partial class SpecklePlane
     {
+        public SpecklePlane() { }
+
         public SpecklePlane(SpecklePoint origin, SpeckleVector normal, SpeckleVector XDir, SpeckleVector YDir, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Origin = origin;
@@ -147,6 +161,8 @@ namespace SpeckleCore
 
     public partial class SpeckleLine
     {
+        public SpeckleLine() { }
+
         public SpeckleLine(SpecklePoint start, SpecklePoint end, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Start = start;
@@ -159,6 +175,8 @@ namespace SpeckleCore
 
     public partial class SpeckleRectangle
     {
+        public SpeckleRectangle() { }
+
         public SpeckleRectangle(SpecklePoint A, SpecklePoint B, SpecklePoint C, SpecklePoint D, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.A = A;
@@ -173,6 +191,8 @@ namespace SpeckleCore
 
     public partial class SpeckleCircle
     {
+        public SpeckleCircle() { }
+
         public SpeckleCircle(SpecklePoint center, SpeckleVector normal, double radius, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Center = center;
@@ -186,6 +206,8 @@ namespace SpeckleCore
 
     public partial class SpeckleBox
     {
+        public SpeckleBox() { }
+
         public SpeckleBox(SpecklePlane basePlane, SpeckleInterval xSize, SpeckleInterval ySize, SpeckleInterval zSize, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.BasePlane = basePlane;
@@ -200,6 +222,8 @@ namespace SpeckleCore
 
     public partial class SpecklePolyline
     {
+        public SpecklePolyline() { }
+
         public SpecklePolyline(IEnumerable<SpecklePoint> pointArray, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Value = pointArray.SelectMany(item => (double[])item).ToArray();
@@ -219,6 +243,8 @@ namespace SpeckleCore
 
     public partial class SpeckleCurve
     {
+        public SpeckleCurve() { }
+
         public SpeckleCurve(string base64, string provenance, SpecklePolyline poly, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Base64 = base64;
@@ -232,6 +258,8 @@ namespace SpeckleCore
 
     public partial class SpeckleMesh
     {
+        public SpeckleMesh() { }
+
         public SpeckleMesh(double[] vertices, double[] faces, double[] colors, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Vertices = vertices;
@@ -239,11 +267,14 @@ namespace SpeckleCore
             this.Colors = colors;
             this.ApplicationId = applicationId;
             this.Properties = properties;
+            this.GeometryHash = this.GenerateHash(this.Type, new { v = vertices, f = faces, c = colors });
         }
     }
 
     public partial class SpeckleBrep
     {
+        public SpeckleBrep() { }
+
         public SpeckleBrep(string base64, string provenance, SpeckleMesh displayValue, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Base64 = base64;
@@ -251,6 +282,7 @@ namespace SpeckleCore
             this.DisplayValue = displayValue;
             this.ApplicationId = applicationId;
             this.Properties = properties;
+            this.GeometryHash = this.GenerateHash(this.Type, this.DisplayValue);
         }
     }
 }
