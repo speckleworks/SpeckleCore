@@ -12,7 +12,7 @@ namespace SpeckleCore
     /// Base Speckle Object Converter.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
-    internal class SpeckleObjectConverter : Newtonsoft.Json.JsonConverter
+    public class SpeckleObjectConverter : Newtonsoft.Json.JsonConverter
     {
         internal static readonly string DefaultDiscriminatorName = "discriminator";
 
@@ -149,7 +149,10 @@ namespace SpeckleCore
     {
         public string discriminatorName = "type";
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) { this.WriteValue(writer, value); }
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            this.WriteObject(writer, value);
+        }
 
         private void WriteValue(JsonWriter writer, object value)
         {
@@ -170,14 +173,21 @@ namespace SpeckleCore
 
         private void WriteObject(JsonWriter writer, object value)
         {
-            writer.WriteStartObject();
             var obj = value as IDictionary<string, object>;
-            foreach (var kvp in obj)
+            if (obj != null)
             {
-                writer.WritePropertyName(kvp.Key);
-                this.WriteValue(writer, kvp.Value);
+                writer.WriteStartObject();
+                foreach (var kvp in obj)
+                {
+                    writer.WritePropertyName(kvp.Key);
+                    this.WriteValue(writer, kvp.Value);
+                }
+                writer.WriteEndObject();
             }
-            writer.WriteEndObject();
+            else
+            {
+                writer.WriteRawValue(((SpeckleObject)value).ToJson());
+            }
         }
 
         private void WriteArray(JsonWriter writer, object value)

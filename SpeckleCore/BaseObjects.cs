@@ -280,7 +280,7 @@ namespace SpeckleCore
     public partial class SpeckleBoolean : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; }
 
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? Value { get; set; }
@@ -310,7 +310,7 @@ namespace SpeckleCore
     public partial class SpeckleNumber : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Number";
 
         /// <summary>A number. Can be float, double, etc.</summary>
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -326,22 +326,14 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleNumber>(data);
         }
 
-        public static implicit operator double? (SpeckleNumber n)
-        {
-            return n.Value;
-        }
-
-        public static implicit operator SpeckleNumber(double n)
-        {
-            return new SpeckleNumber() { Type = "Number", Value = n };
-        }
+        
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public partial class SpeckleString : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "String";
 
         /// <summary>A string.</summary>
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -357,22 +349,14 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleString>(data);
         }
 
-        public static implicit operator string(SpeckleString s)
-        {
-            return s.Value;
-        }
-
-        public static implicit operator SpeckleString(string s)
-        {
-            return new SpeckleString() { Type = "String", Value = s };
-        }
+       
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public partial class SpeckleInterval : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Interval";
 
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double? Start { get; set; }
@@ -394,6 +378,9 @@ namespace SpeckleCore
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public partial class SpeckleInterval2d : SpeckleObject
     {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Type { get; set; } = "Interval2d";
+
         /// <summary>U interval.</summary>
         [Newtonsoft.Json.JsonProperty("U", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpeckleInterval U { get; set; }
@@ -417,11 +404,11 @@ namespace SpeckleCore
     public partial class SpecklePoint : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; } = "Point";
+        public string Type { get; set; } = "Point";
 
         /// <summary>An array containing the X, Y and Z coords of the point.</summary>
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<double> Value { get; set; }
+        public double[] Value { get; set; }
 
         public string ToJson()
         {
@@ -434,23 +421,15 @@ namespace SpeckleCore
         }
     }
 
-    public partial class SpecklePoint
-    {
-        public SpecklePoint(double x, double y, double z)
-        {
-            this.Value = new System.Collections.ObjectModel.ObservableCollection<double>() { x, y, z };
-        }
-    }
-
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public partial class SpeckleVector : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Vector";
 
         /// <summary>An array containing the X, Y and Z coords of the vector.</summary>
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<double> Value { get; set; }
+        public double[] Value { get; set; }
 
         public string ToJson()
         {
@@ -467,8 +446,8 @@ namespace SpeckleCore
     public partial class SpecklePlane : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
 
+        public string Type { get; set; } = "Plane";
         /// <summary>The origin of the plane.</summary>
         [Newtonsoft.Json.JsonProperty("Origin", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePoint Origin { get; set; }
@@ -500,7 +479,7 @@ namespace SpeckleCore
     public partial class SpeckleLine : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Line";
 
         /// <summary>Line's start point.</summary>
         [Newtonsoft.Json.JsonProperty("start", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -525,7 +504,7 @@ namespace SpeckleCore
     public partial class SpeckleRectangle : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Rectangle";
 
         [Newtonsoft.Json.JsonProperty("A", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePoint A { get; set; }
@@ -554,7 +533,7 @@ namespace SpeckleCore
     public partial class SpeckleCircle : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Circle";
 
         [Newtonsoft.Json.JsonProperty("radius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double? Radius { get; set; }
@@ -580,7 +559,7 @@ namespace SpeckleCore
     public partial class SpeckleBox : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Box";
 
         [Newtonsoft.Json.JsonProperty("basePlane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePlane BasePlane { get; set; }
@@ -609,10 +588,10 @@ namespace SpeckleCore
     public partial class SpecklePolyline : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Polyline";
 
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<double> Value { get; set; }
+        public double[] Value { get; set; }
 
         public string ToJson()
         {
@@ -629,7 +608,7 @@ namespace SpeckleCore
     public partial class SpeckleCurve : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Curve";
 
         /// <summary>See SpeckleBrep.</summary>
         [Newtonsoft.Json.JsonProperty("base64", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -658,19 +637,19 @@ namespace SpeckleCore
     public partial class SpeckleMesh : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Mesh";
 
         /// <summary>The mesh's vertices array, in a flat array (ie, `x1, y1, z1, x2, y2, ...`)</summary>
         [Newtonsoft.Json.JsonProperty("vertices", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<double> Vertices { get; set; }
+        public double[] Vertices { get; set; }
 
         /// <summary>The faces array.</summary>
         [Newtonsoft.Json.JsonProperty("faces", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<double> Faces { get; set; }
+        public double[] Faces { get; set; }
 
         /// <summary>If any, the colours per vertex.</summary>
         [Newtonsoft.Json.JsonProperty("colors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<double> Colors { get; set; }
+        public double[] Colors { get; set; }
 
         public string ToJson()
         {
@@ -687,7 +666,7 @@ namespace SpeckleCore
     public partial class SpeckleBrep : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object Type { get; set; }
+        public string Type { get; set; } = "Brep";
 
         /// <summary>A base64 encoded string of the raw byte array of the object. Do not worry base64 encoding making strings 1.5x bigger, gzip essentially neutralises this - both in transit and in the db.</summary>
         [Newtonsoft.Json.JsonProperty("base64", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]

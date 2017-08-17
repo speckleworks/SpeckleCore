@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseObjects.cs" />
+    <Compile Include="BaseObjectsExtensions.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="Payloads.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
