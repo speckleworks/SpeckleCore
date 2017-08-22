@@ -14,13 +14,14 @@ namespace SpeckleCore
 {
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "11.3.3.0")]
-    public partial class SpeckleCoreRestClient
+    [Serializable]
+    public partial class BaseSpeckleApiClient
     {
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
         private string _baseUrl = "http://localhost:8080/api";
-        private string _apiToken = "X", _jwtToken = "X";
+        private string _authToken = "";
 
-        public SpeckleCoreRestClient()
+        public BaseSpeckleApiClient()
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
             {
@@ -36,16 +37,10 @@ namespace SpeckleCore
             set { _baseUrl = value; }
         }
 
-        public string ApiToken
+        public string AuthToken
         {
-            get { return _apiToken; }
-            set { _apiToken = value; }
-        }
-
-        public string JwtToken
-        {
-            get { return _jwtToken; }
-            set { _jwtToken = value; }
+            get { return _authToken; }
+            set { _authToken = value; }
         }
 
         partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings);
@@ -56,13 +51,8 @@ namespace SpeckleCore
 
         partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url)
         {
-            //if ((JwtToken == null) && (ApiToken == null))
-            //    throw new Exception("No authorisation present (jwt or api token).");
-
-            if (JwtToken == null)
-                request.Headers.Add("Authorization", ApiToken);
-            else
-                request.Headers.Add("Authorization", JwtToken);
+            if (AuthToken != "")
+                request.Headers.Add("Authorization", AuthToken);
         }
 
 

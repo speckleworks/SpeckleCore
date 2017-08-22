@@ -4,6 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Extends the functionality of some DTO classes to be more accesible.
+/// So wow. Much partial.
+/// </summary>
+
 namespace SpeckleCore
 {
     public partial class SpeckleObject
@@ -25,6 +30,16 @@ namespace SpeckleCore
                     return type + "." + sb.ToString().ToLower().Substring(0, 16);
                 }
             }
+        }
+    }
+
+    public partial class SpeckleBoolean
+    {
+        public SpeckleBoolean() { }
+
+        public SpeckleBoolean(bool value)
+        {
+            this.Value = value;
         }
     }
 
@@ -260,14 +275,14 @@ namespace SpeckleCore
     {
         public SpeckleMesh() { }
 
-        public SpeckleMesh(double[] vertices, double[] faces, double[] colors, string applicationId = null, Dictionary<string, object> properties = null)
+        public SpeckleMesh(double[] vertices, int[] faces, int[] colors, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Vertices = vertices;
             this.Faces = faces;
             this.Colors = colors;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, new { v = vertices, f = faces, c = colors });
+            this.GeometryHash = this.GenerateHash(this.Type, this);
         }
     }
 
@@ -283,6 +298,21 @@ namespace SpeckleCore
             this.ApplicationId = applicationId;
             this.Properties = properties;
             this.GeometryHash = this.GenerateHash(this.Type, this.DisplayValue);
+        }
+    }
+
+    public partial class SpeckleLayer
+    {
+        public SpeckleLayer() { }
+
+        public SpeckleLayer(string name, string guid, string topology, int objectCount, int startIndex, int orderIndex)
+        {
+            this.Name = name;
+            this.Guid = guid;
+            this.Topology = topology;
+            this.StartIndex = startIndex;
+            this.ObjectCount = objectCount;
+            this.OrderIndex = orderIndex;
         }
     }
 }

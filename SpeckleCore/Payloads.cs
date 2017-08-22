@@ -124,10 +124,10 @@ namespace SpeckleCore
     public partial class PayloadStreamUpdate
     {
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleObject> Objects { get; set; }
+        public IEnumerable<SpeckleObject> Objects { get; set; }
 
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> Layers { get; set; }
+        public IEnumerable<SpeckleLayer> Layers { get; set; }
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
@@ -147,7 +147,7 @@ namespace SpeckleCore
     public partial class PayloadStreamMetaUpdate
     {
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> Layers { get; set; }
+        public IEnumerable<SpeckleLayer> Layers { get; set; }
 
         [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Name { get; set; }
@@ -167,7 +167,7 @@ namespace SpeckleCore
     public partial class PayloadStreamLayersUpdate
     {
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> Layers { get; set; } = new System.Collections.ObjectModel.ObservableCollection<SpeckleLayer>();
+        public IEnumerable<SpeckleLayer> Layers { get; set; } = new List<SpeckleLayer>();
 
         public string ToJson()
         {
@@ -235,7 +235,7 @@ namespace SpeckleCore
     public partial class PayloadObjectCreateWithArray
     {
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleObject> Objects { get; set; } = new System.Collections.ObjectModel.ObservableCollection<SpeckleObject>();
+        public IEnumerable<SpeckleObject> Objects { get; set; } = new List<SpeckleObject>();
 
         public string ToJson()
         {
@@ -253,7 +253,7 @@ namespace SpeckleCore
     {
         /// <summary>An array of object ids to retrieve from the database.</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> Objects { get; set; } = new System.Collections.ObjectModel.ObservableCollection<string>();
+        public IEnumerable<string> Objects { get; set; } = new List<string>();
 
         public string ToJson()
         {
