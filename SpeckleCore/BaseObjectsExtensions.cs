@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace SpeckleCore
 {
+
     public partial class SpeckleObject
     {
-        public string GenerateHash(string type, object fromWhat)
+        public string GenerateGeometryHash(string type, object fromWhat)
         {
             using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
             {
@@ -121,7 +122,7 @@ namespace SpeckleCore
             this.Value = new double[] { x, y, z };
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, this.Value);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, this.Value);
         }
 
         public static implicit operator double[] (SpecklePoint p)
@@ -144,7 +145,7 @@ namespace SpeckleCore
             this.Value = new double[] { x, y, z };
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, this.Value);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, this.Value);
         }
 
         public static implicit operator double[] (SpeckleVector p)
@@ -170,7 +171,7 @@ namespace SpeckleCore
             this.Ydir = YDir;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, origin.GeometryHash + normal.GeometryHash + XDir.GeometryHash + YDir.GeometryHash);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, origin.GeometryHash + normal.GeometryHash + XDir.GeometryHash + YDir.GeometryHash);
         }
     }
 
@@ -184,7 +185,7 @@ namespace SpeckleCore
             this.End = end;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, start.GeometryHash + end.GeometryHash);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, start.GeometryHash + end.GeometryHash);
         }
     }
 
@@ -200,7 +201,7 @@ namespace SpeckleCore
             this.D = D;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, A.GeometryHash + B.GeometryHash + C.GeometryHash + D.GeometryHash);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, A.GeometryHash + B.GeometryHash + C.GeometryHash + D.GeometryHash);
         }
     }
 
@@ -215,7 +216,7 @@ namespace SpeckleCore
             this.Radius = radius;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, center.GeometryHash + normal.GeometryHash + radius);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, center.GeometryHash + normal.GeometryHash + radius);
         }
     }
 
@@ -231,7 +232,7 @@ namespace SpeckleCore
             this.ZSize = zSize;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, basePlane.GeometryHash + XSize.ToJson() + YSize.ToJson() + zSize.ToJson());
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, basePlane.GeometryHash + XSize.ToJson() + YSize.ToJson() + zSize.ToJson());
         }
     }
 
@@ -244,7 +245,7 @@ namespace SpeckleCore
             this.Value = pointArray.SelectMany(item => (double[])item).ToArray();
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, this.Value);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, this.Value);
         }
 
         public SpecklePolyline(IEnumerable<double> coordinatesArray, string applicationId = null, Dictionary<string, object> properties = null)
@@ -252,7 +253,7 @@ namespace SpeckleCore
             this.Value = coordinatesArray.ToArray();
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, this.Value);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, this.Value);
         }
     }
 
@@ -267,7 +268,7 @@ namespace SpeckleCore
             this.DisplayValue = poly;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, this.DisplayValue);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, this.DisplayValue);
         }
     }
 
@@ -282,7 +283,7 @@ namespace SpeckleCore
             this.Colors = colors;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, this);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, this);
         }
     }
 
@@ -297,7 +298,7 @@ namespace SpeckleCore
             this.DisplayValue = displayValue;
             this.ApplicationId = applicationId;
             this.Properties = properties;
-            this.GeometryHash = this.GenerateHash(this.Type, this.DisplayValue);
+            this.GeometryHash = this.GenerateGeometryHash(this.Type, this.DisplayValue);
         }
     }
 

@@ -164,11 +164,11 @@ namespace SpeckleCore
 
         /// <summary>The index of the first object relative to the stream's objects array</summary>
         [Newtonsoft.Json.JsonProperty("startIndex", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double? StartIndex { get; set; }
+        public int? StartIndex { get; set; }
 
         /// <summary>How many objects does this layer have.</summary>
         [Newtonsoft.Json.JsonProperty("objectCount", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public double? ObjectCount { get; set; }
+        public int? ObjectCount { get; set; }
 
         /// <summary>String describing the nested tree structure (Gh centric).</summary>
         [Newtonsoft.Json.JsonProperty("topology", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]

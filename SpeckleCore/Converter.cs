@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace SpeckleCore
 {
+    /// <summary>
+    /// A basic abstract class that all Speckle converters should implement. 
+    /// Provided mostly for consistency's sake.
+    /// </summary>
     public abstract class Converter
     {
         public abstract IEnumerable<SpeckleObject> ToSpeckle(IEnumerable<object> _objects);
