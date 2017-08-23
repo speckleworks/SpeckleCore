@@ -301,7 +301,7 @@ namespace SpeckleCore
         }
     }
 
-    public partial class SpeckleLayer
+    public partial class SpeckleLayer : IEquatable<SpeckleLayer>
     {
         public SpeckleLayer() { }
 
@@ -313,6 +313,31 @@ namespace SpeckleCore
             this.StartIndex = startIndex;
             this.ObjectCount = objectCount;
             this.OrderIndex = orderIndex;
+        }
+
+        public static void DiffLayerLists(IEnumerable<SpeckleLayer> oldLayers, IEnumerable<SpeckleLayer> newLayers, ref List<SpeckleLayer> toRemove, ref List<SpeckleLayer> toAdd, ref List<SpeckleLayer> toUpdate)
+        {
+            toRemove = oldLayers.Except(newLayers, new SpeckleLayerComparer()).ToList();
+            toAdd = newLayers.Except(oldLayers, new SpeckleLayerComparer()).ToList();
+            toUpdate = newLayers.Intersect(oldLayers, new SpeckleLayerComparer()).ToList();
+        }
+
+        public bool Equals(SpeckleLayer other)
+        {
+            return this.Guid == other.Guid;
+        }
+    }
+
+    internal class SpeckleLayerComparer : IEqualityComparer<SpeckleLayer>
+    {
+        public bool Equals(SpeckleLayer x, SpeckleLayer y)
+        {
+            return x.Guid == y.Guid;
+        }
+
+        public int GetHashCode(SpeckleLayer obj)
+        {
+            return obj.Guid.GetHashCode();
         }
     }
 }

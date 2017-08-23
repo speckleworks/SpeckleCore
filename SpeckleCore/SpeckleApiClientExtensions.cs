@@ -40,6 +40,8 @@ namespace SpeckleCore
 
         WebSocket WebsocketClient;
         public bool WsConnected { get; private set; } = false;
+        public bool IsDisposed { get; private set; } = false;
+        public bool IsConnected { get; private set; } = false;
 
         public event SpeckleEvent OnError;
         public event SpeckleEvent OnReady;
@@ -68,7 +70,7 @@ namespace SpeckleCore
             SetTimers();
         }
 
-        private void Log(string what)
+        private void LogEvent(string what)
         {
             OnLogData?.Invoke(this, new SpeckleEventArgs() { EventData = what });
         }
@@ -78,17 +80,22 @@ namespace SpeckleCore
             IsReady = new Timer(200) { AutoReset = false, Enabled = true };
             IsReady.Elapsed += (sender, e) =>
             {
-                Log("Checking readiness...");
+                LogEvent("Checking readiness...");
                 if (StreamId == null || ClientId == null || WsConnected == false) { IsReady.Start(); return; }
                 OnReady?.Invoke(this, new SpeckleEventArgs() { EventName = "client-ready" });
-                Log("Client is reay!");
+                IsConnected = true;
+                LogEvent("Client is reay!");
             };
         }
 
         private void SetWsReconnectTimer()
         {
             WsReconnecter = new Timer(1000) { AutoReset = false, Enabled = false };
-            WsReconnecter.Elapsed += (sender, e) => { WebsocketClient.Connect(); };
+            WsReconnecter.Elapsed += (sender, e) =>
+            {
+                if (IsDisposed) return;
+                WebsocketClient.Connect();
+            };
         }
 
         private void SetTimers()
@@ -108,7 +115,8 @@ namespace SpeckleCore
 
             StreamUpdateMetaAsync(payload, StreamId).ContinueWith(task =>
             {
-                Log("Metadata updated.");
+                LogEvent("Metadata updated.");
+                BroadcastMessage(new { eventType = "update-meta" });
             });
         }
 
@@ -121,8 +129,12 @@ namespace SpeckleCore
             payload.Name = BucketName;
             payload.Objects = objs;
 
-            StreamUpdateAsync(payload, StreamId).ContinueWith(task => {
-                Log("Data updated.");
+            LogEvent("Sending data update.");
+
+            StreamUpdateAsync(payload, StreamId).ContinueWith(task =>
+            {
+                LogEvent("Data updated.");
+                BroadcastMessage(new { eventType = "update-global" });
             });
         }
 
@@ -132,6 +144,7 @@ namespace SpeckleCore
                 throw new Exception("Role changes are not permitted. Maybe create a new client?");
 
             Role = ClientRole.Receiver;
+            StreamId = streamId;
 
             try
             {
@@ -147,6 +160,9 @@ namespace SpeckleCore
             try
             {
                 Stream = (await this.StreamGetAsync(streamId)).Stream;
+
+                await SetupClient();
+                SetupWebsocket();
             }
             catch { throw new Exception("Could not get stream."); }
 
@@ -159,6 +175,7 @@ namespace SpeckleCore
                 throw new Exception("Role changes are not permitted. Maybe create a new client?");
 
             Role = ClientRole.Receiver;
+            StreamId = streamId;
 
             try
             {
@@ -235,7 +252,7 @@ namespace SpeckleCore
             {
                 Stream = (await this.StreamCreateAsync()).Stream;
                 StreamId = Stream.StreamId;
-                Log("Created a new stream.");
+                LogEvent("Created a new stream.");
                 await SetupClient();
                 SetupWebsocket();
 
@@ -251,13 +268,13 @@ namespace SpeckleCore
         {
             if (ClientId == null)
             {
-                Log("Creating a new client.");
+                LogEvent("Creating a new client.");
                 var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true } };
                 ClientId = (await this.ClientCreateAsync(payload)).ClientId;
             }
             else
             {
-                Log("Setting client to alive.");
+                LogEvent("Setting client to alive.");
                 var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = true } };
                 this.ClientUpdate(payload, ClientId);
             }
@@ -284,9 +301,10 @@ namespace SpeckleCore
 
             WebsocketClient.OnMessage += (sender, e) =>
             {
-                if (e.Data == "ping") { WebsocketClient.Send("alive"); Log("Got a ws ping."); return; }
+                if (e.Data == "ping") { WebsocketClient.Send("alive"); LogEvent("Got a ws ping."); return; }
 
-                Log("Got a ws message.");
+                LogEvent("Got a ws message.");
+
                 OnWsMessage?.Invoke(this, new SpeckleEventArgs() { EventName = "websocket-message", EventObject = JsonConvert.DeserializeObject<dynamic>(e.Data), EventData = e.Data });
             };
 
@@ -306,10 +324,32 @@ namespace SpeckleCore
 
 
 
-        public void SendMessage() { throw new NotImplementedException(); }
+        public void SendMessage(string receipientId, dynamic args)
+        {
+            var eventData = new
+            {
+                eventName = "message",
+                senderId = ClientId,
+                recipientId = "LOL",
+                streamId = StreamId,
+                args = args
+            };
 
-        public void BroadcastMessage() { throw new NotImplementedException(); }
+            WebsocketClient.Send(JsonConvert.SerializeObject(eventData));
+        }
 
+        public void BroadcastMessage(dynamic args)
+        {
+            var eventData = new
+            {
+                eventName = "broadcast",
+                senderId = ClientId,
+                streamId = StreamId,
+                args = args
+            };
+
+            WebsocketClient.Send(JsonConvert.SerializeObject(eventData));
+        }
 
 
         public void UpdateMetadataDebounced(string name, IEnumerable<SpeckleLayer> layers)
@@ -327,6 +367,8 @@ namespace SpeckleCore
             BucketObjects = objects.ToList();
             BucketLayers = layers.ToList();
             BucketName = name;
+
+            LogEvent("Data update intialised.");
 
             DataSender.Start();
         }
@@ -347,6 +389,7 @@ namespace SpeckleCore
             SetReadyTimer();
             SetWsReconnectTimer();
         }
+
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("BaseUrl", BaseUrl);
@@ -358,7 +401,8 @@ namespace SpeckleCore
 
         public void Dispose()
         {
-            // TODO
+            IsDisposed = true;
+            try { WebsocketClient.Close(); } catch { }
         }
     }
 }
