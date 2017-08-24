@@ -38,7 +38,7 @@ namespace SpeckleCore
 
         /// <summary>an array storing each time the user logged in.</summary>
         [Newtonsoft.Json.JsonProperty("logins", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<DateProperty> Logins { get; set; }
+        public List<DateProperty> Logins { get; set; }
 
         public string ToJson()
         {
@@ -120,11 +120,11 @@ namespace SpeckleCore
 
         /// <summary>An array of SpeckleObject ids.</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleObject> Objects { get; set; } = new System.Collections.ObjectModel.ObservableCollection<SpeckleObject>();
+        public List<SpeckleObject> Objects { get; set; } = new List<SpeckleObject>();
 
         /// <summary>An array of speckle layers.</summary>
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> Layers { get; set; } = new System.Collections.ObjectModel.ObservableCollection<SpeckleLayer>();
+        public List<SpeckleLayer> Layers { get; set; } = new List<SpeckleLayer>();
 
         /// <summary>Parent stream's id, if any. If null, this is a `root` stream.</summary>
         [Newtonsoft.Json.JsonProperty("parent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -132,7 +132,7 @@ namespace SpeckleCore
 
         /// <summary>Any offspring that this stream might have (created with `/duplicate/{streamId}`</summary>
         [Newtonsoft.Json.JsonProperty("children", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> Children { get; set; }
+        public List<string> Children { get; set; }
 
         public string ToJson()
         {
@@ -824,7 +824,7 @@ namespace SpeckleCore
 
         /// <summary>the children of the original stream.</summary>
         [Newtonsoft.Json.JsonProperty("children", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> Children { get; set; }
+        public List<string> Children { get; set; }
 
         public string ToJson()
         {
