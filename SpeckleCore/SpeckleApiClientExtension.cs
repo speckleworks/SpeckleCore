@@ -159,8 +159,6 @@ namespace SpeckleCore
 
             try
             {
-                Stream = (await this.StreamGetAsync(streamId)).Stream;
-
                 await SetupClient();
                 SetupWebsocket();
             }
@@ -402,6 +400,8 @@ namespace SpeckleCore
         public void Dispose()
         {
             IsDisposed = true;
+            var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = false } };
+            try { ClientUpdateAsync(payload, ClientId);  } catch { }
             try { WebsocketClient.Close(); } catch { }
         }
     }
