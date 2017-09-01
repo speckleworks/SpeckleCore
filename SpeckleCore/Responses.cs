@@ -270,6 +270,23 @@ namespace SpeckleCore
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
+    public partial class ResponseObjectCreate : ResponseBase
+    {
+        [Newtonsoft.Json.JsonProperty("objectId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ObjectId { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static ResponseObjectGet FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObjectGet>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public partial class ResponseObjectGet : ResponseBase
     {
         [Newtonsoft.Json.JsonProperty("speckleObject", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]

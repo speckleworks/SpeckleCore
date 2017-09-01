@@ -120,7 +120,7 @@ namespace SpeckleCore
 
         /// <summary>An array of SpeckleObject ids.</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<SpeckleObject> Objects { get; set; } = new List<SpeckleObject>();
+        public List<SpeckleObjectPlaceholder> Objects { get; set; } = new List<SpeckleObjectPlaceholder>();
 
         /// <summary>An array of speckle layers.</summary>
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -246,6 +246,10 @@ namespace SpeckleCore
         public virtual string Type { get; set; }
 
         /// <summary>Object's unique hash. It's generated server-side from JSON.stringify( obj.properties ) + obj.geometryHash using a murmurhash3 128bit function.</summary>
+        [Newtonsoft.Json.JsonProperty("_id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DatabaseId { get; set; }
+
+        /// <summary>Object's unique hash. It's generated server-side from JSON.stringify( obj.properties ) + obj.geometryHash using a murmurhash3 128bit function.</summary>
         [Newtonsoft.Json.JsonProperty("hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Hash { get; set; }
 
@@ -277,6 +281,7 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleObject>(data);
         }
     }
+    
     /// <summary>
     /// Handles some error edge cases.
     /// </summary>
@@ -285,6 +290,21 @@ namespace SpeckleCore
     public partial class SpeckleNull : SpeckleObject
     {
         // HIC SVNT INVISIBILIA DRACONES
+    }
+
+    [Serializable]
+    public partial class SpeckleObjectPlaceholder 
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public virtual string Type { get; set; }
+
+        /// <summary>Object's unique hash. It's generated server-side from JSON.stringify( obj.properties ) + obj.geometryHash using a murmurhash3 128bit function.</summary>
+        [Newtonsoft.Json.JsonProperty("_id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string DatabaseId { get; set; }
+
+        /// <summary>Object's unique hash. It's generated server-side from JSON.stringify( obj.properties ) + obj.geometryHash using a murmurhash3 128bit function.</summary>
+        [Newtonsoft.Json.JsonProperty("hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Hash { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]

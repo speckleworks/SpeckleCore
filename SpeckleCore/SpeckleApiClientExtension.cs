@@ -58,6 +58,9 @@ namespace SpeckleCore
         private string BucketName;
         private List<SpeckleLayer> BucketLayers = new List<SpeckleLayer>();
         private List<object> BucketObjects = new List<object>();
+        private List<SpeckleObject> SpeckleBucketObjects = new List<SpeckleObject>();
+
+        private Dictionary<string, SpeckleObject> SentObjects = new Dictionary<string, SpeckleObject>();
 
 
         public SpeckleApiClient(string baseUrl, Converter converter, bool isPersistent = false) : base()
@@ -68,74 +71,6 @@ namespace SpeckleCore
 
             SetReadyTimer();
             SetTimers();
-        }
-
-        private void LogEvent(string what)
-        {
-            OnLogData?.Invoke(this, new SpeckleEventArgs() { EventData = what });
-        }
-
-        private void SetReadyTimer()
-        {
-            IsReady = new Timer(200) { AutoReset = false, Enabled = true };
-            IsReady.Elapsed += (sender, e) =>
-            {
-                LogEvent("Checking readiness...");
-                if (StreamId == null || ClientId == null || WsConnected == false) { IsReady.Start(); return; }
-                OnReady?.Invoke(this, new SpeckleEventArgs() { EventName = "client-ready" });
-                IsConnected = true;
-                LogEvent("Client is reay!");
-            };
-        }
-
-        private void SetWsReconnectTimer()
-        {
-            WsReconnecter = new Timer(1000) { AutoReset = false, Enabled = false };
-            WsReconnecter.Elapsed += (sender, e) =>
-            {
-                if (IsDisposed) return;
-                WebsocketClient.Connect();
-            };
-        }
-
-        private void SetTimers()
-        {
-            MetadataSender = new Timer(1000) { AutoReset = false, Enabled = false };
-            MetadataSender.Elapsed += MetadataSender_Elapsed;
-
-            DataSender = new Timer(2000) { AutoReset = false, Enabled = false };
-            DataSender.Elapsed += DataSender_Elapsed;
-        }
-
-        private void MetadataSender_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            var payload = new PayloadStreamMetaUpdate();
-            payload.Layers = BucketLayers;
-            payload.Name = BucketName;
-
-            StreamUpdateMetaAsync(payload, StreamId).ContinueWith(task =>
-            {
-                LogEvent("Metadata updated.");
-                BroadcastMessage(new { eventType = "update-meta" });
-            });
-        }
-
-        private void DataSender_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            var objs = Converter.ToSpeckle(BucketObjects);
-
-            PayloadStreamUpdate payload = new PayloadStreamUpdate();
-            payload.Layers = BucketLayers;
-            payload.Name = BucketName;
-            payload.Objects = objs;
-
-            LogEvent("Sending data update.");
-
-            StreamUpdateAsync(payload, StreamId).ContinueWith(task =>
-            {
-                LogEvent("Data updated.");
-                BroadcastMessage(new { eventType = "update-global" });
-            });
         }
 
         public async Task IntializeReceiver(string streamId, string authToken = null)
@@ -278,6 +213,169 @@ namespace SpeckleCore
             }
         }
 
+        private void LogEvent(string what)
+        {
+            OnLogData?.Invoke(this, new SpeckleEventArgs() { EventData = what });
+        }
+
+        private void SetReadyTimer()
+        {
+            IsReady = new Timer(200) { AutoReset = false, Enabled = true };
+            IsReady.Elapsed += (sender, e) =>
+            {
+                LogEvent("Checking readiness...");
+                if (StreamId == null || ClientId == null || WsConnected == false) { IsReady.Start(); return; }
+                OnReady?.Invoke(this, new SpeckleEventArgs() { EventName = "client-ready" });
+                IsConnected = true;
+                LogEvent("Client is reay!");
+            };
+        }
+
+        private void SetWsReconnectTimer()
+        {
+            WsReconnecter = new Timer(1000) { AutoReset = false, Enabled = false };
+            WsReconnecter.Elapsed += (sender, e) =>
+            {
+                if (IsDisposed) return;
+                WebsocketClient.Connect();
+            };
+        }
+
+        private void SetTimers()
+        {
+            MetadataSender = new Timer(1000) { AutoReset = false, Enabled = false };
+            MetadataSender.Elapsed += MetadataSender_Elapsed;
+
+            DataSender = new Timer(2000) { AutoReset = false, Enabled = false };
+            DataSender.Elapsed += DataSender_Elapsed;
+        }
+
+
+        public void UpdateMetadataDebounced(string name, IEnumerable<SpeckleLayer> layers)
+        {
+            BucketLayers = layers.ToList();
+            BucketName = name;
+
+            MetadataSender.Start();
+            Dictionary<string, ISerializable> what;
+
+        }
+
+        private void MetadataSender_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var payload = new PayloadStreamMetaUpdate();
+            payload.Layers = BucketLayers;
+            payload.Name = BucketName;
+
+            StreamUpdateMetaAsync(payload, StreamId).ContinueWith(task =>
+            {
+                LogEvent("Metadata updated.");
+                BroadcastMessage(new { eventType = "update-meta" });
+            });
+        }
+
+
+        public void UpdateDataDebonuced(string name, IEnumerable<object> objects, IEnumerable<SpeckleLayer> layers)
+        {
+            BucketObjects = objects.ToList();
+            BucketLayers = layers.ToList();
+            BucketName = name;
+
+            LogEvent("Data update intialised.");
+
+            DataSender.Start();
+        }
+
+        private void DataSender_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            LogEvent("Sending data update.");
+
+            PayloadStreamUpdate payload = new PayloadStreamUpdate();
+
+            payload.Layers = BucketLayers;
+            payload.Name = BucketName;
+            SpeckleObject[] payloadObjList = new SpeckleObject[BucketObjects.Count];
+
+            var convertedObjects = Converter.ToSpeckle(BucketObjects);
+
+            int index = 0, insertedCount = 0;
+            foreach (SpeckleObject newGuy in convertedObjects)
+            {
+                if (SentObjects.ContainsKey(newGuy.Hash))
+                {
+                    LogEvent(String.Format("Object {0} out of {1} done (cached).", index, BucketObjects.Count));
+                    payloadObjList[index] = SentObjects[newGuy.Hash];
+                    insertedCount++;
+                    if (insertedCount == BucketObjects.Count)
+                    {
+                        payload.Objects = payloadObjList;
+                        StreamUpdateAsync(payload, StreamId).ContinueWith(task =>
+                        {
+                            LogEvent("Data updated.");
+                            BroadcastMessage(new { eventType = "update-global" });
+                        });
+                    }
+                }
+                else
+                {
+                    int indexCopy = index;
+                    ObjectCreateAsync(new PayloadCreateObject() { Object = newGuy }).ContinueWith(tres =>
+                    {
+                        var placeholder = new SpeckleObject() { DatabaseId = tres.Result.ObjectId, Type = newGuy.Type, Hash = newGuy.Hash };
+                        LogEvent(String.Format("Object {0} out of {1} done (created).", indexCopy, BucketObjects.Count));
+                        SentObjects[placeholder.Hash] = placeholder;
+                        payloadObjList[indexCopy] = placeholder;
+                        insertedCount++;
+                        if (insertedCount == BucketObjects.Count)
+                        {
+                            payload.Objects = payloadObjList;
+                            StreamUpdateAsync(payload, StreamId).ContinueWith(task =>
+                            {
+                                LogEvent("Data updated.");
+                                BroadcastMessage(new { eventType = "update-global" });
+                            });
+                        }
+                    });
+                }
+                index++;
+            }
+
+        }
+
+        public void GetObjectList(IEnumerable<SpeckleObjectPlaceholder> objects, Action<List<SpeckleObject>> callback)
+        {
+            SpeckleObject[] speckleObjectList = new SpeckleObject[objects.Count()];
+            int index = 0, insertedCount = 0;
+
+            foreach (var newGuy in objects)
+            {
+                if (SentObjects.ContainsKey(newGuy.Hash))
+                {
+                    speckleObjectList[index] = SentObjects[newGuy.Hash];
+                    insertedCount++;
+                    if (insertedCount == objects.Count())
+                    {
+                        callback(speckleObjectList.ToList());
+                    }
+                }
+                else
+                {
+                    int indexCopy = index;
+                    ObjectGetAsync(newGuy.DatabaseId).ContinueWith(tres =>
+                    {
+                        speckleObjectList[indexCopy] = tres.Result.SpeckleObject;
+                        SentObjects[newGuy.Hash] = tres.Result.SpeckleObject;
+                        insertedCount++;
+                        if (insertedCount == objects.Count())
+                        {
+                            callback(speckleObjectList.ToList());
+                        }
+                    });
+                }
+                index++;
+            }
+        }
+
         private void SetupWebsocket()
         {
             SetWsReconnectTimer();
@@ -309,19 +407,6 @@ namespace SpeckleCore
             WebsocketClient.Connect();
         }
 
-
-        public void Authorize(string email, string password, Action callback)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Authroize(string token)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
         public void SendMessage(string receipientId, dynamic args)
         {
             var eventData = new
@@ -347,28 +432,6 @@ namespace SpeckleCore
             };
 
             WebsocketClient.Send(JsonConvert.SerializeObject(eventData));
-        }
-
-
-        public void UpdateMetadataDebounced(string name, IEnumerable<SpeckleLayer> layers)
-        {
-            BucketLayers = layers.ToList();
-            BucketName = name;
-
-            MetadataSender.Start();
-            Dictionary<string, ISerializable> what;
-
-        }
-
-        public void UpdateDataDebonuced(string name, IEnumerable<object> objects, IEnumerable<SpeckleLayer> layers)
-        {
-            BucketObjects = objects.ToList();
-            BucketLayers = layers.ToList();
-            BucketName = name;
-
-            LogEvent("Data update intialised.");
-
-            DataSender.Start();
         }
 
         protected SpeckleApiClient(SerializationInfo info, StreamingContext context)
@@ -401,8 +464,13 @@ namespace SpeckleCore
         {
             IsDisposed = true;
             var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = false } };
-            try { ClientUpdateAsync(payload, ClientId);  } catch { }
+            try { ClientUpdateAsync(payload, ClientId); } catch { }
             try { WebsocketClient.Close(); } catch { }
         }
+    }
+
+    public class SpeckleCache
+    {
+        HashSet<string> HashSet { get; set; }
     }
 }

@@ -2505,7 +2505,7 @@ namespace SpeckleCore
         /// <summary>ObjectCreate</summary>
         /// <returns>Status 200</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ResponseBase> ObjectCreateAsync(PayloadCreateObject body)
+        public System.Threading.Tasks.Task<ResponseObjectCreate> ObjectCreateAsync(PayloadCreateObject body)
         {
             return ObjectCreateAsync(body, System.Threading.CancellationToken.None);
         }
@@ -2513,7 +2513,7 @@ namespace SpeckleCore
         /// <summary>ObjectCreate</summary>
         /// <returns>Status 200</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public ResponseBase ObjectCreate(PayloadCreateObject body)
+        public ResponseObjectCreate ObjectCreate(PayloadCreateObject body)
         {
             return System.Threading.Tasks.Task.Run(async () => await ObjectCreateAsync(body, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
@@ -2522,7 +2522,7 @@ namespace SpeckleCore
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Status 200</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ResponseBase> ObjectCreateAsync(PayloadCreateObject body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResponseObjectCreate> ObjectCreateAsync(PayloadCreateObject body, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/objects");
@@ -2556,10 +2556,10 @@ namespace SpeckleCore
                         if (status_ == "200")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            var result_ = default(ResponseBase);
+                            var result_ = default(ResponseObjectCreate);
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObjectCreate>(responseData_, _settings.Value);
                                 return result_;
                             }
                             catch (System.Exception exception)
@@ -2604,7 +2604,7 @@ namespace SpeckleCore
                             throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
 
-                        return default(ResponseBase);
+                        return default(ResponseObjectCreate);
                     }
                     finally
                     {
