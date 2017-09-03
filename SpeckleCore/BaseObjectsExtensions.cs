@@ -399,4 +399,33 @@ namespace SpeckleCore
             return obj.Guid.GetHashCode();
         }
     }
+
+
+    [Serializable]
+    public class SpeckleInputParam
+    {
+        public string Name { get; set; }
+
+        public int OrderIndex { get; set; }
+
+        public string Type { get; set; }
+    }
+
+    [Serializable]
+    public class SpeckleNumberInput : SpeckleInputParam
+    {
+        public double Min { get; set; } = 1;
+
+        public double Max { get; set; } = -1;
+
+        public double Step { get; set; } = 1/10e2;
+
+        public double Value { get; set; } = 0;
+    }
+
+    [Serializable]
+    public class SpeckleTextInput : SpeckleInputParam
+    {
+        public string Value { get; set; }
+    }
 }

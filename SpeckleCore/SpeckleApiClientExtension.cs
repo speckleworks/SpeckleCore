@@ -401,7 +401,7 @@ namespace SpeckleCore
 
                 LogEvent("Got a ws message.");
 
-                OnWsMessage?.Invoke(this, new SpeckleEventArgs() { EventName = "websocket-message", EventObject = JsonConvert.DeserializeObject<dynamic>(e.Data), EventData = e.Data });
+                OnWsMessage?.Invoke(this, new SpeckleEventArgs() { EventName = "websocket-message", EventObject = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(e.Data), EventData = e.Data });
             };
 
             WebsocketClient.Connect();
@@ -413,7 +413,7 @@ namespace SpeckleCore
             {
                 eventName = "message",
                 senderId = ClientId,
-                recipientId = "LOL",
+                recipientId = receipientId,
                 streamId = StreamId,
                 args = args
             };
