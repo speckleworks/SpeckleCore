@@ -289,30 +289,38 @@ namespace SpeckleCore
         private void DataSender_Elapsed(object sender, ElapsedEventArgs e)
         {
             LogEvent("Sending data update.");
+            StreamCustomUpdate(BucketName, BucketLayers, BucketObjects);
+        }
+
+        public void StreamCustomUpdate(string name, List<SpeckleLayer> layers, List<object> objects, string whatStream = null, bool broadcastUpdate = true, Action<string> callback = null)
+        {
+            string streamToUpdate = whatStream == null ? this.StreamId : whatStream;
 
             PayloadStreamUpdate payload = new PayloadStreamUpdate();
 
-            payload.Layers = BucketLayers;
-            payload.Name = BucketName;
-            SpeckleObject[] payloadObjList = new SpeckleObject[BucketObjects.Count];
+            payload.Layers = layers;
+            payload.Name = name;
+            SpeckleObject[] payloadObjList = new SpeckleObject[objects.Count];
 
-            var convertedObjects = Converter.ToSpeckle(BucketObjects);
+            var convertedObjects = Converter.ToSpeckle(objects);
 
             int index = 0, insertedCount = 0;
             foreach (SpeckleObject newGuy in convertedObjects)
             {
                 if (SentObjects.ContainsKey(newGuy.Hash))
                 {
-                    LogEvent(String.Format("Object {0} out of {1} done (cached).", index, BucketObjects.Count));
+                    LogEvent(String.Format("Object {0} out of {1} done (cached).", index, objects.Count));
                     payloadObjList[index] = SentObjects[newGuy.Hash];
                     insertedCount++;
-                    if (insertedCount == BucketObjects.Count)
+                    if (insertedCount == objects.Count)
                     {
                         payload.Objects = payloadObjList;
-                        StreamUpdateAsync(payload, StreamId).ContinueWith(task =>
+                        StreamUpdateAsync(payload, streamToUpdate).ContinueWith(task =>
                         {
                             LogEvent("Data updated.");
-                            BroadcastMessage(new { eventType = "update-global" });
+                            if (broadcastUpdate)
+                                BroadcastMessage(new { eventType = "update-global" });
+                            if (callback != null) callback(streamToUpdate);
                         });
                     }
                 }
@@ -322,25 +330,36 @@ namespace SpeckleCore
                     ObjectCreateAsync(new PayloadCreateObject() { Object = newGuy }).ContinueWith(tres =>
                     {
                         var placeholder = new SpeckleObject() { DatabaseId = tres.Result.ObjectId, Type = newGuy.Type, Hash = newGuy.Hash };
-                        LogEvent(String.Format("Object {0} out of {1} done (created).", indexCopy, BucketObjects.Count));
+                        LogEvent(String.Format("Object {0} out of {1} done (created).", indexCopy, objects.Count));
                         SentObjects[placeholder.Hash] = placeholder;
                         payloadObjList[indexCopy] = placeholder;
                         insertedCount++;
-                        if (insertedCount == BucketObjects.Count)
+                        if (insertedCount == objects.Count)
                         {
                             payload.Objects = payloadObjList;
-                            StreamUpdateAsync(payload, StreamId).ContinueWith(task =>
+                            StreamUpdateAsync(payload, streamToUpdate).ContinueWith(task =>
                             {
                                 LogEvent("Data updated.");
-                                BroadcastMessage(new { eventType = "update-global" });
+                                if (broadcastUpdate)
+                                    BroadcastMessage(new { eventType = "update-global" });
+                                if (callback != null) callback(streamToUpdate);
                             });
                         }
                     });
                 }
                 index++;
             }
+        }
+
+        public void StreamCreateAndPopulate(string name, List<SpeckleLayer> layers, List<object> objects, Action<string> callback)
+        {
+            StreamCreateAsync().ContinueWith(tres =>
+            {
+                StreamCustomUpdate(name: name, layers: layers, objects: objects, whatStream: tres.Result.Stream.StreamId, broadcastUpdate: false, callback: callback);
+            });
 
         }
+
 
         public void GetObjectList(IEnumerable<SpeckleObjectPlaceholder> objects, Action<List<SpeckleObject>> callback)
         {

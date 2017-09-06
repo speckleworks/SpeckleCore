@@ -402,6 +402,22 @@ namespace SpeckleCore
 
 
     [Serializable]
+    public class SpeckleOutputParam
+    {
+        public string Name { get; set; }
+
+        public int OrderIndex { get; set; }
+
+        public bool IsPrincipal { get; set; } = false;
+
+        public string Unit { get; set; }
+
+        public string Value { get; set; }
+
+        public string Guid { get; set; }
+    }
+
+    [Serializable]
     public class SpeckleInputParam
     {
         public string Name { get; set; }
@@ -409,6 +425,8 @@ namespace SpeckleCore
         public int OrderIndex { get; set; }
 
         public string Type { get; set; }
+
+        public string Guid { get; set; }
     }
 
     [Serializable]
@@ -427,5 +445,26 @@ namespace SpeckleCore
     public class SpeckleTextInput : SpeckleInputParam
     {
         public string Value { get; set; }
+    }
+
+    [Serializable]
+    public class SpeckleToggleInput: SpeckleInputParam
+    {
+        public bool Value { get; set; }
+    }
+
+    [Serializable]
+    public class SpecklePointInput: SpeckleInputParam
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+
+        public double MaxX { get; set; }
+        public double MaxY { get; set; }
+        public double MaxZ { get; set; }
+        public double MinX { get; set; }
+        public double MinY { get; set; }
+        public double MinZ { get; set; }
     }
 }
