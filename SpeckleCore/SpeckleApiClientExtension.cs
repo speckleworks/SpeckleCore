@@ -257,12 +257,11 @@ namespace SpeckleCore
             BucketName = name;
 
             MetadataSender.Start();
-            Dictionary<string, ISerializable> what;
-
         }
 
         private void MetadataSender_Elapsed(object sender, ElapsedEventArgs e)
         {
+            if (DataSender.Enabled) return;
             var payload = new PayloadStreamMetaUpdate();
             payload.Layers = BucketLayers;
             payload.Name = BucketName;
