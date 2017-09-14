@@ -293,10 +293,10 @@ namespace SpeckleCore
     }
 
     [Serializable]
-    public partial class SpeckleObjectPlaceholder 
+    public partial class SpeckleObjectPlaceholder : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public virtual string Type { get; set; }
+        public virtual string Type { get; set; } = "Placeholder";
 
         /// <summary>Object's unique hash. It's generated server-side from JSON.stringify( obj.properties ) + obj.geometryHash using a murmurhash3 128bit function.</summary>
         [Newtonsoft.Json.JsonProperty("_id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]

@@ -328,7 +328,7 @@ namespace SpeckleCore
                     int indexCopy = index;
                     ObjectCreateAsync(new PayloadCreateObject() { Object = newGuy }).ContinueWith(tres =>
                     {
-                        var placeholder = new SpeckleObject() { DatabaseId = tres.Result.ObjectId, Type = newGuy.Type, Hash = newGuy.Hash };
+                        var placeholder = new SpeckleObjectPlaceholder() { DatabaseId = tres.Result.ObjectId, Hash = newGuy.Hash };
                         LogEvent(String.Format("Object {0} out of {1} done (created).", indexCopy, objects.Count));
                         SentObjects[placeholder.Hash] = placeholder;
                         payloadObjList[indexCopy] = placeholder;
