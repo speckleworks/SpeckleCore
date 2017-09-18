@@ -1,4 +1,6 @@
-﻿namespace SpeckleCore
+﻿using System.Collections.Generic;
+
+namespace SpeckleCore
 {
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
@@ -71,11 +73,11 @@
     {
         /// <summary>The user's streams.</summary>
         [Newtonsoft.Json.JsonProperty("ownedStreams", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<DataStream> OwnedStreams { get; set; }
+        public List<DataStream> OwnedStreams { get; set; }
 
         /// <summary>The streams that are shared with the user.</summary>
         [Newtonsoft.Json.JsonProperty("sharedWithStreams", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<DataStream> SharedWithStreams { get; set; }
+        public List<DataStream> SharedWithStreams { get; set; }
 
         public string ToJson()
         {
@@ -92,7 +94,7 @@
     public partial class ResponseAccountClients : ResponseBase
     {
         [Newtonsoft.Json.JsonProperty("clients", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleClient> Clients { get; set; }
+        public List<SpeckleClient> Clients { get; set; }
 
         public string ToJson()
         {
@@ -197,7 +199,7 @@
     public partial class ResponseStreamLayersGet : ResponseBase
     {
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> Layers { get; set; }
+        public List<SpeckleLayer> Layers { get; set; }
 
         public string ToJson()
         {
@@ -271,13 +273,13 @@
     public partial class Objects
     {
         [Newtonsoft.Json.JsonProperty("common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> Common { get; set; }
+        public List<string> Common { get; set; }
 
         [Newtonsoft.Json.JsonProperty("inA", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> InA { get; set; }
+        public List<string> InA { get; set; }
 
         [Newtonsoft.Json.JsonProperty("inB", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> InB { get; set; }
+        public List<string> InB { get; set; }
 
         public string ToJson()
         {
@@ -294,13 +296,13 @@
     public partial class Layers
     {
         [Newtonsoft.Json.JsonProperty("common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> Common { get; set; }
+        public List<SpeckleLayer> Common { get; set; }
 
         [Newtonsoft.Json.JsonProperty("inA", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> InA { get; set; }
+        public List<SpeckleLayer> InA { get; set; }
 
         [Newtonsoft.Json.JsonProperty("inB", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> InB { get; set; }
+        public List<SpeckleLayer> InB { get; set; }
 
         public string ToJson()
         {
@@ -335,7 +337,7 @@
     {
         /// <summary>Ordered array of the objects databaseId (_id).</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> Objects { get; set; }
+        public List<string> Objects { get; set; }
 
         public string ToJson()
         {
@@ -368,7 +370,7 @@
     public partial class ResponseGetObjects : ResponseBase
     {
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleObject> Objects { get; set; }
+        public List<SpeckleObject> Objects { get; set; }
 
         public string ToJson()
         {
@@ -386,7 +388,7 @@
     {
         /// <summary>Ordered array of the objects databaseId (_id).</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<string> Objects { get; set; }
+        public List<string> Objects { get; set; }
 
         public string ToJson()
         {

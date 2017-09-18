@@ -252,7 +252,7 @@ namespace SpeckleCore
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
-    public partial class PayloadObjectGetWithArray
+    public partial class PayloadObjectGetBulk
     {
         /// <summary>An array of object ids to retrieve from the database.</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -263,9 +263,9 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static PayloadObjectGetWithArray FromJson(string data)
+        public static PayloadObjectGetBulk FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadObjectGetWithArray>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadObjectGetBulk>(data);
         }
     }
 

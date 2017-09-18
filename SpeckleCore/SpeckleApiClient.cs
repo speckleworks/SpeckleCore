@@ -3047,7 +3047,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers/{layerId}/objects?");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (query != null) urlBuilder_.Append("query=").Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
             var client_ = new System.Net.Http.HttpClient();
@@ -3503,9 +3503,9 @@ namespace SpeckleCore
         /// <param name="query">Filter by field values, get or omit specific fields & sort.</param>
         /// <returns>Status 200</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ResponseStreamLayersGet> GetObjectsAsync(string query, string streamId)
+        public System.Threading.Tasks.Task<ResponseGetObjects> GetStreamObjectsAsync(string query, string streamId)
         {
-            return GetObjectsAsync(query, streamId, System.Threading.CancellationToken.None);
+            return GetStreamObjectsAsync(query, streamId, System.Threading.CancellationToken.None);
         }
 
         /// <summary>GetObjects</summary>
@@ -3513,7 +3513,7 @@ namespace SpeckleCore
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Status 200</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ResponseStreamLayersGet> GetObjectsAsync(string query, string streamId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResponseGetObjects> GetStreamObjectsAsync(string query, string streamId, System.Threading.CancellationToken cancellationToken)
         {
             if (streamId == null)
                 throw new System.ArgumentNullException("streamId");
@@ -3521,7 +3521,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects?");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (query != null) urlBuilder_.Append("query=").Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
             var client_ = new System.Net.Http.HttpClient();
@@ -3550,10 +3550,10 @@ namespace SpeckleCore
                         if (status_ == "200")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            var result_ = default(ResponseStreamLayersGet);
+                            var result_ = default(ResponseGetObjects);
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamLayersGet>(responseData_, _settings.Value);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseGetObjects>(responseData_, _settings.Value);
                                 return result_;
                             }
                             catch (System.Exception exception)
@@ -3598,7 +3598,7 @@ namespace SpeckleCore
                             throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
 
-                        return default(ResponseStreamLayersGet);
+                        return default(ResponseGetObjects);
                     }
                     finally
                     {
@@ -4436,7 +4436,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/objects/{objectId}?");
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (query != null) urlBuilder_.Append("query=").Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
             var client_ = new System.Net.Http.HttpClient();
@@ -4760,6 +4760,117 @@ namespace SpeckleCore
             }
         }
 
+
+        public System.Threading.Tasks.Task<ResponseGetObjects> ObjectGetBulkAsync(string query, PayloadObjectGetBulk body)
+        {
+            return ObjectGetBulkAsync(query, body, System.Threading.CancellationToken.None);
+        }
+
+        /// <summary>ObjectGetBulk</summary>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Status 200</returns>
+        /// <exception cref="SwaggerException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task<ResponseGetObjects> ObjectGetBulkAsync(string query, PayloadObjectGetBulk body, System.Threading.CancellationToken cancellationToken)
+        {
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl).Append("/objects/getbulk?");
+            if (query != null) urlBuilder_.Append(query);
+
+            var client_ = new System.Net.Http.HttpClient();
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+                    content_.Headers.ContentType.MediaType = "application/json";
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        foreach (var item_ in response_.Content.Headers)
+                            headers_[item_.Key] = item_.Value;
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "200")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = default(ResponseGetObjects);
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseGetObjects>(responseData_, _settings.Value);
+                                return result_;
+                            }
+                            catch (System.Exception exception)
+                            {
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                        }
+                        else
+                        if (status_ == "400")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = default(ResponseBase);
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>(responseData_, _settings.Value);
+                            }
+                            catch (System.Exception exception)
+                            {
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "401")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            var result_ = default(ResponseBase);
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>(responseData_, _settings.Value);
+                            }
+                            catch (System.Exception exception)
+                            {
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                        }
+
+                        return default(ResponseGetObjects);
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (client_ != null)
+                    client_.Dispose();
+            }
+        }
+
+
+
         /// <summary>ObjectCreateBulk</summary>
         /// <returns>Status 200</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
@@ -4947,9 +5058,9 @@ namespace SpeckleCore
         /// <param name="query">Filter by field values, get or omit specific fields & sort.</param>
         /// <returns>Status 200</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public ResponseStreamLayersGet GetObjects(string query, string streamId)
+        public ResponseGetObjects GetStreamObjects(string query, string streamId)
         {
-            return System.Threading.Tasks.Task.Run(async () => await GetObjectsAsync(query, streamId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await GetStreamObjectsAsync(query, streamId, System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
         }
 
         /// <summary>AddObjects</summary>
