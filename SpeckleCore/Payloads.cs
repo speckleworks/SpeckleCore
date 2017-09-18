@@ -268,4 +268,90 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadObjectGetWithArray>(data);
         }
     }
+
+    public partial class PayloadMultipleLayers
+    {
+        [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.Always)]
+        public IEnumerable<SpeckleLayer> Layers { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static PayloadMultipleLayers FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadMultipleLayers>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class PayloadSingleLayer
+    {
+        [Newtonsoft.Json.JsonProperty("layer", Required = Newtonsoft.Json.Required.Always)]
+        public SpeckleLayer Layer { get; set; } = new SpeckleLayer();
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static PayloadSingleLayer FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadSingleLayer>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class PayloadMultipleObjects
+    {
+        [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public IEnumerable<SpeckleObject> Objects { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static PayloadMultipleObjects FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadMultipleObjects>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class PayloadMultipleObjectIds
+    {
+        /// <summary>An array of objectIds to remove. Must be part of the layer's subset. Or else.</summary>
+        [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public IEnumerable<string> Objects { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static PayloadMultipleObjectIds FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadMultipleObjectIds>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class PayloadSingleObject
+    {
+        [Newtonsoft.Json.JsonProperty("object", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpeckleObject Object { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static PayloadSingleObject FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadSingleObject>(data);
+        }
+    }
+
 }

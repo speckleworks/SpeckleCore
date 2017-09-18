@@ -266,7 +266,12 @@ namespace SpeckleCore
             payload.Layers = BucketLayers;
             payload.Name = BucketName;
 
-            StreamUpdateMetaAsync(payload, StreamId).ContinueWith(task =>
+            Task[] tasks = new Task[2] {
+                StreamUpdateNameAsync( new PayloadStreamNameUpdate(){ Name=BucketName },StreamId),
+                ReplaceLayersAsync( new PayloadMultipleLayers() {Layers = BucketLayers}, StreamId)
+            };
+
+            Task.WhenAll(tasks).ContinueWith(task =>
             {
                 LogEvent("Metadata updated.");
                 BroadcastMessage(new { eventType = "update-meta" });
@@ -326,7 +331,7 @@ namespace SpeckleCore
                 else
                 {
                     int indexCopy = index;
-                    ObjectCreateAsync(new PayloadCreateObject() { Object = newGuy }).ContinueWith(tres =>
+                    ObjectCreateAsync(new PayloadSingleObject() { Object = newGuy }).ContinueWith(tres =>
                     {
                         var placeholder = new SpeckleObjectPlaceholder() { DatabaseId = tres.Result.ObjectId, Hash = newGuy.Hash };
                         LogEvent(String.Format("Object {0} out of {1} done (created).", indexCopy, objects.Count));
@@ -379,16 +384,16 @@ namespace SpeckleCore
                 else
                 {
                     int indexCopy = index;
-                    ObjectGetAsync(newGuy.DatabaseId).ContinueWith(tres =>
-                    {
-                        speckleObjectList[indexCopy] = tres.Result.SpeckleObject;
-                        SentObjects[newGuy.Hash] = tres.Result.SpeckleObject;
-                        insertedCount++;
-                        if (insertedCount == objects.Count())
-                        {
-                            callback(speckleObjectList.ToList());
-                        }
-                    });
+                    ObjectGetAsync("", newGuy.DatabaseId).ContinueWith(tres =>
+                     {
+                         speckleObjectList[indexCopy] = tres.Result.SpeckleObject;
+                         SentObjects[newGuy.Hash] = tres.Result.SpeckleObject;
+                         insertedCount++;
+                         if (insertedCount == objects.Count())
+                         {
+                             callback(speckleObjectList.ToList());
+                         }
+                     });
                 }
                 index++;
             }

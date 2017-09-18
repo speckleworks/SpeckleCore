@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SpeckleCore
+﻿namespace SpeckleCore
 {
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
@@ -180,6 +174,10 @@ namespace SpeckleCore
         }
     }
 
+
+
+
+
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public partial class ResponseStreamGet : ResponseBase
     {
@@ -197,23 +195,7 @@ namespace SpeckleCore
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
-    public partial class ResponseStreamMetaGet : ResponseBase
-    {
-        /// <summary>This stream should have its objects array populated.</summary>
-        [Newtonsoft.Json.JsonProperty("stream", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public DataStream Stream { get; set; }
-
-        public string ToJson()
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-
-        public static ResponseStreamMetaGet FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamMetaGet>(data);
-        }
-    }
+    
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public partial class ResponseStreamLayersGet : ResponseBase
@@ -249,8 +231,8 @@ namespace SpeckleCore
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
-    public partial class ResponseStreamDuplicate : ResponseBase
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class ResponseStreamClone : ResponseBase
     {
         [Newtonsoft.Json.JsonProperty("clone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Clone Clone { get; set; }
@@ -263,30 +245,79 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseStreamDuplicate FromJson(string data)
+        public static ResponseStreamClone FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamDuplicate>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamClone>(data);
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
-    public partial class ResponseObjectCreate : ResponseBase
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class ResponseStreamDiff : ResponseBase
     {
-        [Newtonsoft.Json.JsonProperty("objectId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ObjectId { get; set; }
+        [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Objects Objects { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public Layers Layers { get; set; }
 
         public string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseObjectGet FromJson(string data)
+        public static ResponseStreamDiff FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObjectGet>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamDiff>(data);
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class Objects
+    {
+        [Newtonsoft.Json.JsonProperty("common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<string> Common { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("inA", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<string> InA { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("inB", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<string> InB { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static Objects FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Objects>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class Layers
+    {
+        [Newtonsoft.Json.JsonProperty("common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> Common { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("inA", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> InA { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("inB", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<SpeckleLayer> InB { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static Layers FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<Layers>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
     public partial class ResponseObjectGet : ResponseBase
     {
         [Newtonsoft.Json.JsonProperty("speckleObject", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -303,20 +334,90 @@ namespace SpeckleCore
         }
     }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
-    public partial class ResponseObjectWithArrayGet : ResponseBase
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class ResponseStreamUpdate : ResponseBase
     {
-        [Newtonsoft.Json.JsonProperty("speckleObjects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.ObjectModel.ObservableCollection<SpeckleObject> SpeckleObjects { get; set; }
+        /// <summary>Ordered array of the objects databaseId (_id).</summary>
+        [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<string> Objects { get; set; }
 
         public string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseObjectWithArrayGet FromJson(string data)
+        public static ResponseStreamUpdate FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObjectWithArrayGet>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamUpdate>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class ResponseSingleLayer : ResponseBase
+    {
+        [Newtonsoft.Json.JsonProperty("layer", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpeckleLayer Layer { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static ResponseSingleLayer FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseSingleLayer>(data);
+        }
+    }
+
+    public partial class ResponseGetObjects : ResponseBase
+    {
+        [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<SpeckleObject> Objects { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static ResponseGetObjects FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseGetObjects>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class ResponsePostObjects : ResponseBase
+    {
+        /// <summary>Ordered array of the objects databaseId (_id).</summary>
+        [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.ObjectModel.ObservableCollection<string> Objects { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static ResponsePostObjects FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponsePostObjects>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.6.3.0")]
+    public partial class ResponsePostObject : ResponseBase
+    {
+        /// <summary>Ordered array of the objects databaseId (_id).</summary>
+        [Newtonsoft.Json.JsonProperty("objectId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ObjectId { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static ResponsePostObjects FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponsePostObjects>(data);
         }
     }
 }
