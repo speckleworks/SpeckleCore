@@ -120,7 +120,7 @@ namespace SpeckleCore
 
         /// <summary>An array of SpeckleObject ids.</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<SpeckleObjectPlaceholder> Objects { get; set; } = new List<SpeckleObjectPlaceholder>();
+        public List<string> Objects { get; set; } = new List<string>();
 
         /// <summary>An array of speckle layers.</summary>
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -296,15 +296,8 @@ namespace SpeckleCore
     public partial class SpeckleObjectPlaceholder : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public virtual string Type { get; set; } = "Placeholder";
+        public override string Type { get; set; } = "Placeholder";
 
-        /// <summary>Object's unique hash. It's generated server-side from JSON.stringify( obj.properties ) + obj.geometryHash using a murmurhash3 128bit function.</summary>
-        [Newtonsoft.Json.JsonProperty("_id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string DatabaseId { get; set; }
-
-        /// <summary>Object's unique hash. It's generated server-side from JSON.stringify( obj.properties ) + obj.geometryHash using a murmurhash3 128bit function.</summary>
-        [Newtonsoft.Json.JsonProperty("hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Hash { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]

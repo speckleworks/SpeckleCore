@@ -60,7 +60,7 @@ namespace SpeckleCore
         private List<object> BucketObjects = new List<object>();
         private List<SpeckleObject> SpeckleBucketObjects = new List<SpeckleObject>();
 
-        private Dictionary<string, SpeckleObject> SentObjects = new Dictionary<string, SpeckleObject>();
+        private Dictionary<string, SpeckleObject> ObjectCache = new Dictionary<string, SpeckleObject>();
 
 
         public SpeckleApiClient(string baseUrl, Converter converter, bool isPersistent = false) : base()
@@ -70,10 +70,9 @@ namespace SpeckleCore
             Converter = converter;
 
             SetReadyTimer();
-            SetTimers();
         }
 
-        public async Task IntializeReceiver(string streamId, string authToken = null)
+        public async Task IntializeReceiver(string streamId, string documentName, string documentType, string documentGuid, string authToken = null)
         {
             if (Role != null)
                 throw new Exception("Role changes are not permitted. Maybe create a new client?");
@@ -94,7 +93,7 @@ namespace SpeckleCore
 
             try
             {
-                await SetupClient();
+                await SetupClient(documentName, documentType, documentGuid);
                 SetupWebsocket();
             }
             catch { throw new Exception("Could not get stream."); }
@@ -102,34 +101,7 @@ namespace SpeckleCore
 
         }
 
-        public async Task IntializeReceiver(string streamId, string email = null, string password = null)
-        {
-            if (Role != null)
-                throw new Exception("Role changes are not permitted. Maybe create a new client?");
-
-            Role = ClientRole.Receiver;
-            StreamId = streamId;
-
-            try
-            {
-                var payload = new PayloadAccountLogin() { Email = email, Password = password };
-                AuthToken = (await this.UserLoginAsync(payload)).ApiToken;
-                User = (await this.UserGetProfileAsync()).User;
-            }
-            catch
-            {
-                throw new Exception("Login error. Credentials incorrect.");
-            }
-
-            try
-            {
-                Stream = (await this.StreamGetAsync(streamId)).Stream;
-                var x = Stream;
-            }
-            catch { throw new Exception("Could not get stream."); }
-        }
-
-        public async Task<string> IntializeSender(string authToken)
+        public async Task<string> IntializeSender(string authToken, string documentName, string documentType, string documentGuid)
         {
             if (Role != null)
                 throw new Exception("Role changes are not permitted. Maybe create a new client?");
@@ -151,7 +123,7 @@ namespace SpeckleCore
                 Stream = (await this.StreamCreateAsync()).Stream;
                 StreamId = Stream.StreamId;
 
-                await SetupClient();
+                await SetupClient(documentName, documentType, documentGuid);
                 SetupWebsocket();
 
                 return Stream.StreamId;
@@ -163,46 +135,12 @@ namespace SpeckleCore
 
         }
 
-        public async Task<string> IntializeSender(string email, string password)
-        {
-            if (Role != null)
-                throw new Exception("Role changes are not permitted. Maybe create a new client?");
-
-            Role = ClientRole.Sender;
-
-            try
-            {
-                var payload = new PayloadAccountLogin() { Email = email, Password = password };
-                AuthToken = (await this.UserLoginAsync(payload)).ApiToken;
-                User = (await this.UserGetProfileAsync()).User;
-            }
-            catch
-            {
-                throw new Exception("Login error. Credentials incorrect.");
-            }
-
-            try
-            {
-                Stream = (await this.StreamCreateAsync()).Stream;
-                StreamId = Stream.StreamId;
-                LogEvent("Created a new stream.");
-                await SetupClient();
-                SetupWebsocket();
-
-                return Stream.StreamId;
-            }
-            catch
-            {
-                throw new Exception("Failed to create a new stream.");
-            }
-        }
-
-        private async Task SetupClient()
+        private async Task SetupClient(string documentName = null, string documentType = null, string documentGuid = null)
         {
             if (ClientId == null)
             {
                 LogEvent("Creating a new client.");
-                var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true } };
+                var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true, DocumentGuid = documentGuid, DocumentName = documentName, DocumentType= documentType } };
                 ClientId = (await this.ClientCreateAsync(payload)).ClientId;
             }
             else
@@ -239,159 +177,6 @@ namespace SpeckleCore
                 if (IsDisposed) return;
                 WebsocketClient.Connect();
             };
-        }
-
-        private void SetTimers()
-        {
-            MetadataSender = new Timer(1000) { AutoReset = false, Enabled = false };
-            MetadataSender.Elapsed += MetadataSender_Elapsed;
-
-            DataSender = new Timer(2000) { AutoReset = false, Enabled = false };
-            DataSender.Elapsed += DataSender_Elapsed;
-        }
-
-
-        public void UpdateMetadataDebounced(string name, IEnumerable<SpeckleLayer> layers)
-        {
-            BucketLayers = layers.ToList();
-            BucketName = name;
-
-            MetadataSender.Start();
-        }
-
-        private void MetadataSender_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (DataSender.Enabled) return;
-            var payload = new PayloadStreamMetaUpdate();
-            payload.Layers = BucketLayers;
-            payload.Name = BucketName;
-
-            StreamUpdateMetaAsync(payload, StreamId).ContinueWith(task =>
-            {
-                LogEvent("Metadata updated.");
-                BroadcastMessage(new { eventType = "update-meta" });
-            });
-        }
-
-
-        public void UpdateDataDebonuced(string name, IEnumerable<object> objects, IEnumerable<SpeckleLayer> layers)
-        {
-            BucketObjects = objects.ToList();
-            BucketLayers = layers.ToList();
-            BucketName = name;
-
-            LogEvent("Data update intialised.");
-
-            DataSender.Start();
-        }
-
-        private void DataSender_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            LogEvent("Sending data update.");
-            StreamCustomUpdate(BucketName, BucketLayers, BucketObjects);
-        }
-
-        public void StreamCustomUpdate(string name, List<SpeckleLayer> layers, List<object> objects, string whatStream = null, bool broadcastUpdate = true, Action<string> callback = null)
-        {
-            string streamToUpdate = whatStream == null ? this.StreamId : whatStream;
-
-            PayloadStreamUpdate payload = new PayloadStreamUpdate();
-
-            payload.Layers = layers;
-            payload.Name = name;
-            SpeckleObject[] payloadObjList = new SpeckleObject[objects.Count];
-
-            var convertedObjects = Converter.ToSpeckle(objects);
-
-            int index = 0, insertedCount = 0;
-            foreach (SpeckleObject newGuy in convertedObjects)
-            {
-                if (SentObjects.ContainsKey(newGuy.Hash))
-                {
-                    LogEvent(String.Format("Object {0} out of {1} done (cached).", index, objects.Count));
-                    payloadObjList[index] = SentObjects[newGuy.Hash];
-                    insertedCount++;
-                    if (insertedCount == objects.Count)
-                    {
-                        payload.Objects = payloadObjList;
-                        StreamUpdateAsync(payload, streamToUpdate).ContinueWith(task =>
-                        {
-                            LogEvent("Data updated.");
-                            if (broadcastUpdate)
-                                BroadcastMessage(new { eventType = "update-global" });
-                            if (callback != null) callback(streamToUpdate);
-                        });
-                    }
-                }
-                else
-                {
-                    int indexCopy = index;
-                    ObjectCreateAsync(new PayloadCreateObject() { Object = newGuy }).ContinueWith(tres =>
-                    {
-                        var placeholder = new SpeckleObjectPlaceholder() { DatabaseId = tres.Result.ObjectId, Hash = newGuy.Hash };
-                        LogEvent(String.Format("Object {0} out of {1} done (created).", indexCopy, objects.Count));
-                        SentObjects[placeholder.Hash] = placeholder;
-                        payloadObjList[indexCopy] = placeholder;
-                        insertedCount++;
-                        if (insertedCount == objects.Count)
-                        {
-                            payload.Objects = payloadObjList;
-                            StreamUpdateAsync(payload, streamToUpdate).ContinueWith(task =>
-                            {
-                                LogEvent("Data updated.");
-                                if (broadcastUpdate)
-                                    BroadcastMessage(new { eventType = "update-global" });
-                                if (callback != null) callback(streamToUpdate);
-                            });
-                        }
-                    });
-                }
-                index++;
-            }
-        }
-
-        public void StreamCreateAndPopulate(string name, List<SpeckleLayer> layers, List<object> objects, Action<string> callback)
-        {
-            StreamCreateAsync().ContinueWith(tres =>
-            {
-                StreamCustomUpdate(name: name, layers: layers, objects: objects, whatStream: tres.Result.Stream.StreamId, broadcastUpdate: false, callback: callback);
-            });
-
-        }
-
-
-        public void GetObjectList(IEnumerable<SpeckleObjectPlaceholder> objects, Action<List<SpeckleObject>> callback)
-        {
-            SpeckleObject[] speckleObjectList = new SpeckleObject[objects.Count()];
-            int index = 0, insertedCount = 0;
-
-            foreach (var newGuy in objects)
-            {
-                if (SentObjects.ContainsKey(newGuy.Hash))
-                {
-                    speckleObjectList[index] = SentObjects[newGuy.Hash];
-                    insertedCount++;
-                    if (insertedCount == objects.Count())
-                    {
-                        callback(speckleObjectList.ToList());
-                    }
-                }
-                else
-                {
-                    int indexCopy = index;
-                    ObjectGetAsync(newGuy.DatabaseId).ContinueWith(tres =>
-                    {
-                        speckleObjectList[indexCopy] = tres.Result.SpeckleObject;
-                        SentObjects[newGuy.Hash] = tres.Result.SpeckleObject;
-                        insertedCount++;
-                        if (insertedCount == objects.Count())
-                        {
-                            callback(speckleObjectList.ToList());
-                        }
-                    });
-                }
-                index++;
-            }
         }
 
         private void SetupWebsocket()
@@ -464,7 +249,6 @@ namespace SpeckleCore
             SetupClient();
             SetupWebsocket();
 
-            SetTimers();
             SetReadyTimer();
             SetWsReconnectTimer();
         }
@@ -485,10 +269,5 @@ namespace SpeckleCore
             try { ClientUpdateAsync(payload, ClientId); } catch { }
             try { WebsocketClient.Close(); } catch { }
         }
-    }
-
-    public class SpeckleCache
-    {
-        HashSet<string> HashSet { get; set; }
     }
 }
