@@ -70,7 +70,6 @@ namespace SpeckleCore
             Converter = converter;
 
             SetReadyTimer();
-            SetTimers();
         }
 
         public async Task IntializeReceiver(string streamId, string authToken = null)
@@ -241,61 +240,6 @@ namespace SpeckleCore
             };
         }
 
-        private void SetTimers()
-        {
-            MetadataSender = new Timer(1000) { AutoReset = false, Enabled = false };
-            MetadataSender.Elapsed += MetadataSender_Elapsed;
-
-            DataSender = new Timer(2000) { AutoReset = false, Enabled = false };
-            DataSender.Elapsed += DataSender_Elapsed;
-        }
-
-
-        public void UpdateMetadataDebounced(string name, IEnumerable<SpeckleLayer> layers)
-        {
-            BucketLayers = layers.ToList();
-            BucketName = name;
-
-            MetadataSender.Start();
-        }
-
-        private void MetadataSender_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (DataSender.Enabled) return;
-            var payload = new PayloadStreamMetaUpdate();
-            payload.Layers = BucketLayers;
-            payload.Name = BucketName;
-
-            Task[] tasks = new Task[2] {
-                StreamUpdateNameAsync( new PayloadStreamNameUpdate(){ Name=BucketName },StreamId),
-                ReplaceLayersAsync( new PayloadMultipleLayers() {Layers = BucketLayers}, StreamId)
-            };
-
-            Task.WhenAll(tasks).ContinueWith(task =>
-            {
-                LogEvent("Metadata updated.");
-                BroadcastMessage(new { eventType = "update-meta" });
-            });
-        }
-
-
-        public void UpdateDataDebonuced(string name, IEnumerable<object> objects, IEnumerable<SpeckleLayer> layers)
-        {
-            BucketObjects = objects.ToList();
-            BucketLayers = layers.ToList();
-            BucketName = name;
-
-            LogEvent("Data update intialised.");
-
-            DataSender.Start();
-        }
-
-        private void DataSender_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            LogEvent("Sending data update.");
-            StreamCustomUpdate(BucketName, BucketLayers, BucketObjects);
-        }
-
         public void StreamCustomUpdate(string name, List<SpeckleLayer> layers, List<object> objects, string whatStream = null, bool broadcastUpdate = true, Action<string> callback = null)
         {
             string streamToUpdate = whatStream == null ? this.StreamId : whatStream;
@@ -363,7 +307,6 @@ namespace SpeckleCore
             });
 
         }
-
 
         public void GetObjectList(IEnumerable<SpeckleObjectPlaceholder> objects, Action<List<SpeckleObject>> callback)
         {
@@ -469,7 +412,6 @@ namespace SpeckleCore
             SetupClient();
             SetupWebsocket();
 
-            SetTimers();
             SetReadyTimer();
             SetWsReconnectTimer();
         }
@@ -490,10 +432,5 @@ namespace SpeckleCore
             try { ClientUpdateAsync(payload, ClientId); } catch { }
             try { WebsocketClient.Close(); } catch { }
         }
-    }
-
-    public class SpeckleCache
-    {
-        HashSet<string> HashSet { get; set; }
     }
 }
