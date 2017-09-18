@@ -60,7 +60,7 @@ namespace SpeckleCore
         private List<object> BucketObjects = new List<object>();
         private List<SpeckleObject> SpeckleBucketObjects = new List<SpeckleObject>();
 
-        private Dictionary<string, SpeckleObject> SentObjects = new Dictionary<string, SpeckleObject>();
+        private Dictionary<string, SpeckleObject> ObjectCache = new Dictionary<string, SpeckleObject>();
 
 
         public SpeckleApiClient(string baseUrl, Converter converter, bool isPersistent = false) : base()
@@ -311,10 +311,10 @@ namespace SpeckleCore
             int index = 0, insertedCount = 0;
             foreach (SpeckleObject newGuy in convertedObjects)
             {
-                if (SentObjects.ContainsKey(newGuy.Hash))
+                if (ObjectCache.ContainsKey(newGuy.Hash))
                 {
                     LogEvent(String.Format("Object {0} out of {1} done (cached).", index, objects.Count));
-                    payloadObjList[index] = SentObjects[newGuy.Hash];
+                    payloadObjList[index] = ObjectCache[newGuy.Hash];
                     insertedCount++;
                     if (insertedCount == objects.Count)
                     {
@@ -335,7 +335,7 @@ namespace SpeckleCore
                     {
                         var placeholder = new SpeckleObjectPlaceholder() { DatabaseId = tres.Result.ObjectId, Hash = newGuy.Hash };
                         LogEvent(String.Format("Object {0} out of {1} done (created).", indexCopy, objects.Count));
-                        SentObjects[placeholder.Hash] = placeholder;
+                        ObjectCache[placeholder.Hash] = placeholder;
                         payloadObjList[indexCopy] = placeholder;
                         insertedCount++;
                         if (insertedCount == objects.Count)
@@ -372,9 +372,9 @@ namespace SpeckleCore
 
             foreach (var newGuy in objects)
             {
-                if (SentObjects.ContainsKey(newGuy.Hash))
+                if (ObjectCache.ContainsKey(newGuy.Hash))
                 {
-                    speckleObjectList[index] = SentObjects[newGuy.Hash];
+                    speckleObjectList[index] = ObjectCache[newGuy.Hash];
                     insertedCount++;
                     if (insertedCount == objects.Count())
                     {
@@ -387,7 +387,7 @@ namespace SpeckleCore
                     ObjectGetAsync("", newGuy.DatabaseId).ContinueWith(tres =>
                      {
                          speckleObjectList[indexCopy] = tres.Result.SpeckleObject;
-                         SentObjects[newGuy.Hash] = tres.Result.SpeckleObject;
+                         ObjectCache[newGuy.Hash] = tres.Result.SpeckleObject;
                          insertedCount++;
                          if (insertedCount == objects.Count())
                          {

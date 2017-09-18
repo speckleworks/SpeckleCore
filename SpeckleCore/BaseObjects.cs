@@ -120,7 +120,7 @@ namespace SpeckleCore
 
         /// <summary>An array of SpeckleObject ids.</summary>
         [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<SpeckleObjectPlaceholder> Objects { get; set; } = new List<SpeckleObjectPlaceholder>();
+        public List<string> Objects { get; set; } = new List<string>();
 
         /// <summary>An array of speckle layers.</summary>
         [Newtonsoft.Json.JsonProperty("layers", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
