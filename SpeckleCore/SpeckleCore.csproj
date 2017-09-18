@@ -56,7 +56,6 @@
     <Compile Include="Responses.cs" />
     <Compile Include="SpeckleApiClient.cs" />
     <Compile Include="SpeckleApiClientExtension.cs" />
-    <Compile Include="SpeckleSocketMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -72,7 +72,7 @@ namespace SpeckleCore
             SetReadyTimer();
         }
 
-        public async Task IntializeReceiver(string streamId, string authToken = null)
+        public async Task IntializeReceiver(string streamId, string documentName, string documentType, string documentGuid, string authToken = null)
         {
             if (Role != null)
                 throw new Exception("Role changes are not permitted. Maybe create a new client?");
@@ -93,7 +93,7 @@ namespace SpeckleCore
 
             try
             {
-                await SetupClient();
+                await SetupClient(documentName, documentType, documentGuid);
                 SetupWebsocket();
             }
             catch { throw new Exception("Could not get stream."); }
@@ -101,34 +101,7 @@ namespace SpeckleCore
 
         }
 
-        public async Task IntializeReceiver(string streamId, string email = null, string password = null)
-        {
-            if (Role != null)
-                throw new Exception("Role changes are not permitted. Maybe create a new client?");
-
-            Role = ClientRole.Receiver;
-            StreamId = streamId;
-
-            try
-            {
-                var payload = new PayloadAccountLogin() { Email = email, Password = password };
-                AuthToken = (await this.UserLoginAsync(payload)).ApiToken;
-                User = (await this.UserGetProfileAsync()).User;
-            }
-            catch
-            {
-                throw new Exception("Login error. Credentials incorrect.");
-            }
-
-            try
-            {
-                Stream = (await this.StreamGetAsync(streamId)).Stream;
-                var x = Stream;
-            }
-            catch { throw new Exception("Could not get stream."); }
-        }
-
-        public async Task<string> IntializeSender(string authToken)
+        public async Task<string> IntializeSender(string authToken, string documentName, string documentType, string documentGuid)
         {
             if (Role != null)
                 throw new Exception("Role changes are not permitted. Maybe create a new client?");
@@ -150,7 +123,7 @@ namespace SpeckleCore
                 Stream = (await this.StreamCreateAsync()).Stream;
                 StreamId = Stream.StreamId;
 
-                await SetupClient();
+                await SetupClient(documentName, documentType, documentGuid);
                 SetupWebsocket();
 
                 return Stream.StreamId;
@@ -162,46 +135,12 @@ namespace SpeckleCore
 
         }
 
-        public async Task<string> IntializeSender(string email, string password)
-        {
-            if (Role != null)
-                throw new Exception("Role changes are not permitted. Maybe create a new client?");
-
-            Role = ClientRole.Sender;
-
-            try
-            {
-                var payload = new PayloadAccountLogin() { Email = email, Password = password };
-                AuthToken = (await this.UserLoginAsync(payload)).ApiToken;
-                User = (await this.UserGetProfileAsync()).User;
-            }
-            catch
-            {
-                throw new Exception("Login error. Credentials incorrect.");
-            }
-
-            try
-            {
-                Stream = (await this.StreamCreateAsync()).Stream;
-                StreamId = Stream.StreamId;
-                LogEvent("Created a new stream.");
-                await SetupClient();
-                SetupWebsocket();
-
-                return Stream.StreamId;
-            }
-            catch
-            {
-                throw new Exception("Failed to create a new stream.");
-            }
-        }
-
-        private async Task SetupClient()
+        private async Task SetupClient(string documentName = null, string documentType = null, string documentGuid = null)
         {
             if (ClientId == null)
             {
                 LogEvent("Creating a new client.");
-                var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true } };
+                var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true, DocumentGuid = documentGuid, DocumentName = documentName, DocumentType= documentType } };
                 ClientId = (await this.ClientCreateAsync(payload)).ClientId;
             }
             else
