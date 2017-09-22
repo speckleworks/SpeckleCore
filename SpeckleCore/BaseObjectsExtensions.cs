@@ -360,6 +360,38 @@ namespace SpeckleCore
         }
     }
 
+    [Serializable]
+    public class SpeckleAnnotation : SpeckleObject
+    {
+        public override string Type { get; set; } = "Annotation";
+        public string Text { get; set; }
+        public double TextHeight { get; set; }
+        public string FaceName { get; set; }
+        public bool Bold { get; set; }
+        public bool Italic { get; set; }
+        public SpecklePlane Plane { get; set; }
+        public SpecklePoint Location { get; set; }
+
+
+        public SpeckleAnnotation() { }
+
+        public SpeckleAnnotation(string text, double textHeight, string faceName, bool bold, bool italic, SpecklePlane plane, SpecklePoint location, string applicationId = null, Dictionary<string, object> properties = null)
+        {
+            this.Text = text;
+            this.TextHeight = textHeight;
+            this.FaceName = faceName;
+            this.Bold = bold;
+            this.Italic = italic;
+            this.Plane = plane;
+            this.Location = location;
+            this.ApplicationId = applicationId;
+            this.Properties = properties;
+
+            SetHashes(this.Text + this.FaceName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash);
+        }
+    }
+
+
     public partial class SpeckleLayer : IEquatable<SpeckleLayer>
     {
         public SpeckleLayer() { }
@@ -469,4 +501,6 @@ namespace SpeckleCore
         public double MinY { get; set; }
         public double MinZ { get; set; }
     }
+
+
 }
