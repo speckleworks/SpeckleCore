@@ -1213,24 +1213,24 @@ namespace SpeckleCore
         /// <summary>StreamCreate</summary>
         /// <returns>Initialises a stream in the db. You get back the 'streamId'.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ResponseStreamCreate> StreamCreateAsync()
+        public System.Threading.Tasks.Task<ResponseStreamCreate> StreamCreateAsync(PayloadStreamCreate payloadStreamCreate = null)
         {
-            return StreamCreateAsync(System.Threading.CancellationToken.None);
+            return StreamCreateAsync(System.Threading.CancellationToken.None, payloadStreamCreate);
         }
 
         /// <summary>StreamCreate</summary>
         /// <returns>Initialises a stream in the db. You get back the 'streamId'.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public ResponseStreamCreate StreamCreate()
+        public ResponseStreamCreate StreamCreate(PayloadStreamCreate payloadStreamCreate = null)
         {
-            return System.Threading.Tasks.Task.Run(async () => await StreamCreateAsync(System.Threading.CancellationToken.None)).GetAwaiter().GetResult();
+            return System.Threading.Tasks.Task.Run(async () => await StreamCreateAsync(System.Threading.CancellationToken.None, payloadStreamCreate)).GetAwaiter().GetResult();
         }
 
         /// <summary>StreamCreate</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Initialises a stream in the db. You get back the 'streamId'.</returns>
         /// <exception cref="SwaggerException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<ResponseStreamCreate> StreamCreateAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<ResponseStreamCreate> StreamCreateAsync(System.Threading.CancellationToken cancellationToken, PayloadStreamCreate payloadStreamCreate = null)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/streams");
@@ -1240,7 +1240,13 @@ namespace SpeckleCore
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var content_ = new System.Net.Http.StringContent(string.Empty);
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(payloadStreamCreate, _settings.Value));
+                    content_.Headers.ContentType.MediaType = "application/json";
+                    request_.Content = content_;
+
+                    if (payloadStreamCreate == null)
+                        content_ = new System.Net.Http.StringContent(string.Empty);
+
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));

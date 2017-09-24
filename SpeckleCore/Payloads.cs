@@ -135,6 +135,18 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("baseProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public Dictionary<string, object> BaseProperties { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("globalMeasures", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public List<SpeckleOutputParam> GlobalMeasures { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("private", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Private { get; set; } = false;
+
+        [Newtonsoft.Json.JsonProperty("isComputedResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsComputed { get; set; } = false;
+
+        [Newtonsoft.Json.JsonProperty("parent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Parent { get; set; }
+
         public string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
@@ -144,6 +156,11 @@ namespace SpeckleCore
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<PayloadStreamUpdate>(data);
         }
+    }
+
+    public partial class PayloadStreamCreate : PayloadStreamUpdate
+    {
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
