@@ -338,7 +338,7 @@ namespace SpeckleCore
             this.Colors = colors;
             this.ApplicationId = applicationId;
 
-            this.Properties = properties;            
+            this.Properties = properties;
 
             SetHashes(JsonConvert.SerializeObject(Vertices) + JsonConvert.SerializeObject(Faces) + JsonConvert.SerializeObject(Colors));
         }
@@ -432,9 +432,12 @@ namespace SpeckleCore
         }
     }
 
+    public interface ISpeckleControllerParam
+    {
+    }
 
     [Serializable]
-    public class SpeckleOutputParam
+    public class SpeckleOutputParam : ISpeckleControllerParam
     {
         public string Name { get; set; }
 
@@ -452,7 +455,7 @@ namespace SpeckleCore
     }
 
     [Serializable]
-    public class SpeckleInputParam
+    public class SpeckleInputParam : ISpeckleControllerParam
     {
         public string Name { get; set; }
 
@@ -466,11 +469,13 @@ namespace SpeckleCore
     [Serializable]
     public class SpeckleNumberInput : SpeckleInputParam
     {
+        public string Name { get; set; }
+
         public double Min { get; set; } = 1;
 
         public double Max { get; set; } = -1;
 
-        public double Step { get; set; } = 1/10e2;
+        public double Step { get; set; } = 1 / 10e2;
 
         public double Value { get; set; } = 0;
     }
@@ -478,18 +483,24 @@ namespace SpeckleCore
     [Serializable]
     public class SpeckleTextInput : SpeckleInputParam
     {
+        public string Name { get; set; }
+
         public string Value { get; set; }
     }
 
     [Serializable]
-    public class SpeckleToggleInput: SpeckleInputParam
+    public class SpeckleToggleInput : SpeckleInputParam
     {
+        public string Name { get; set; }
+
         public bool Value { get; set; }
     }
 
     [Serializable]
-    public class SpecklePointInput: SpeckleInputParam
+    public class SpecklePointInput : SpeckleInputParam
     {
+        public string Name { get; set; }
+
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }

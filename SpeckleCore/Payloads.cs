@@ -136,7 +136,7 @@ namespace SpeckleCore
         public Dictionary<string, object> BaseProperties { get; set; }
 
         [Newtonsoft.Json.JsonProperty("globalMeasures", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<SpeckleOutputParam> GlobalMeasures { get; set; }
+        public List<ISpeckleControllerParam> GlobalMeasures { get; set; }
 
         [Newtonsoft.Json.JsonProperty("private", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Private { get; set; } = false;
