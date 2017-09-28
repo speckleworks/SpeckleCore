@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Newtonsoft.Json;
+using System.IO.Compression;
+using System.IO;
+using System.Text;
 
 namespace SpeckleCore
 {
@@ -14,9 +17,9 @@ namespace SpeckleCore
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
         private string _baseUrl = "http://localhost:8080/api";
         private string _authToken = "";
+        private bool _UseGzip = true;
 
-
-        public BaseSpeckleApiClient()
+        public BaseSpeckleApiClient(bool useGzip = true)
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
             {
@@ -24,8 +27,13 @@ namespace SpeckleCore
                 UpdateJsonSerializerSettings(settings);
                 return settings;
             });
+            UseGzip = useGzip;
+        }
 
-            
+        public bool UseGzip
+        {
+            get { return _UseGzip; }
+            set { _UseGzip = value; }
         }
 
         public string BaseUrl
@@ -53,6 +61,25 @@ namespace SpeckleCore
         {
             if (AuthToken != "")
                 request.Headers.Add("Authorization", AuthToken);
+
+            if (UseGzip)
+            {
+                var originalContent = request.Content as StringContent;
+                var streamContent = Compress(originalContent.ToString());
+                request.Content = streamContent;
+                request.Content.Headers.ContentEncoding.Add("gzip");
+            }
+        }
+
+        private static StreamContent Compress(string data)
+        {
+            var bytes = Encoding.UTF8.GetBytes(data);
+            var stream = new MemoryStream();
+            using (var zipper = new GZipStream(stream, CompressionMode.Compress, true))
+            {
+                zipper.Write(bytes, 0, bytes.Length);
+            }
+            return new StreamContent(stream);
         }
 
         private HttpClient GetHttpClient()
@@ -93,6 +120,7 @@ namespace SpeckleCore
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
                     var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
+
                     content_.Headers.ContentType.MediaType = "application/json";
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -298,7 +326,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/streams");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -414,7 +442,7 @@ var client_ = GetHttpClient();
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/clients");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -529,7 +557,7 @@ var client_ = GetHttpClient();
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/profile");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -644,7 +672,7 @@ var client_ = GetHttpClient();
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/profile");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -747,7 +775,7 @@ var client_ = GetHttpClient();
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/clients");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -873,7 +901,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/clients/{clientId}");
             urlBuilder_.Replace("{clientId}", System.Uri.EscapeDataString(System.Convert.ToString(clientId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -995,7 +1023,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/clients/{clientId}");
             urlBuilder_.Replace("{clientId}", System.Uri.EscapeDataString(System.Convert.ToString(clientId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1120,7 +1148,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/clients/{clientId}");
             urlBuilder_.Replace("{clientId}", System.Uri.EscapeDataString(System.Convert.ToString(clientId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1250,7 +1278,7 @@ var client_ = GetHttpClient();
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/streams");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1265,7 +1293,7 @@ var client_ = GetHttpClient();
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    
+
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
@@ -1380,7 +1408,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1503,7 +1531,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1629,7 +1657,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1748,7 +1776,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/name");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1868,7 +1896,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/name");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1990,7 +2018,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2110,7 +2138,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2232,7 +2260,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2354,7 +2382,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2476,7 +2504,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2593,7 +2621,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2710,7 +2738,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2830,7 +2858,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2950,7 +2978,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3071,7 +3099,7 @@ var client_ = GetHttpClient();
             if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3188,7 +3216,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3308,7 +3336,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3428,7 +3456,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3545,7 +3573,7 @@ var client_ = GetHttpClient();
             if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3656,7 +3684,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3770,7 +3798,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3884,7 +3912,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4001,7 +4029,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4114,7 +4142,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/clone");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4235,7 +4263,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{otherId}", System.Uri.EscapeDataString(System.Convert.ToString(otherId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4342,7 +4370,7 @@ var client_ = GetHttpClient();
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/objects");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4460,7 +4488,7 @@ var client_ = GetHttpClient();
             if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4577,7 +4605,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/objects/{objectId}");
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4691,7 +4719,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/objects/{objectId}");
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4797,7 +4825,7 @@ var client_ = GetHttpClient();
             urlBuilder_.Append(BaseUrl).Append("/objects/getbulk?");
             if (query != null) urlBuilder_.Append(query);
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4909,7 +4937,7 @@ var client_ = GetHttpClient();
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/objects/bulk");
 
-var client_ = GetHttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
