@@ -15,6 +15,7 @@ namespace SpeckleCore
         private string _baseUrl = "http://localhost:8080/api";
         private string _authToken = "";
 
+
         public BaseSpeckleApiClient()
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
@@ -23,6 +24,8 @@ namespace SpeckleCore
                 UpdateJsonSerializerSettings(settings);
                 return settings;
             });
+
+            
         }
 
         public string BaseUrl
@@ -38,8 +41,11 @@ namespace SpeckleCore
         }
 
         partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings);
+
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url);
+
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
+
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
 
@@ -47,6 +53,13 @@ namespace SpeckleCore
         {
             if (AuthToken != "")
                 request.Headers.Add("Authorization", AuthToken);
+        }
+
+        private HttpClient GetHttpClient()
+        {
+            var handler = new HttpClientHandler();
+            handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip;
+            return new HttpClient(handler, true);
         }
 
         /// <summary>UserRegister</summary>
@@ -74,7 +87,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/register");
 
-            var client_ = new System.Net.Http.HttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -86,8 +99,10 @@ namespace SpeckleCore
                     request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
+
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
                     PrepareRequest(client_, request_, url_);
 
                     var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
@@ -178,7 +193,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/login");
 
-            var client_ = new System.Net.Http.HttpClient();
+            var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -283,7 +298,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/streams");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -399,7 +414,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/clients");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -514,7 +529,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/profile");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -629,7 +644,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/accounts/profile");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -732,7 +747,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/clients");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -858,7 +873,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/clients/{clientId}");
             urlBuilder_.Replace("{clientId}", System.Uri.EscapeDataString(System.Convert.ToString(clientId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -980,7 +995,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/clients/{clientId}");
             urlBuilder_.Replace("{clientId}", System.Uri.EscapeDataString(System.Convert.ToString(clientId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1105,7 +1120,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/clients/{clientId}");
             urlBuilder_.Replace("{clientId}", System.Uri.EscapeDataString(System.Convert.ToString(clientId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1235,7 +1250,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/streams");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1250,7 +1265,7 @@ namespace SpeckleCore
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
+                    
                     PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
@@ -1365,7 +1380,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1488,7 +1503,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1614,7 +1629,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1733,7 +1748,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/name");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1853,7 +1868,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/name");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -1975,7 +1990,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2095,7 +2110,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2217,7 +2232,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2339,7 +2354,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2461,7 +2476,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2578,7 +2593,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2695,7 +2710,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2815,7 +2830,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -2935,7 +2950,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3056,7 +3071,7 @@ namespace SpeckleCore
             if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3173,7 +3188,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3293,7 +3308,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3413,7 +3428,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3530,7 +3545,7 @@ namespace SpeckleCore
             if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3641,7 +3656,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3755,7 +3770,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3869,7 +3884,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -3986,7 +4001,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4099,7 +4114,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/clone");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4220,7 +4235,7 @@ namespace SpeckleCore
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{otherId}", System.Uri.EscapeDataString(System.Convert.ToString(otherId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4327,7 +4342,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/objects");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4445,7 +4460,7 @@ namespace SpeckleCore
             if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4562,7 +4577,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/objects/{objectId}");
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4676,7 +4691,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/objects/{objectId}");
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4782,7 +4797,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/objects/getbulk?");
             if (query != null) urlBuilder_.Append(query);
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
@@ -4894,7 +4909,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/objects/bulk");
 
-            var client_ = new System.Net.Http.HttpClient();
+var client_ = GetHttpClient();
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
