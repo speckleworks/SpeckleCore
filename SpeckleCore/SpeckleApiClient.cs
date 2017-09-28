@@ -62,24 +62,10 @@ namespace SpeckleCore
             if (AuthToken != "")
                 request.Headers.Add("Authorization", AuthToken);
 
-            if (UseGzip)
+            if (UseGzip && request.Method != HttpMethod.Get)
             {
-                var originalContent = request.Content as StringContent;
-                var streamContent = Compress(originalContent.ToString());
-                request.Content = streamContent;
-                request.Content.Headers.ContentEncoding.Add("gzip");
+               request.Content = new GzipContent(request.Content);
             }
-        }
-
-        private static StreamContent Compress(string data)
-        {
-            var bytes = Encoding.UTF8.GetBytes(data);
-            var stream = new MemoryStream();
-            using (var zipper = new GZipStream(stream, CompressionMode.Compress, true))
-            {
-                zipper.Write(bytes, 0, bytes.Length);
-            }
-            return new StreamContent(stream);
         }
 
         private HttpClient GetHttpClient()
