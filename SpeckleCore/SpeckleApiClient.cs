@@ -3082,8 +3082,7 @@ namespace SpeckleCore
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/layers/{layerId}/objects?");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{layerId}", System.Uri.EscapeDataString(System.Convert.ToString(layerId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            urlBuilder_.Length--;
+            if (query != null) urlBuilder_.Append(query);
 
             var client_ = GetHttpClient();
             try
@@ -3556,8 +3555,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/streams/{streamId}/objects?");
             urlBuilder_.Replace("{streamId}", System.Uri.EscapeDataString(System.Convert.ToString(streamId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            urlBuilder_.Length--;
+            if (query != null) urlBuilder_.Append(query);
 
             var client_ = GetHttpClient();
             try
@@ -4471,8 +4469,7 @@ namespace SpeckleCore
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/objects/{objectId}?");
             urlBuilder_.Replace("{objectId}", System.Uri.EscapeDataString(System.Convert.ToString(objectId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (query != null) urlBuilder_.Append(System.Uri.EscapeDataString(System.Convert.ToString(query, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            urlBuilder_.Length--;
+            if (query != null) urlBuilder_.Append(query);
 
             var client_ = GetHttpClient();
             try
