@@ -72,11 +72,11 @@ namespace SpeckleCore
     public partial class ResponseAccountStreams : ResponseBase
     {
         /// <summary>The user's streams.</summary>
-        [Newtonsoft.Json.JsonProperty("ownedStreams", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("streams", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public List<DataStream> OwnedStreams { get; set; }
 
         /// <summary>The streams that are shared with the user.</summary>
-        [Newtonsoft.Json.JsonProperty("sharedWithStreams", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("sharedStreams", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public List<DataStream> SharedWithStreams { get; set; }
 
         public string ToJson()
