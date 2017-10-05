@@ -1,0 +1,3 @@
+build:
+	verbosity: normal
+	project: $(SpeckleCore.csproj)
