@@ -387,7 +387,7 @@ namespace SpeckleCore
     public partial class ResponsePostObjects : ResponseBase
     {
         /// <summary>Ordered array of the objects databaseId (_id).</summary>
-        [Newtonsoft.Json.JsonProperty("objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("objectIds", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public List<string> Objects { get; set; }
 
         public string ToJson()
