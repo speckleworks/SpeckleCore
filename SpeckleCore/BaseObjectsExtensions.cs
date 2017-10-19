@@ -387,7 +387,7 @@ namespace SpeckleCore
             this.ApplicationId = applicationId;
             this.Properties = properties;
 
-            SetHashes(this.Text + this.FaceName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash);
+            SetHashes(this.Text + this.FaceName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash + this.Location.GeometryHash);
         }
     }
 
