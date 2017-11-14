@@ -31,7 +31,7 @@ namespace SpeckleCore
         public string ClientId { get; private set; }
 
         public User User { get; private set; }
-        public DataStream Stream { get; private set; }
+        public DataStream Stream { get; set; }
 
         public ClientRole? Role { get; private set; } = null;
 
@@ -93,6 +93,7 @@ namespace SpeckleCore
 
             try
             {
+                Stream = (await this.StreamGetAsync(streamId)).Stream;
                 await SetupClient(documentName, documentType, documentGuid);
                 SetupWebsocket();
             }
@@ -244,6 +245,8 @@ namespace SpeckleCore
             Role = (ClientRole)info.GetInt32("Role");
             AuthToken = info.GetString("ApiToken");
             ClientId = info.GetString("ClientId");
+
+            Stream = StreamGet(StreamId).Stream;
 
             // does not need waiting for, as we already have a clientid.
             SetupClient();
