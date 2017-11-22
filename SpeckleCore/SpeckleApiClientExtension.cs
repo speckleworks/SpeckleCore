@@ -141,7 +141,7 @@ namespace SpeckleCore
             if (ClientId == null)
             {
                 LogEvent("Creating a new client.");
-                var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true, DocumentGuid = documentGuid, DocumentName = documentName, DocumentType= documentType } };
+                var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true, DocumentGuid = documentGuid, DocumentName = documentName, DocumentType = documentType } };
                 ClientId = (await this.ClientCreateAsync(payload)).ClientId;
             }
             else
@@ -265,12 +265,20 @@ namespace SpeckleCore
             info.AddValue("ClientId", ClientId);
         }
 
-        public void Dispose()
+        public void Dispose(bool delete = false)
         {
             IsDisposed = true;
-            var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = false } };
-            try { ClientUpdateAsync(payload, ClientId); } catch { }
-            try { WebsocketClient.Close(); } catch { }
+
+            if (!delete)
+            {
+                var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = false } };
+                ClientUpdateAsync(payload, ClientId);
+                WebsocketClient.Close();
+                return;
+            }
+
+            this.ClientDeleteAsync(ClientId);
+            WebsocketClient.Close();
         }
     }
 }
