@@ -350,10 +350,8 @@ namespace SpeckleCore
     {
         public SpeckleCurve() { }
 
-        public SpeckleCurve(string base64, string provenance, SpecklePolyline poly, string applicationId = null, Dictionary<string, object> properties = null)
+        public SpeckleCurve(SpecklePolyline poly, string applicationId = null, Dictionary<string, object> properties = null)
         {
-            this.Base64 = base64;
-            this.Provenance = provenance;
             this.DisplayValue = poly;
             this.ApplicationId = applicationId;
             this.Properties = properties;

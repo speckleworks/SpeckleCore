@@ -731,13 +731,27 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public override string Type { get; set; } = "Curve";
 
-        /// <summary>See SpeckleBrep.</summary>
-        [Newtonsoft.Json.JsonProperty("base64", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Base64 { get; set; }
+        [Newtonsoft.Json.JsonProperty("Degree", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Degree { get; set; }
 
-        /// <summary>See SpeckleBrep.</summary>
-        [Newtonsoft.Json.JsonProperty("provenance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Provenance { get; set; }
+        [Newtonsoft.Json.JsonProperty("Periodic", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Periodic { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Rational", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Rational { get; set; }
+
+
+        [Newtonsoft.Json.JsonProperty("Points", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double[] Points { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Weights", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double[] Weights { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Knots", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double[] Knots { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Domain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpeckleInterval Domain { get; set; }
 
         /// <summary>Contains a speckle polyline representation of this curve.</summary>
         [Newtonsoft.Json.JsonProperty("displayValue", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
