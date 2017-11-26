@@ -281,7 +281,7 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleObject>(data);
         }
     }
-    
+
     /// <summary>
     /// Handles some error edge cases.
     /// </summary>
@@ -352,7 +352,7 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleNumber>(data);
         }
 
-        
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
@@ -376,7 +376,7 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleString>(data);
         }
 
-       
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
@@ -592,6 +592,67 @@ namespace SpeckleCore
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     [Serializable]
+    public partial class SpeckleArc : SpeckleObject
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public override string Type { get; set; } = "Arc";
+
+        [Newtonsoft.Json.JsonProperty("radius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? Radius { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("startAngle", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? StartAngle { get; set; }
+
+
+        [Newtonsoft.Json.JsonProperty("endAngle", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? EndAngle { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("angleRadians", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? AngleRadians { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("plane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpecklePlane Plane { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static SpeckleArc FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleArc>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
+    [Serializable]
+    public partial class SpeckleEllipse : SpeckleObject
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public override string Type { get; set; } = "Ellipse";
+
+        [Newtonsoft.Json.JsonProperty("firstRadius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? FirstRadius { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("secondRadius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double? SecondRadius { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("plane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpecklePlane Plane { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static SpeckleEllipse FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleEllipse>(data);
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
+    [Serializable]
     public partial class SpeckleBox : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -643,18 +704,54 @@ namespace SpeckleCore
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     [Serializable]
+    public partial class SpecklePolycurve : SpeckleObject
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public override string Type { get; set; } = "Polycurve";
+
+        [Newtonsoft.Json.JsonProperty("Segments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpeckleObject[] Segments { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static SpecklePolycurve FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpecklePolycurve>(data);
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
+    [Serializable]
     public partial class SpeckleCurve : SpeckleObject
     {
         [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public override string Type { get; set; } = "Curve";
 
-        /// <summary>See SpeckleBrep.</summary>
-        [Newtonsoft.Json.JsonProperty("base64", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Base64 { get; set; }
+        [Newtonsoft.Json.JsonProperty("Degree", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int Degree { get; set; }
 
-        /// <summary>See SpeckleBrep.</summary>
-        [Newtonsoft.Json.JsonProperty("provenance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Provenance { get; set; }
+        [Newtonsoft.Json.JsonProperty("Periodic", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Periodic { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Rational", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Rational { get; set; }
+
+
+        [Newtonsoft.Json.JsonProperty("Points", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double[] Points { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Weights", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double[] Weights { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Knots", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double[] Knots { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Domain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpeckleInterval Domain { get; set; }
 
         /// <summary>Contains a speckle polyline representation of this curve.</summary>
         [Newtonsoft.Json.JsonProperty("displayValue", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -860,12 +957,14 @@ namespace SpeckleCore
 
         public System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
-            : base(message, innerException)
+        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException, SpeckleApiClient parent)
+            : base(statusCode != "413" ? message : "Payload too large. Send less objects!", innerException)
         {
             StatusCode = statusCode;
             Response = response;
             Headers = headers;
+
+            parent?.LogError(this);
         }
 
         public override string ToString()
@@ -879,10 +978,11 @@ namespace SpeckleCore
     {
         public TResult Result { get; private set; }
 
-        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
-            : base(message, statusCode, response, headers, innerException)
+        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException, SpeckleApiClient parent)
+            : base(message, statusCode, response, headers, innerException, parent)
         {
             Result = result;
+            parent?.LogError(this);
         }
     }
 }

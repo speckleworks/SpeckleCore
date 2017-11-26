@@ -25,7 +25,7 @@ namespace SpeckleCore
     public delegate void SpeckleEvent(object source, SpeckleEventArgs e);
 
     [Serializable]
-    public partial class SpeckleApiClient : BaseSpeckleApiClient, ISerializable
+    public partial class SpeckleApiClient : ISerializable
     {
         public string StreamId { get; private set; }
         public string ClientId { get; private set; }
@@ -46,7 +46,6 @@ namespace SpeckleCore
         public event SpeckleEvent OnError;
         public event SpeckleEvent OnReady;
         public event SpeckleEvent OnWsMessage;
-
         public event SpeckleEvent OnLogData;
 
         public Converter Converter { get; set; }
@@ -65,6 +64,15 @@ namespace SpeckleCore
 
         public SpeckleApiClient(string baseUrl, Converter converter, bool isPersistent = false) : base()
         {
+            _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
+            {
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
+                UpdateJsonSerializerSettings(settings);
+                return settings;
+            });
+
+            UseGzip = true;
+
             BaseUrl = baseUrl;
             IsPersistent = isPersistent;
             Converter = converter;
@@ -86,9 +94,9 @@ namespace SpeckleCore
                 User = (await this.UserGetProfileAsync()).User;
 
             }
-            catch
+            catch (SwaggerException e)
             {
-                throw new Exception("Login error. Auth token is invalid.");
+                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = e.StatusCode, EventData = e.Message });
             }
 
             try
@@ -97,7 +105,10 @@ namespace SpeckleCore
                 await SetupClient(documentName, documentType, documentGuid);
                 SetupWebsocket();
             }
-            catch { throw new Exception("Could not get stream."); }
+            catch (SwaggerException e)
+            {
+                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = e.StatusCode, EventData = e.Message });
+            }
 
 
         }
@@ -114,9 +125,10 @@ namespace SpeckleCore
                 AuthToken = authToken;
                 User = (await this.UserGetProfileAsync()).User;
             }
-            catch
+            catch (SwaggerException e)
             {
-                throw new Exception("Login error. Auth token is invalid.");
+                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = "error", EventData = "Could not log in." });
+                return null;
             }
 
             try
@@ -129,9 +141,11 @@ namespace SpeckleCore
 
                 return Stream.StreamId;
             }
-            catch
+            catch (SwaggerException e)
             {
-                throw new Exception("Failed to create a new stream.");
+                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = e.StatusCode, EventData = e.Message });
+
+                return null;
             }
 
         }
@@ -166,7 +180,7 @@ namespace SpeckleCore
                 if (StreamId == null || ClientId == null || WsConnected == false) { IsReady.Start(); return; }
                 OnReady?.Invoke(this, new SpeckleEventArgs() { EventName = "client-ready" });
                 IsConnected = true;
-                LogEvent("Client is reay!");
+                LogEvent("Client is ready!");
             };
         }
 
@@ -238,8 +252,22 @@ namespace SpeckleCore
             WebsocketClient.Send(JsonConvert.SerializeObject(eventData));
         }
 
+        public void LogError(SwaggerException err)
+        {
+            OnError?.Invoke(this, new SpeckleEventArgs() { EventName = err.StatusCode, EventData = err.Message, EventObject = err });
+        }
+
         protected SpeckleApiClient(SerializationInfo info, StreamingContext context)
         {
+            _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
+            {
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
+                UpdateJsonSerializerSettings(settings);
+                return settings;
+            });
+
+            UseGzip = true;
+
             BaseUrl = info.GetString("BaseUrl");
             StreamId = info.GetString("StreamId");
             Role = (ClientRole)info.GetInt32("Role");
@@ -273,12 +301,12 @@ namespace SpeckleCore
             {
                 var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = false } };
                 ClientUpdateAsync(payload, ClientId);
-                WebsocketClient.Close();
+                WebsocketClient?.Close();
                 return;
             }
 
             this.ClientDeleteAsync(ClientId);
-            WebsocketClient.Close();
+            WebsocketClient?.Close();
         }
     }
 }
