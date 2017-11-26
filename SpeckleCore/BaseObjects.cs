@@ -957,12 +957,14 @@ namespace SpeckleCore
 
         public System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
-            : base(message, innerException)
+        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException, SpeckleApiClient parent)
+            : base(statusCode != "413" ? message : "Payload too large. Send less objects!", innerException)
         {
             StatusCode = statusCode;
             Response = response;
             Headers = headers;
+
+            parent?.LogError(this);
         }
 
         public override string ToString()
@@ -976,10 +978,11 @@ namespace SpeckleCore
     {
         public TResult Result { get; private set; }
 
-        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
-            : base(message, statusCode, response, headers, innerException)
+        public SwaggerException(string message, string statusCode, string response, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException, SpeckleApiClient parent)
+            : base(message, statusCode, response, headers, innerException, parent)
         {
             Result = result;
+            parent?.LogError(this);
         }
     }
 }
