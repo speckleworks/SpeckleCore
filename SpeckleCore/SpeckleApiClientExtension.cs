@@ -24,6 +24,7 @@ namespace SpeckleCore
 
     public delegate void SpeckleEvent(object source, SpeckleEventArgs e);
 
+    [Serializable]
     public partial class SpeckleApiClient : ISerializable
     {
         public string StreamId { get; private set; }
@@ -258,6 +259,15 @@ namespace SpeckleCore
 
         protected SpeckleApiClient(SerializationInfo info, StreamingContext context)
         {
+            _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
+            {
+                var settings = new Newtonsoft.Json.JsonSerializerSettings();
+                UpdateJsonSerializerSettings(settings);
+                return settings;
+            });
+
+            UseGzip = true;
+
             BaseUrl = info.GetString("BaseUrl");
             StreamId = info.GetString("StreamId");
             Role = (ClientRole)info.GetInt32("Role");

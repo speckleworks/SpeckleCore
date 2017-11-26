@@ -11,7 +11,7 @@ namespace SpeckleCore
 {
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "11.3.3.0")]
-    [Serializable]
+ 
     public partial class SpeckleApiClient
     {
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
@@ -55,7 +55,6 @@ namespace SpeckleCore
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
 
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
-
 
         partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url)
         {
