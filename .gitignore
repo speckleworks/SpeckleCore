@@ -1,3 +1,4 @@
-SpeckleCore/.vs/
-SpeckleCore/obj/
-SpeckleCore/packages/
+.vs/
+obj/
+packages/
+bin/
