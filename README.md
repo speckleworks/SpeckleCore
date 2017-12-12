@@ -1,4 +1,4 @@
 # SpeckleCore
-[![Build status](https://ci.appveyor.com/api/projects/status/h4j8ab3wwodxdcn2?svg=true)](https://ci.appveyor.com/project/fraguada/specklecore)
+[![Build status](https://ci.appveyor.com/api/projects/status/k0n0853v26f1thl4/branch/master?svg=true)](https://ci.appveyor.com/project/SpeckleWorks/specklecore/branch/master)
 
 > TODO
