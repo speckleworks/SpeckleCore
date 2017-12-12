@@ -271,6 +271,41 @@ namespace SpeckleCore
         }
     }
 
+    public partial class SpeckleArc
+    {
+        public SpeckleArc() { }
+
+        public SpeckleArc(SpecklePlane plane, double radius, double startAngle, double endAngle, double angleRadians, string applicationId = null, Dictionary<string, object> properties = null)
+        {
+            this.Plane = plane;
+            this.Radius = radius;
+            this.StartAngle = startAngle;
+            this.EndAngle = endAngle;
+            this.AngleRadians = angleRadians;
+            this.ApplicationId = applicationId;
+            this.Properties = properties;
+
+            SetHashes(plane.GeometryHash + radius + startAngle + endAngle);
+        }
+    }
+
+    public partial class SpeckleEllipse
+    {
+        public SpeckleEllipse() { }
+
+        public SpeckleEllipse(SpecklePlane plane, double radius1, double radius2, string applicationId = null, Dictionary<string, object> properties = null)
+        {
+            this.Plane = plane;
+            this.FirstRadius = radius1;
+            this.SecondRadius = radius2;
+            this.ApplicationId = applicationId;
+            this.Properties = properties;
+
+            SetHashes(Plane.GeometryHash + radius1 + radius2);
+        }
+
+    }
+
     public partial class SpeckleBox
     {
         public SpeckleBox() { }
@@ -315,10 +350,8 @@ namespace SpeckleCore
     {
         public SpeckleCurve() { }
 
-        public SpeckleCurve(string base64, string provenance, SpecklePolyline poly, string applicationId = null, Dictionary<string, object> properties = null)
+        public SpeckleCurve(SpecklePolyline poly, string applicationId = null, Dictionary<string, object> properties = null)
         {
-            this.Base64 = base64;
-            this.Provenance = provenance;
             this.DisplayValue = poly;
             this.ApplicationId = applicationId;
             this.Properties = properties;
@@ -387,7 +420,7 @@ namespace SpeckleCore
             this.ApplicationId = applicationId;
             this.Properties = properties;
 
-            SetHashes(this.Text + this.FaceName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash);
+            SetHashes(this.Text + this.FaceName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash + this.Location.GeometryHash);
         }
     }
 

@@ -11,15 +11,15 @@ namespace SpeckleCore
 {
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "11.3.3.0")]
-    [Serializable]
-    public partial class BaseSpeckleApiClient
+ 
+    public partial class SpeckleApiClient
     {
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
         private string _baseUrl = "http://localhost:8080/api";
         private string _authToken = "";
         private bool _UseGzip = true;
 
-        public BaseSpeckleApiClient(bool useGzip = true)
+        public SpeckleApiClient(bool useGzip = true)
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
             {
@@ -56,16 +56,13 @@ namespace SpeckleCore
 
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-
         partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url)
         {
             if (AuthToken != "")
-                request.Headers.Add("Authorization", AuthToken);
+                request.Headers.Add("Authorization", AuthToken);   
 
             if (UseGzip && request.Method != HttpMethod.Get)
-            {
-               request.Content = new GzipContent(request.Content);
-            }
+                request.Content = new GzipContent(request.Content);
         }
 
         private HttpClient GetHttpClient()
@@ -140,7 +137,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -154,15 +151,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Failed to register a new user.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Failed to register a new user.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseAccountRegister);
@@ -244,7 +241,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -258,15 +255,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseAccountLogin);
@@ -346,7 +343,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -360,9 +357,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -375,15 +372,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unautorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unautorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseAccountStreams);
@@ -462,7 +459,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -476,9 +473,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -491,15 +488,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseAccountClients);
@@ -577,7 +574,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -591,9 +588,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -606,15 +603,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseAccountProfile);
@@ -695,7 +692,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -709,15 +706,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -798,7 +795,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -812,9 +809,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -827,15 +824,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseClientCreate);
@@ -921,7 +918,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -935,9 +932,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -950,15 +947,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseClientGet);
@@ -1046,7 +1043,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1060,9 +1057,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -1075,15 +1072,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -1168,7 +1165,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1182,9 +1179,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Computer is confused.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Computer is confused.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -1197,9 +1194,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Computer says you\'re not authorised.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Computer says you\'re not authorised.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "404")
@@ -1212,15 +1209,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Computer can\'t find shit.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Computer can\'t find shit.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -1306,7 +1303,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1320,9 +1317,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -1335,15 +1332,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseStreamCreate);
@@ -1428,7 +1425,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1442,9 +1439,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "404")
@@ -1457,15 +1454,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Stream not found.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Stream not found.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseStreamGet);
@@ -1554,7 +1551,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1568,9 +1565,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Status 401", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Status 401", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "404")
@@ -1583,15 +1580,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Status 404", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Status 404", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseStreamUpdate);
@@ -1677,7 +1674,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1691,9 +1688,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -1706,15 +1703,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -1796,7 +1793,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1810,9 +1807,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -1825,15 +1822,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseStreamNameGet);
@@ -1919,7 +1916,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -1933,9 +1930,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -1948,15 +1945,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -2038,7 +2035,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2052,9 +2049,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2067,15 +2064,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseStreamLayersGet);
@@ -2161,7 +2158,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2175,9 +2172,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2190,15 +2187,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -2283,7 +2280,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2297,9 +2294,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2312,15 +2309,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -2405,7 +2402,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2419,9 +2416,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2434,15 +2431,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -2524,7 +2521,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2538,9 +2535,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2553,15 +2550,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -2641,7 +2638,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2655,9 +2652,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2670,15 +2667,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseSingleLayer);
@@ -2761,7 +2758,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2775,9 +2772,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2790,15 +2787,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -2881,7 +2878,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -2895,9 +2892,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -2910,15 +2907,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -2998,7 +2995,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3012,9 +3009,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3027,15 +3024,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -3118,7 +3115,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3132,9 +3129,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3147,15 +3144,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseGetObjects);
@@ -3238,7 +3235,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3252,9 +3249,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3267,15 +3264,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponsePostObjects);
@@ -3358,7 +3355,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3372,9 +3369,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3387,15 +3384,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponsePostObjects);
@@ -3477,7 +3474,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3491,9 +3488,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3506,15 +3503,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorized whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -3591,7 +3588,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3605,9 +3602,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3620,15 +3617,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseGetObjects);
@@ -3705,7 +3702,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3719,9 +3716,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3734,15 +3731,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponsePostObjects);
@@ -3819,7 +3816,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3833,9 +3830,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3848,15 +3845,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponsePostObjects);
@@ -3930,7 +3927,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -3944,9 +3941,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -3959,15 +3956,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -4047,7 +4044,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4061,9 +4058,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4076,15 +4073,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -4162,7 +4159,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4176,9 +4173,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4191,15 +4188,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseStreamClone);
@@ -4281,7 +4278,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4295,9 +4292,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4310,15 +4307,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseStreamDiff);
@@ -4391,7 +4388,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4405,9 +4402,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4420,15 +4417,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponsePostObject);
@@ -4505,7 +4502,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4519,9 +4516,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4534,21 +4531,21 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "404")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("Status 404", status_, responseData_, headers_, null);
+                            throw new SwaggerException("Status 404", status_, responseData_, headers_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseObjectGet);
@@ -4625,7 +4622,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4639,9 +4636,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4654,15 +4651,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -4736,7 +4733,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4750,9 +4747,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4765,15 +4762,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseBase);
@@ -4845,7 +4842,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4859,9 +4856,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4874,15 +4871,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponseGetObjects);
@@ -4957,7 +4954,7 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
                         }
                         else
@@ -4971,9 +4968,9 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Fail whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ == "401")
@@ -4986,15 +4983,15 @@ namespace SpeckleCore
                             }
                             catch (System.Exception exception)
                             {
-                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new SwaggerException("Could not deserialize the response body.", status_, responseData_, headers_, exception, this);
                             }
-                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null);
+                            throw new SwaggerException<ResponseBase>("Unauthorised whale.", status_, responseData_, headers_, result_, null, this);
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new SwaggerException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null, this);
                         }
 
                         return default(ResponsePostObjects);
