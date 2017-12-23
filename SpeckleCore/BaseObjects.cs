@@ -849,9 +849,9 @@ namespace SpeckleCore
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleBrep FromJson(string data)
+        public static SpeckleExtrusion FromJson(string data)
         {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleBrep>(data);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleExtrusion>(data);
         }
     }
 
