@@ -282,6 +282,31 @@ namespace SpeckleCore
         }
     }
 
+    /// <summary></summary>
+    [Serializable]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
+    public partial class SpeckleAbstract : SpeckleObject
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public override string Type { get; set; } = "Abstract";
+
+        [Newtonsoft.Json.JsonProperty("_type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string _Type { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("base64", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Base64 { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static SpeckleAbstract FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleAbstract>(data);
+        }
+    }
+
     /// <summary>
     /// Handles some error edge cases.
     /// </summary>

@@ -156,19 +156,23 @@ namespace SpeckleCore
 
         private void WriteValue(JsonWriter writer, object value)
         {
-            var t = JToken.FromObject(value);
-            switch (t.Type)
+            if (value != null)
             {
-                case JTokenType.Object:
-                    this.WriteObject(writer, value);
-                    break;
-                case JTokenType.Array:
-                    this.WriteArray(writer, value);
-                    break;
-                default:
-                    writer.WriteValue(value);
-                    break;
+                var t = JToken.FromObject(value);
+                switch (t.Type)
+                {
+                    case JTokenType.Object:
+                        this.WriteObject(writer, value);
+                        break;
+                    case JTokenType.Array:
+                        this.WriteArray(writer, value);
+                        break;
+                    default:
+                        writer.WriteValue(value);
+                        break;
+                }
             }
+            else writer.WriteValue("null");
         }
 
         private void WriteObject(JsonWriter writer, object value)
