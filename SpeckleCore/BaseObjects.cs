@@ -828,6 +828,33 @@ namespace SpeckleCore
         }
     }
 
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
+    [Serializable]
+    public partial class SpeckleExtrusion : SpeckleObject
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public override string Type { get; set; } = "Extrusion";
+
+        [Newtonsoft.Json.JsonProperty("Length", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double Length { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Profile", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpeckleCurve Profile { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("Capped", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool Capped { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static SpeckleBrep FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleBrep>(data);
+        }
+    }
+
     /// <summary>it's a timestamp XD</summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     [Serializable]
