@@ -45,20 +45,46 @@ namespace SpeckleCore
             }
         }
 
+        /// <summary>
+        /// Tries to cast an object back to its native type if the assembly it belongs to is present.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static object FromAbstract(SpeckleAbstract obj)
+        {
+            var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == obj._Assembly);
+            if (assembly == null)
+                return obj;
+            else
+                return Converter.getObjFromString(obj.Base64);
+        }
 
+        /// <summary>
+        /// Casts a POCO to a SpeckleAbstract object.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="recursionDepth"></param>
+        /// <returns></returns>
         public static SpeckleAbstract ToAbstract(object source, int recursionDepth = 0)
         {
             SpeckleAbstract result = new SpeckleAbstract();
-            result._Type = source.GetType().AssemblyQualifiedName;
+            result._Type = source.GetType().Name;
+            result._Assembly = source.GetType().Assembly.FullName;
 
-            try
+            // what's up with this?
+            // sub objects do not need base64 values, since they're  globbed up in their parent.
+            // this means that sub objects will NOT be easy to recreate by themselves, but this saves quite a bit of kbs.
+            if (recursionDepth == 0)
             {
-                if (source.GetType().IsSerializable)
-                    result.Base64 = Converter.getBase64(source);
-            }
-            catch
-            {
-                result.Base64 = "Object not serialisable.";
+                try
+                {
+                    if (source.GetType().IsSerializable)
+                        result.Base64 = Converter.getBase64(source);
+                }
+                catch
+                {
+                    result.Base64 = "Object not serialisable.";
+                }
             }
 
             result.Properties = Converter.ObjectToDictionary(source);
@@ -95,7 +121,7 @@ namespace SpeckleCore
                         continue;
                     }
 
-                    if( value is Enum)
+                    if (value is Enum)
                     {
                         dict[prop.Name] = value.ToString();
                         continue;
