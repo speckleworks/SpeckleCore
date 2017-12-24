@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,8 +66,14 @@ namespace SpeckleCore
         /// <param name="source"></param>
         /// <param name="recursionDepth"></param>
         /// <returns></returns>
-        public static SpeckleAbstract ToAbstract(object source, int recursionDepth = 0)
+        public static SpeckleAbstract ToAbstract(object source, int recursionDepth = 0, HashSet<int> traversed = null)
         {
+            if (traversed == null) traversed = new HashSet<int>();
+
+            bool added = traversed.Add(source.GetHashCode());
+
+            if (!added) return new SpeckleAbstract() { _Type = "added before." };
+
             SpeckleAbstract result = new SpeckleAbstract();
             result._Type = source.GetType().Name;
             result._Assembly = source.GetType().Assembly.FullName;
@@ -87,33 +94,27 @@ namespace SpeckleCore
                 }
             }
 
-            result.Properties = Converter.ObjectToDictionary(source);
+            result.Properties = Converter.ObjectToDictionary(source, recursionDepth, traversed);
 
             result.SetHashes(result);
 
             return result;
         }
 
-        public static Dictionary<string, object> ObjectToDictionary(object source, int recursionDepth = 0)
+        public static Dictionary<string, object> ObjectToDictionary(object source, int recursionDepth = 0, HashSet<int> traversed = null)
         {
             if (source == null) return null;
-            if (recursionDepth > 12) return null;
+            if (recursionDepth > 2) return null;
 
             Dictionary<string, object> dict = new Dictionary<string, object>();
 
-            //dict["__type"] = source.GetType().AssemblyQualifiedName;
-
-            var properties = source.GetType().GetProperties();
+            var properties = source.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
             foreach (var prop in properties)
             {
-                //Converter.AddValueToDictionary(dict, prop.Name, prop.GetValue(source));
                 try
                 {
                     object value = prop.GetValue(source);
-
-                    if (prop.GetGetMethod().IsStatic)
-                        continue;
 
                     if (value == null)
                     {
@@ -132,61 +133,35 @@ namespace SpeckleCore
                     if (valueType.IsPrimitive || valueType == typeof(string))
                     {
                         dict[prop.Name] = value;
+                        continue;
                     }
-                    else if (valueType.IsEnum)
+
+                    if (value is IEnumerable<object>)
                     {
                         var myList = new List<object>();
-
-                        var i = 0;
                         foreach (object o in (System.Collections.IEnumerable)value)
                         {
-                            myList.Add(ObjectToDictionary(o, recursionDepth + 1));
-                            i++;
+                            if (o != null)
+                            {
+                                if (o.GetType().IsPrimitive || o.GetType() == typeof(string))
+                                    myList.Add(o);
+                                else
+                                    myList.Add(Converter.ToAbstract(o, recursionDepth + 1, traversed));
+                            }
                         }
                         dict[prop.Name] = myList;
+                        continue;
                     }
-                    else
-                    {
-                        //dict[prop.Name] = ObjectToDictionary(value, recursionDepth + 1);
-                        if (!value.GetType().AssemblyQualifiedName.Contains("System"))
-                            dict[prop.Name] = Converter.ToAbstract(value, recursionDepth + 1);
-                    }
+
+                    if (!value.GetType().AssemblyQualifiedName.Contains("System"))
+                        dict[prop.Name] = Converter.ToAbstract(value, recursionDepth + 1, traversed);
+
 
                 }
                 catch { dict[prop.Name] = "error"; }
             }
 
             return dict;
-        }
-
-        private static void AddValueToDictionary(Dictionary<string, object> dict, string key, object value)
-        {
-            try
-            {
-                if (value == null)
-                {
-                    dict[key] = "null";
-                    return;
-                }
-
-                Type valueType = value.GetType();
-
-                if (valueType.IsPrimitive || valueType == typeof(string))
-                {
-                    dict[key] = value;
-                    return;
-                }
-
-                if (valueType.IsEnum)
-                {
-                    // ?Do what
-                    dict[key] = "ENUM TODODODODOD";
-                    return;
-                }
-
-                dict[key] = Converter.ToAbstract(value);
-            }
-            catch { }
         }
     }
 }
