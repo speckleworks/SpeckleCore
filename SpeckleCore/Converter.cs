@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,6 +47,16 @@ namespace SpeckleCore
             }
         }
 
+        public static string bytesToBase64(byte[] arr)
+        {
+            return Convert.ToBase64String(arr);
+        }
+
+        public static byte[] base64ToBytes(string str)
+        {
+            return Convert.FromBase64String(str);
+        }
+
         /// <summary>
         /// Tries to cast an object back to its native type if the assembly it belongs to is present.
         /// </summary>
@@ -54,7 +65,7 @@ namespace SpeckleCore
         public static object FromAbstract(SpeckleAbstract obj)
         {
             var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == obj._Assembly);
-            if (assembly == null)
+            if (assembly == null || obj.Base64.Contains("Object not serialisable"))
                 return obj;
             else
                 return Converter.getObjFromString(obj.Base64);
@@ -85,12 +96,11 @@ namespace SpeckleCore
             {
                 try
                 {
-                    if (source.GetType().IsSerializable)
-                        result.Base64 = Converter.getBase64(source);
+                    result.Base64 = Converter.getBase64(source);
                 }
-                catch
+                catch(Exception err)
                 {
-                    result.Base64 = "Object not serialisable.";
+                    result.Base64 = "Object not serialisable: " + err.Message;
                 }
             }
 
