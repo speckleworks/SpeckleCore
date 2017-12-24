@@ -65,7 +65,7 @@ namespace SpeckleCore
         public static object FromAbstract(SpeckleAbstract obj)
         {
             var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == obj._Assembly);
-            if (assembly == null || obj.Base64.Contains("Object not serialisable"))
+            if (assembly == null || obj.Base64 == null || obj.Base64.Contains("Object not serialisable"))
                 return obj;
             else
                 return Converter.getObjFromString(obj.Base64);
