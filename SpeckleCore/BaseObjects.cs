@@ -296,6 +296,9 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("_assembly", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string _Assembly { get; set; }
 
+        [Newtonsoft.Json.JsonProperty("_ref", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string _Ref { get; set; }
+
         [Newtonsoft.Json.JsonProperty("base64", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Base64 { get; set; }
 

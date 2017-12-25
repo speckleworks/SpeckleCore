@@ -118,11 +118,14 @@ namespace SpeckleCore
         /// <param name="source"></param>
         /// <param name="recursionDepth"></param>
         /// <returns></returns>
-        public static SpeckleObject ToAbstract(object source, int recursionDepth = 0, HashSet<int> traversed = null)
+        public static SpeckleObject ToAbstract(object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "")
         {
-            if (traversed == null) traversed = new HashSet<int>();
-            if (!traversed.Add(source.GetHashCode()))
-                return new SpeckleAbstract() { _Type = "added before." }; // todo: add reference to field yo!
+            if (traversed == null) traversed = new Dictionary<int, string>();
+
+            if (traversed.ContainsKey(source.GetHashCode()))
+                return new SpeckleAbstract() { _Type = "ref", _Ref = traversed[source.GetHashCode()] }; // todo: add reference to field yo!
+            else
+                traversed.Add(source.GetHashCode(), path);
 
             var spk = Converter.TryGetSpeckleObject(source);
             if (spk != null) return spk;
@@ -131,11 +134,7 @@ namespace SpeckleCore
             result._Type = source.GetType().Name;
             result._Assembly = source.GetType().Assembly.FullName;
 
-            // what's up with this?
-            // sub objects do not need base64 values, since they're globbed up in their parent.
-            // this means that sub objects will NOT be easy to recreate by themselves, but this saves quite a bit of kbs.
-            //if (recursionDepth == 0)
-            if(true)
+            if (recursionDepth == 0)
             {
                 try
                 {
@@ -147,14 +146,13 @@ namespace SpeckleCore
                 }
             }
 
-            result.Properties = Converter.ObjectToDictionary(source, recursionDepth, traversed);
-
+            result.Properties = Converter.ObjectToDictionary(source, recursionDepth, traversed, path == "" ? "root/" : path);
             result.SetHashes(result);
 
             return result;
         }
 
-        public static Dictionary<string, object> ObjectToDictionary(object source, int recursionDepth = 0, HashSet<int> traversed = null)
+        public static Dictionary<string, object> ObjectToDictionary(object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "")
         {
             if (source == null) return null;
             if (recursionDepth > 4) return null;
@@ -183,7 +181,7 @@ namespace SpeckleCore
 
                     Type valueType = value.GetType();
 
-                    if (valueType.IsPrimitive || valueType == typeof(string))
+                    if ((valueType.IsPrimitive || valueType == typeof(string)) && (valueType != typeof(IntPtr) || valueType != typeof(UIntPtr)))
                     {
                         dict[prop.Name] = value;
                         continue;
@@ -191,13 +189,27 @@ namespace SpeckleCore
 
                     if (value is IDictionary<string, object>)
                     {
-                        dict[prop.Name] = "This  is a dictionary. TODO";
+                        var vDict = value as Dictionary<string, object>;
+                        if (vDict == null) continue;
+                        var nDict = new Dictionary<string, object>();
+                        foreach (string key in vDict.Keys)
+                        {
+                            if (vDict[key] != null)
+                            {
+                                if (vDict[key].GetType().IsPrimitive || vDict[key].GetType() == typeof(string))
+                                    nDict.Add(key, vDict[key]);
+                                else
+                                    nDict.Add(key, Converter.ToAbstract(vDict[key], recursionDepth + 1, traversed, path + "/" + prop.Name));
+                            }
+                        }
+                        dict[prop.Name] = nDict;
                         continue;
                     }
 
                     if (value is IEnumerable<object>)
                     {
                         var myList = new List<object>();
+                        int i = 0;
                         foreach (object o in (System.Collections.IEnumerable)value)
                         {
                             if (o != null)
@@ -205,15 +217,16 @@ namespace SpeckleCore
                                 if (o.GetType().IsPrimitive || o.GetType() == typeof(string))
                                     myList.Add(o);
                                 else
-                                    myList.Add(Converter.ToAbstract(o, recursionDepth + 1, traversed));
+                                    myList.Add(Converter.ToAbstract(o, recursionDepth + 1, traversed, path + "/" + prop.Name + "[" + i + "]"));
                             }
+                            i++;
                         }
                         dict[prop.Name] = myList;
                         continue;
                     }
 
                     if (!value.GetType().AssemblyQualifiedName.Contains("System"))
-                        dict[prop.Name] = Converter.ToAbstract(value, recursionDepth + 1, traversed);
+                        dict[prop.Name] = Converter.ToAbstract(value, recursionDepth + 1, traversed, path + "/" + prop.Name);
 
 
                 }
