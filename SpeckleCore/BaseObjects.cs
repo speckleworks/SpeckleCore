@@ -299,6 +299,11 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("base64", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Base64 { get; set; }
 
+        public override string ToString()
+        {
+            return "SpeckleCore.SpeckleAbstract: " + _Type + " (" + _Assembly + ")"; 
+        }
+
         public string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
