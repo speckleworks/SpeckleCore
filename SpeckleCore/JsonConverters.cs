@@ -253,9 +253,14 @@ namespace SpeckleCore
         case JTokenType.String:
           return myToken.ToObject( typeof( string ) );
         case JTokenType.Array:
-          return myToken.ToObject(typeof(IEnumerable<object>));
+          List<object> arr = ( List<object> ) myToken.ToObject( typeof( List<object> ) );
+          for ( int i = 0; i < arr.Count; i++ )
+          {
+            if ( arr[ i ] is JObject ) arr[ i ] = parseObject( arr[ i ] as JObject );
+          }
+          return arr;
         default:
-          return "Problems. Is this an array?";
+          return "Problem deserialising.";
       }
     }
 

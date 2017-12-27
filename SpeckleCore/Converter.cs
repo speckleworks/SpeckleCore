@@ -239,14 +239,14 @@ namespace SpeckleCore
       }
       if ( original is Dictionary<string, object> )
       {
-        Dictionary<string, object> myObj = ( Dictionary<string, object> ) original;
-        foreach ( string key in myObj.Keys )
-          Converter.ResolveRefs( myObj[ key ], root, currentPath + "/{" + key + "}" );
+        Dictionary<string, object> myDict = ( Dictionary<string, object> ) original;
+        foreach ( string key in myDict.Keys )
+          Converter.ResolveRefs( myDict[ key ], root, currentPath + "/{" + key + "}" );
       }
       if ( original is List<object> )
       {
-        List<object> myObj = ( List<object> ) original; int index = 0;
-        foreach ( object obj in myObj )
+        List<object> myList = ( List<object> ) original; int index = 0;
+        foreach ( object obj in myList )
           Converter.ResolveRefs( obj, root, currentPath + "/[" + index++ + "]" );
       }
     }
@@ -289,13 +289,12 @@ namespace SpeckleCore
 
         if ( s.Contains( "[" ) ) // special handler for lists
         {
-          propTarget = ( ( IEnumerable<object> ) propTarget ).ToList()[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
+          propTarget = ( ( IList<object> ) propTarget )[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
           continue;
         }
 
         propTarget = propTarget.GetType().GetProperty( s ).GetValue( target );
       }
-      var dddd = propTarget;
 
       var last = targetAddress.Last();
 
@@ -306,57 +305,12 @@ namespace SpeckleCore
       }
       if ( last.Contains( '[' ) )
       {
-        ( ( IEnumerable<object> ) propTarget ).ToList()[ int.Parse( last.Substring( 1, last.Length - 2 ) ) ] = propSource;
+        ( ( IList<object> ) propTarget )[ int.Parse( last.Substring( 1, last.Length - 2 ) ) ] = propSource;
         return;
       }
 
       PropertyInfo toSet = propTarget.GetType().GetProperty( last );
       toSet.SetValue( propTarget, propSource, null );
-    }
-
-    private static void SetRefsxxx( SpeckleAbstract origin, object target, string currentPath )
-    {
-
-      foreach ( string propName in origin.Properties.Keys )
-      {
-        currentPath += "/" + propName; // this is the current path that i am at
-        if ( origin.Properties[ propName ] is SpeckleAbstract && ( ( SpeckleAbstract ) origin.Properties[ propName ] )._Type == "ref" )
-        {
-          //SET PROP!
-          //GET ref from target/propX/propA _Ref
-          var refPath = ( ( SpeckleAbstract ) origin.Properties[ propName ] )._Ref;
-          //SET ref to currentPath
-          continue;
-        }
-        if ( origin.Properties[ propName ] is Dictionary<string, object> )
-        {
-          foreach ( string dictKey in ( ( Dictionary<string, object> ) origin.Properties[ propName ] ).Keys )
-          {
-            currentPath += "{" + dictKey + "}";
-          }
-          continue;
-        }
-        if ( origin.Properties[ propName ] is List<object> )
-        {
-          continue;
-        }
-      }
-    }
-
-    public static object GetPropertyFromObject( string propertyName, object target )
-    {
-      if ( propertyName.Contains( "[" ) )
-      {
-        // list
-      }
-      if ( propertyName.Contains( "{" ) )
-      {
-        var dictNames = propertyName.Split( '{' );
-        var dict = target.GetType().GetProperty( dictNames[ 0 ] ).GetValue( target ) as Dictionary<string, object>;
-        return dict[ dictNames[ 1 ].TrimEnd( new char[ ] { '}' } ) ];
-        // dict
-      }
-      return target.GetType().GetProperty( propertyName ).GetValue( target );
     }
 
     /// <summary>
