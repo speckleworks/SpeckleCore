@@ -60,7 +60,7 @@ namespace SpeckleCore
     }
 
     // https://stackoverflow.com/a/299526/3446736
-    public static IEnumerable<MethodInfo> GetExtensionMethods( Assembly assembly, Type extendedType, string methodName )
+    private static IEnumerable<MethodInfo> GetExtensionMethods( Assembly assembly, Type extendedType, string methodName )
     {
       var query = from type in assembly.GetTypes()
                   where type.IsSealed && !type.IsGenericType && !type.IsNested
@@ -74,10 +74,10 @@ namespace SpeckleCore
     }
 
     /// <summary>
-    /// Will look for an extension method called "ToSpeckle" for this object type in all loaded assemblies (named "Speckle*Converter*"). If found, it will invoke it and return the SpeckleObject. If it can't find it, returns null.
+    /// Will look for an extension method called "ToSpeckle" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
     /// </summary>
-    /// <param name="o"></param>
-    /// <returns></returns>
+    /// <param name="o">The object.</param>
+    /// <returns>Null or a speckle object.</returns>
     public static SpeckleObject TryGetSpeckleObject( object o )
     {
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
@@ -98,6 +98,11 @@ namespace SpeckleCore
       return null;
     }
 
+    /// <summary>
+    /// Will look for an extension method called "ToNative" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
+    /// </summary>
+    /// <param name="o">The object.</param>
+    /// <returns>Null or a speckle object.</returns>
     public static object TryGetNative( SpeckleObject o )
     {
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
@@ -115,7 +120,7 @@ namespace SpeckleCore
       if ( result != null )
         return result;
 
-      return o;
+      return null;
     }
 
     /// <summary>
@@ -165,11 +170,15 @@ namespace SpeckleCore
         // handles both hashsets and lists or whatevers
         if ( value is IEnumerable<object> )
         {
-          var mySubList = Activator.CreateInstance( prop.PropertyType );
-          foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
-            mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
+          try
+          {
+            var mySubList = Activator.CreateInstance( prop.PropertyType );
+            foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
+              mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
 
-          value = mySubList;
+            value = mySubList;
+          }
+          catch { }
         }
 
         // guids are a pain
@@ -189,19 +198,16 @@ namespace SpeckleCore
             }
             catch { }
           }
-
       }
 
       //  we done yet?
       if ( root == myObject )
-      {
         Converter.ResolveRefs( obj, myObject, "root" );
-        //Converter.SetReferences( obj, root, root );
-      }
+      
       return myObject;
     }
 
-    public static object ReadValue( object myObject, object root = null )
+    private static object ReadValue( object myObject, object root = null )
     {
       if ( myObject == null ) return null;
 
@@ -222,7 +228,6 @@ namespace SpeckleCore
 
       return null;
     }
-
 
     private static void ResolveRefs( object original, object root, string currentPath )
     {
@@ -273,7 +278,6 @@ namespace SpeckleCore
 
         propSource = propSource.GetType().GetProperty( s ).GetValue( target );
       }
-      var ccc = propSource;
 
       object propTarget = target;
       for ( int i = 1; i < targetAddress.Length - 1; i++ )
@@ -356,15 +360,14 @@ namespace SpeckleCore
           var copy = e;
         }
       }
-
-
+      
       result.Properties = dict;
       result.SetHashes( result );
 
       return result;
     }
 
-    public static object WriteValue( object myObject, int recursionDepth, Dictionary<int, string> traversed = null, string path = "" )
+    private static object WriteValue( object myObject, int recursionDepth, Dictionary<int, string> traversed = null, string path = "" )
     {
       if ( myObject == null || recursionDepth > 8 ) return null;
       if ( myObject is Enum ) return Convert.ChangeType( ( Enum ) myObject, ( ( Enum ) myObject ).GetTypeCode() );

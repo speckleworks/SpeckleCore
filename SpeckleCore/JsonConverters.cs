@@ -190,7 +190,13 @@ namespace SpeckleCore
       }
       else
       {
-        writer.WriteRawValue( ( ( SpeckleObject ) value ).ToJson() );
+        if ( value is IntPtr )
+        {
+          value = new SpeckleString( ( ( IntPtr ) value ).ToString() );
+          writer.WriteRawValue( ( ( SpeckleObject ) value ).ToJson() );
+        }
+        else
+          writer.WriteRawValue( ( ( SpeckleObject ) value ).ToJson() );
       }
     }
 
