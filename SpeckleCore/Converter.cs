@@ -401,7 +401,7 @@ namespace SpeckleCore
         {
           var value = prop.GetValue( source );
           if ( value == null )
-            continue; 
+            continue;
           dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
         }
         catch ( Exception e )
@@ -425,7 +425,7 @@ namespace SpeckleCore
       }
 
       result.Properties = dict;
-      result.SetHashes( result );
+      result.SetHashes( result.Properties );
 
       return result;
     }
@@ -441,11 +441,11 @@ namespace SpeckleCore
       if ( myObject is Guid )
         return myObject.ToString();
 
-      if ( myObject is IEnumerable && !(myObject is IDictionary))
+      if ( myObject is IEnumerable && !( myObject is IDictionary ) )
       {
         var rlist = new List<object>(); int index = 0;
 
-        foreach (var x in ( IEnumerable ) myObject )
+        foreach ( var x in ( IEnumerable ) myObject )
           rlist.Add( WriteValue( x, recursionDepth + 1, traversed, path + "/[" + index++ + "]" ) );
 
         return rlist;
