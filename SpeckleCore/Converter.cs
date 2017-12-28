@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -160,19 +161,20 @@ namespace SpeckleCore
       foreach ( string key in keys )
       {
         var prop = type.GetProperty( key );
+        var field = type.GetField( key );
 
-        if ( prop == null ) continue;
+        if ( prop == null && field == null ) continue;
 
         if ( obj.Properties[ key ] == null ) continue;
 
         var value = ReadValue( obj.Properties[ key ], root );
 
         // handles both hashsets and lists or whatevers
-        if ( value is IEnumerable<object> )
+        if ( value is IEnumerable )
         {
           try
           {
-            var mySubList = Activator.CreateInstance( prop.PropertyType );
+            var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
             foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
               mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
 
@@ -182,28 +184,44 @@ namespace SpeckleCore
         }
 
         // guids are a pain
-        if ( prop.PropertyType == typeof( Guid ) ) value = new Guid( ( string ) value );
+        if ( ( prop != null && prop.PropertyType == typeof( Guid ) ) || ( field != null && field.FieldType == typeof( Guid ) ) )
+          value = new Guid( ( string ) value );
 
-        // take care with enums
-        if ( prop.SetMethod != null )
-          try
-          {
-            prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
-          }
-          catch ( Exception e )
-          {
+
+        if ( prop != null )
+        {
+          // take care with enums
+          if ( prop.SetMethod != null )
             try
             {
               prop.SetValue( myObject, value );
             }
-            catch { }
+            catch ( Exception e )
+            {
+              try
+              {
+                prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
+              }
+              catch { }
+            }
+        }
+        else if ( field != null )
+        {
+          try
+          {
+            field.SetValue( obj, value );
           }
+          catch
+          {
+            field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+          }
+        }
       }
 
       //  we done yet?
       if ( root == myObject )
         Converter.ResolveRefs( obj, myObject, "root" );
-      
+
       return myObject;
     }
 
@@ -276,7 +294,14 @@ namespace SpeckleCore
           continue;
         }
 
-        propSource = propSource.GetType().GetProperty( s ).GetValue( target );
+        if ( IsProperty( propSource, s ) )
+        {
+          propSource = propSource.GetType().GetProperty( s ).GetValue( target );
+        }
+        else
+        {
+          propSource = propSource.GetType().GetField( s ).GetValue( target );
+        }
       }
 
       object propTarget = target;
@@ -297,7 +322,16 @@ namespace SpeckleCore
           continue;
         }
 
-        propTarget = propTarget.GetType().GetProperty( s ).GetValue( target );
+        if ( IsProperty( propTarget, s ) )
+        {
+          propTarget = propTarget.GetType().GetProperty( s ).GetValue( target );
+        }
+        else
+        {
+          propTarget = propTarget.GetType().GetField( s ).GetValue( target );
+        }
+
+
       }
 
       var last = targetAddress.Last();
@@ -313,19 +347,33 @@ namespace SpeckleCore
         return;
       }
 
-      PropertyInfo toSet = propTarget.GetType().GetProperty( last );
-      toSet.SetValue( propTarget, propSource, null );
+      if ( IsProperty( propTarget, last ) )
+      {
+        PropertyInfo toSet = propTarget.GetType().GetProperty( last );
+        toSet.SetValue( propTarget, propSource, null );
+      }
+      else
+      {
+        var toSet = propTarget.GetType().GetField( last );
+        toSet.SetValue( propTarget, propSource );
+      }
+    }
+
+    private static bool IsProperty( object obj, string name )
+    {
+      var prop = obj.GetType().GetProperty( name );
+      return prop != null;
     }
 
     /// <summary>
-    /// Tries to cast a POCO to a SpeckleAbstract object. The type needs to have public properties with get and set methods.
+    /// Tries to cast a POCO to a SpeckleAbstract object. It will iterate through public fields and properties.
     /// </summary>
     /// <param name="source"></param>
     /// <param name="recursionDepth"></param>
     /// <returns></returns>
     public static SpeckleObject ToAbstract( object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "" )
     {
-      if ( source == null ) return new SpeckleNull();
+      if ( source == null ) return null;
 
       if ( traversed == null ) traversed = new Dictionary<int, string>();
 
@@ -347,20 +395,35 @@ namespace SpeckleCore
       Dictionary<string, object> dict = new Dictionary<string, object>();
 
       var properties = source.GetType().GetProperties( BindingFlags.Instance | BindingFlags.Public );
-
       foreach ( var prop in properties )
       {
         try
         {
           var value = prop.GetValue( source );
+          if ( value == null )
+            continue; 
           dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
         }
         catch ( Exception e )
         {
-          var copy = e;
         }
       }
-      
+
+      var fields = source.GetType().GetFields( BindingFlags.Instance | BindingFlags.Public );
+      foreach ( var field in fields )
+      {
+        try
+        {
+          var value = field.GetValue( source );
+          if ( value == null )
+            continue;
+          dict[ field.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + field.Name );
+        }
+        catch ( Exception e )
+        {
+        }
+      }
+
       result.Properties = dict;
       result.SetHashes( result );
 
@@ -375,9 +438,18 @@ namespace SpeckleCore
       if ( myObject.GetType().IsPrimitive || myObject is string )
         return myObject;
 
-      if ( myObject is IEnumerable<object> )
-        return ( ( IEnumerable<object> ) myObject ).Select( ( o, index ) => WriteValue( o, recursionDepth + 1, traversed, path + "/[" + index + "]" ) ).ToList();
+      if ( myObject is Guid )
+        return myObject.ToString();
 
+      if ( myObject is IEnumerable && !(myObject is IDictionary))
+      {
+        var rlist = new List<object>(); int index = 0;
+
+        foreach (var x in ( IEnumerable ) myObject )
+          rlist.Add( WriteValue( x, recursionDepth + 1, traversed, path + "/[" + index++ + "]" ) );
+
+        return rlist;
+      }
 
       if ( myObject is IDictionary<string, object> )
         return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
@@ -385,7 +457,7 @@ namespace SpeckleCore
       if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
         return Converter.ToAbstract( myObject, recursionDepth + 1, traversed, path );
 
-      return myObject.ToString();
+      return null;
     }
 
   }
