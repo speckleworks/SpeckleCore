@@ -393,6 +393,22 @@ namespace SpeckleCore
         }
     }
 
+    public partial class  SpeckleExtrusion
+    {
+        public SpeckleExtrusion() { }
+
+        public SpeckleExtrusion(SpeckleCurve profile, double length, bool capped, string applicationId = null, Dictionary<string, object> properties = null)
+        {
+            this.Profile = profile;
+            this.Length = length;
+            this.Capped = capped;
+            this.ApplicationId = applicationId;
+            this.Properties = properties;
+
+            this.SetHashes(Profile.GeometryHash + "len " + length + "cap " + capped);
+        }
+    }
+
     [Serializable]
     public class SpeckleAnnotation : SpeckleObject
     {
