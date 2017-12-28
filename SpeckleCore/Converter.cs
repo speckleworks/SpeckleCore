@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -169,11 +170,11 @@ namespace SpeckleCore
         var value = ReadValue( obj.Properties[ key ], root );
 
         // handles both hashsets and lists or whatevers
-        if ( value is IEnumerable<object> )
+        if ( value is IEnumerable )
         {
           try
           {
-            var mySubList = Activator.CreateInstance( prop.PropertyType );
+            var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
             foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
               mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
 
@@ -193,13 +194,13 @@ namespace SpeckleCore
           if ( prop.SetMethod != null )
             try
             {
-              prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
+              prop.SetValue( myObject, value );
             }
             catch ( Exception e )
             {
               try
               {
-                prop.SetValue( myObject, value );
+                prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
               }
               catch { }
             }
@@ -208,11 +209,11 @@ namespace SpeckleCore
         {
           try
           {
-            field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+            field.SetValue( obj, value );
           }
           catch
           {
-            field.SetValue( obj, value );
+            field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
           }
         }
       }
@@ -365,14 +366,14 @@ namespace SpeckleCore
     }
 
     /// <summary>
-    /// Tries to cast a POCO to a SpeckleAbstract object. The type needs to have public properties with get and set methods.
+    /// Tries to cast a POCO to a SpeckleAbstract object. It will iterate through public fields and properties.
     /// </summary>
     /// <param name="source"></param>
     /// <param name="recursionDepth"></param>
     /// <returns></returns>
     public static SpeckleObject ToAbstract( object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "" )
     {
-      if ( source == null ) return new SpeckleNull();
+      if ( source == null ) return null;
 
       if ( traversed == null ) traversed = new Dictionary<int, string>();
 
@@ -399,11 +400,12 @@ namespace SpeckleCore
         try
         {
           var value = prop.GetValue( source );
+          if ( value == null )
+            continue; 
           dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
         }
         catch ( Exception e )
         {
-          var copy = e;
         }
       }
 
@@ -413,14 +415,14 @@ namespace SpeckleCore
         try
         {
           var value = field.GetValue( source );
+          if ( value == null )
+            continue;
           dict[ field.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + field.Name );
         }
         catch ( Exception e )
         {
-          var copy = e;
         }
       }
-
 
       result.Properties = dict;
       result.SetHashes( result );
@@ -436,9 +438,18 @@ namespace SpeckleCore
       if ( myObject.GetType().IsPrimitive || myObject is string )
         return myObject;
 
-      if ( myObject is IEnumerable<object> )
-        return ( ( IEnumerable<object> ) myObject ).Select( ( o, index ) => WriteValue( o, recursionDepth + 1, traversed, path + "/[" + index + "]" ) ).ToList();
+      if ( myObject is Guid )
+        return myObject.ToString();
 
+      if ( myObject is IEnumerable && !(myObject is IDictionary))
+      {
+        var rlist = new List<object>(); int index = 0;
+
+        foreach (var x in ( IEnumerable ) myObject )
+          rlist.Add( WriteValue( x, recursionDepth + 1, traversed, path + "/[" + index++ + "]" ) );
+
+        return rlist;
+      }
 
       if ( myObject is IDictionary<string, object> )
         return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
@@ -446,7 +457,7 @@ namespace SpeckleCore
       if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
         return Converter.ToAbstract( myObject, recursionDepth + 1, traversed, path );
 
-      return myObject.ToString();
+      return null;
     }
 
   }
