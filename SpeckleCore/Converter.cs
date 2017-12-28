@@ -160,8 +160,9 @@ namespace SpeckleCore
       foreach ( string key in keys )
       {
         var prop = type.GetProperty( key );
+        var field = type.GetField( key );
 
-        if ( prop == null ) continue;
+        if ( prop == null && field == null ) continue;
 
         if ( obj.Properties[ key ] == null ) continue;
 
@@ -182,28 +183,44 @@ namespace SpeckleCore
         }
 
         // guids are a pain
-        if ( prop.PropertyType == typeof( Guid ) ) value = new Guid( ( string ) value );
+        if ( ( prop != null && prop.PropertyType == typeof( Guid ) ) || ( field != null && field.FieldType == typeof( Guid ) ) )
+          value = new Guid( ( string ) value );
 
-        // take care with enums
-        if ( prop.SetMethod != null )
-          try
-          {
-            prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
-          }
-          catch ( Exception e )
-          {
+
+        if ( prop != null )
+        {
+          // take care with enums
+          if ( prop.SetMethod != null )
             try
             {
-              prop.SetValue( myObject, value );
+              prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
             }
-            catch { }
+            catch ( Exception e )
+            {
+              try
+              {
+                prop.SetValue( myObject, value );
+              }
+              catch { }
+            }
+        }
+        else if ( field != null )
+        {
+          try
+          {
+            field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
           }
+          catch
+          {
+            field.SetValue( obj, value );
+          }
+        }
       }
 
       //  we done yet?
       if ( root == myObject )
         Converter.ResolveRefs( obj, myObject, "root" );
-      
+
       return myObject;
     }
 
@@ -276,7 +293,14 @@ namespace SpeckleCore
           continue;
         }
 
-        propSource = propSource.GetType().GetProperty( s ).GetValue( target );
+        if ( IsProperty( propSource, s ) )
+        {
+          propSource = propSource.GetType().GetProperty( s ).GetValue( target );
+        }
+        else
+        {
+          propSource = propSource.GetType().GetField( s ).GetValue( target );
+        }
       }
 
       object propTarget = target;
@@ -297,7 +321,16 @@ namespace SpeckleCore
           continue;
         }
 
-        propTarget = propTarget.GetType().GetProperty( s ).GetValue( target );
+        if ( IsProperty( propTarget, s ) )
+        {
+          propTarget = propTarget.GetType().GetProperty( s ).GetValue( target );
+        }
+        else
+        {
+          propTarget = propTarget.GetType().GetField( s ).GetValue( target );
+        }
+
+
       }
 
       var last = targetAddress.Last();
@@ -313,8 +346,22 @@ namespace SpeckleCore
         return;
       }
 
-      PropertyInfo toSet = propTarget.GetType().GetProperty( last );
-      toSet.SetValue( propTarget, propSource, null );
+      if ( IsProperty( propTarget, last ) )
+      {
+        PropertyInfo toSet = propTarget.GetType().GetProperty( last );
+        toSet.SetValue( propTarget, propSource, null );
+      }
+      else
+      {
+        var toSet = propTarget.GetType().GetField( last );
+        toSet.SetValue( propTarget, propSource );
+      }
+    }
+
+    private static bool IsProperty( object obj, string name )
+    {
+      var prop = obj.GetType().GetProperty( name );
+      return prop != null;
     }
 
     /// <summary>
@@ -347,7 +394,6 @@ namespace SpeckleCore
       Dictionary<string, object> dict = new Dictionary<string, object>();
 
       var properties = source.GetType().GetProperties( BindingFlags.Instance | BindingFlags.Public );
-
       foreach ( var prop in properties )
       {
         try
@@ -360,7 +406,22 @@ namespace SpeckleCore
           var copy = e;
         }
       }
-      
+
+      var fields = source.GetType().GetFields( BindingFlags.Instance | BindingFlags.Public );
+      foreach ( var field in fields )
+      {
+        try
+        {
+          var value = field.GetValue( source );
+          dict[ field.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + field.Name );
+        }
+        catch ( Exception e )
+        {
+          var copy = e;
+        }
+      }
+
+
       result.Properties = dict;
       result.SetHashes( result );
 
