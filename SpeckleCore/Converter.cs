@@ -140,9 +140,10 @@ namespace SpeckleCore
         return obj;
 
       var type = assembly.GetTypes().FirstOrDefault( t => t.Name == obj._Type );
-      if ( type == null ) // something wrong in the type
+      if ( type == null ) // type not present in the assembly
         return obj;
 
+      // try to initialise both ways
       object myObject = null;
       try
       {
@@ -187,24 +188,20 @@ namespace SpeckleCore
         if ( ( prop != null && prop.PropertyType == typeof( Guid ) ) || ( field != null && field.FieldType == typeof( Guid ) ) )
           value = new Guid( ( string ) value );
 
-
+        // if it is a property
         if ( prop != null )
         {
-          // take care with enums
           if ( prop.SetMethod != null )
             try
             {
               prop.SetValue( myObject, value );
             }
-            catch ( Exception e )
+            catch
             {
-              try
-              {
-                prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
-              }
-              catch { }
+              prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
             }
         }
+        // if it is a field
         else if ( field != null )
         {
           try
@@ -218,7 +215,7 @@ namespace SpeckleCore
         }
       }
 
-      //  we done yet?
+      //  set references too.
       if ( root == myObject )
         Converter.ResolveRefs( obj, myObject, "root" );
 
@@ -251,8 +248,6 @@ namespace SpeckleCore
     {
       if ( original is SpeckleAbstract )
       {
-        // if original is SpkAbstract ref -> set ref(root, whereToSet = currentPath, fromWhere = original._ref
-        //else iterateBithc
         SpeckleAbstract myObj = ( SpeckleAbstract ) original;
         if ( myObj._Type == "ref" )
           Converter.LinkRef( root, myObj._Ref, currentPath );
@@ -260,12 +255,14 @@ namespace SpeckleCore
           foreach ( var key in myObj.Properties.Keys )
             Converter.ResolveRefs( myObj.Properties[ key ], root, currentPath + "/" + key );
       }
+
       if ( original is Dictionary<string, object> )
       {
         Dictionary<string, object> myDict = ( Dictionary<string, object> ) original;
         foreach ( string key in myDict.Keys )
           Converter.ResolveRefs( myDict[ key ], root, currentPath + "/{" + key + "}" );
       }
+
       if ( original is List<object> )
       {
         List<object> myList = ( List<object> ) original; int index = 0;
@@ -330,8 +327,6 @@ namespace SpeckleCore
         {
           propTarget = propTarget.GetType().GetField( s ).GetValue( target );
         }
-
-
       }
 
       var last = targetAddress.Last();
@@ -401,7 +396,7 @@ namespace SpeckleCore
         {
           var value = prop.GetValue( source );
           if ( value == null )
-            continue; 
+            continue;
           dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
         }
         catch ( Exception e )
@@ -425,7 +420,7 @@ namespace SpeckleCore
       }
 
       result.Properties = dict;
-      result.SetHashes( result );
+      result.SetHashes( result.Properties );
 
       return result;
     }
@@ -441,18 +436,20 @@ namespace SpeckleCore
       if ( myObject is Guid )
         return myObject.ToString();
 
-      if ( myObject is IEnumerable && !(myObject is IDictionary))
+      if ( myObject is IEnumerable && !( myObject is IDictionary ) )
       {
         var rlist = new List<object>(); int index = 0;
 
-        foreach (var x in ( IEnumerable ) myObject )
+        foreach ( var x in ( IEnumerable ) myObject )
           rlist.Add( WriteValue( x, recursionDepth + 1, traversed, path + "/[" + index++ + "]" ) );
 
         return rlist;
       }
 
-      if ( myObject is IDictionary<string, object> )
+      if ( myObject is IDictionary )
+      {
         return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
+      }
 
       if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
         return Converter.ToAbstract( myObject, recursionDepth + 1, traversed, path );
