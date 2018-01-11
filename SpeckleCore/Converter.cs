@@ -315,7 +315,7 @@ namespace SpeckleCore
 
         if ( s.Contains( "[" ) ) // special handler for lists
         {
-          propTarget = ( ( IList<object> ) propTarget )[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
+          propTarget = ( ( IList ) propTarget )[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
           continue;
         }
 
