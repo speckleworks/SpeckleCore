@@ -338,7 +338,7 @@ namespace SpeckleCore
       }
       if ( last.Contains( '[' ) )
       {
-        ( ( IList<object> ) propTarget )[ int.Parse( last.Substring( 1, last.Length - 2 ) ) ] = propSource;
+        ( ( IList ) propTarget )[ int.Parse( last.Substring( 1, last.Length - 2 ) ) ] = propSource;
         return;
       }
 
