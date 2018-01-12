@@ -137,11 +137,11 @@ namespace SpeckleCore
       var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == obj._Assembly );
 
       if ( assembly == null ) // we can't deserialise for sure
-        return obj;
+        return Converter.ShallowConvert(obj);
 
       var type = assembly.GetTypes().FirstOrDefault( t => t.Name == obj._Type );
       if ( type == null ) // type not present in the assembly
-        return obj;
+        return Converter.ShallowConvert( obj );
 
       // try to initialise both ways
       object myObject = null;
@@ -220,6 +220,17 @@ namespace SpeckleCore
         Converter.ResolveRefs( obj, myObject, "root" );
 
       return myObject;
+    }
+
+    private static object ShallowConvert( SpeckleAbstract obj )
+    {
+      var keys = obj.Properties.Keys;
+      foreach ( string key in keys )
+      {
+        obj.Properties[ key ] = Converter.ReadValue( obj.Properties[ key ] );
+      }
+
+      return obj;
     }
 
     private static object ReadValue( object myObject, object root = null )
