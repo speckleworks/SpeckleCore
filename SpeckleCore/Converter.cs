@@ -332,11 +332,11 @@ namespace SpeckleCore
 
         if ( IsProperty( propTarget, s ) )
         {
-          propTarget = propTarget.GetType().GetProperty( s ).GetValue( target );
+          propTarget = propTarget.GetType().GetProperty( s ).GetValue( propTarget );
         }
         else
         {
-          propTarget = propTarget.GetType().GetField( s ).GetValue( target );
+          propTarget = propTarget.GetType().GetField( s ).GetValue( propTarget );
         }
       }
 
