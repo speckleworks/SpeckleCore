@@ -137,11 +137,11 @@ namespace SpeckleCore
       var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == obj._Assembly );
 
       if ( assembly == null ) // we can't deserialise for sure
-        return obj;
+        return Converter.ShallowConvert( obj );
 
       var type = assembly.GetTypes().FirstOrDefault( t => t.Name == obj._Type );
       if ( type == null ) // type not present in the assembly
-        return obj;
+        return Converter.ShallowConvert( obj );
 
       // try to initialise both ways
       object myObject = null;
@@ -191,7 +191,12 @@ namespace SpeckleCore
         // if it is a property
         if ( prop != null )
         {
-          if ( prop.SetMethod != null )
+          if ( prop.PropertyType.IsEnum )
+          {
+            prop.SetValue( myObject, Convert.ChangeType( value, typeof( int ) ) );
+          }
+          else
+          {
             try
             {
               prop.SetValue( myObject, value );
@@ -200,17 +205,25 @@ namespace SpeckleCore
             {
               prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
             }
+          }
         }
         // if it is a field
         else if ( field != null )
         {
-          try
+          if ( field.FieldType.IsEnum )
           {
-            field.SetValue( obj, value );
+            field.SetValue( myObject, Convert.ChangeType( value, typeof( int ) ) );
           }
-          catch
+          else
           {
-            field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+            try
+            {
+              field.SetValue( obj, value );
+            }
+            catch
+            {
+              field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+            }
           }
         }
       }
@@ -220,6 +233,18 @@ namespace SpeckleCore
         Converter.ResolveRefs( obj, myObject, "root" );
 
       return myObject;
+    }
+
+    private static object ShallowConvert( SpeckleAbstract obj )
+    {
+      var keys = obj.Properties.Keys;
+      var newDict = new Dictionary<string, object>();
+      foreach ( string key in keys )
+      {
+        newDict.Add( key, Converter.ReadValue( obj.Properties[ key ] ) );
+      }
+      obj.Properties = newDict;
+      return obj;
     }
 
     private static object ReadValue( object myObject, object root = null )
@@ -293,11 +318,11 @@ namespace SpeckleCore
 
         if ( IsProperty( propSource, s ) )
         {
-          propSource = propSource.GetType().GetProperty( s ).GetValue( target );
+          propSource = propSource.GetType().GetProperty( s ).GetValue( propSource );
         }
         else
         {
-          propSource = propSource.GetType().GetField( s ).GetValue( target );
+          propSource = propSource.GetType().GetField( s ).GetValue( propSource );
         }
       }
 
@@ -321,11 +346,11 @@ namespace SpeckleCore
 
         if ( IsProperty( propTarget, s ) )
         {
-          propTarget = propTarget.GetType().GetProperty( s ).GetValue( target );
+          propTarget = propTarget.GetType().GetProperty( s ).GetValue( propTarget );
         }
         else
         {
-          propTarget = propTarget.GetType().GetField( s ).GetValue( target );
+          propTarget = propTarget.GetType().GetField( s ).GetValue( propTarget );
         }
       }
 
