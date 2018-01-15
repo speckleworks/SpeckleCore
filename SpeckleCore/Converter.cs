@@ -241,7 +241,7 @@ namespace SpeckleCore
       var newDict = new Dictionary<string, object>();
       foreach ( string key in keys )
       {
-        newDict.Add( key, Converter.ReadValue( obj.Properties[ key ] ) );
+        newDict.Add( key, Converter.ReadValue( obj.Properties[ key ],  obj ) );
       }
       obj.Properties = newDict;
       return obj;
