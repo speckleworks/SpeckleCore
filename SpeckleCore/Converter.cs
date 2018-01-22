@@ -33,6 +33,15 @@ namespace SpeckleCore
       }
     }
 
+    public static byte[ ] getBytes( object obj )
+    {
+      using ( System.IO.MemoryStream ms = new System.IO.MemoryStream() )
+      {
+        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter().Serialize( ms, obj );
+        return ms.ToArray();
+      }
+    }
+
     public static object getObjFromString( string base64String )
     {
       if ( base64String == null ) return null;
@@ -241,7 +250,7 @@ namespace SpeckleCore
       var newDict = new Dictionary<string, object>();
       foreach ( string key in keys )
       {
-        newDict.Add( key, Converter.ReadValue( obj.Properties[ key ],  obj ) );
+        newDict.Add( key, Converter.ReadValue( obj.Properties[ key ], obj ) );
       }
       obj.Properties = newDict;
       return obj;
