@@ -815,6 +815,10 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("vertices", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double[] Vertices { get; set; }
 
+        /// <summary>The mesh's UV array, in a flat array (ie, `x1, y1, x2, y2, ...`)</summary>
+        [Newtonsoft.Json.JsonProperty("texture_coordinates", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public double[] TextureCoordinates { get; set; }        
+
         /// <summary>The faces array.</summary>
         [Newtonsoft.Json.JsonProperty("faces", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int[] Faces { get; set; }

@@ -364,16 +364,17 @@ namespace SpeckleCore
     {
         public SpeckleMesh() { }
 
-        public SpeckleMesh(double[] vertices, int[] faces, int[] colors, string applicationId = null, Dictionary<string, object> properties = null)
+        public SpeckleMesh(double[] vertices, int[] faces, int[] colors, double[] texture_coords, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Vertices = vertices;
             this.Faces = faces;
             this.Colors = colors;
+            this.TextureCoordinates = texture_coords;
             this.ApplicationId = applicationId;
 
             this.Properties = properties;
 
-            SetHashes(JsonConvert.SerializeObject(Vertices) + JsonConvert.SerializeObject(Faces) + JsonConvert.SerializeObject(Colors));
+            SetHashes(JsonConvert.SerializeObject(Vertices) + JsonConvert.SerializeObject(Faces) + JsonConvert.SerializeObject(Colors) + JsonConvert.SerializeObject(TextureCoordinates));
         }
     }
 
