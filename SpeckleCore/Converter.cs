@@ -198,7 +198,7 @@ namespace SpeckleCore
           value = new Guid( ( string ) value );
 
         // if it is a property
-        if ( prop != null )
+        if ( prop != null && prop.CanWrite)
         {
           if ( prop.PropertyType.IsEnum )
           {
@@ -212,7 +212,14 @@ namespace SpeckleCore
             }
             catch
             {
-              prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
+              try
+              {
+                prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
+              }
+              catch
+              {
+                System.Diagnostics.Debug.WriteLine( "Failed to set property" );
+              }
             }
           }
         }
