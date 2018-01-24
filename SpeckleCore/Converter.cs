@@ -33,6 +33,15 @@ namespace SpeckleCore
       }
     }
 
+    public static byte[ ] getBytes( object obj )
+    {
+      using ( System.IO.MemoryStream ms = new System.IO.MemoryStream() )
+      {
+        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter().Serialize( ms, obj );
+        return ms.ToArray();
+      }
+    }
+
     public static object getObjFromString( string base64String )
     {
       if ( base64String == null ) return null;
@@ -189,7 +198,7 @@ namespace SpeckleCore
           value = new Guid( ( string ) value );
 
         // if it is a property
-        if ( prop != null )
+        if ( prop != null && prop.CanWrite)
         {
           if ( prop.PropertyType.IsEnum )
           {
@@ -203,7 +212,14 @@ namespace SpeckleCore
             }
             catch
             {
-              prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
+              try
+              {
+                prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
+              }
+              catch
+              {
+                System.Diagnostics.Debug.WriteLine( "Failed to set property" );
+              }
             }
           }
         }
@@ -241,7 +257,7 @@ namespace SpeckleCore
       var newDict = new Dictionary<string, object>();
       foreach ( string key in keys )
       {
-        newDict.Add( key, Converter.ReadValue( obj.Properties[ key ],  obj ) );
+        newDict.Add( key, Converter.ReadValue( obj.Properties[ key ], obj ) );
       }
       obj.Properties = newDict;
       return obj;
