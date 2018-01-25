@@ -154,23 +154,19 @@ namespace SpeckleCore
         return Converter.ShallowConvert( obj );
 
       // try to initialise both ways
-      object myObject;
-
-      if ( type.ContainsGenericParameters )
-      {
-        foreach ( string key in obj.rop )
+      object myObject = null;
+      if ( !type.ContainsGenericParameters )
+        try
         {
+          myObject = Activator.CreateInstance( type );
         }
-      }
+        catch ( Exception e )
+        {
+          myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
+        }
 
-      try
-      {
-        myObject = Activator.CreateInstance( type );
-      }
-      catch ( Exception e )
-      {
-        myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
-      }
+      if ( myObject == null )
+        throw new Exception( "Could not instantiate object of type: " + type.ToString() );
 
       if ( root == null )
         root = myObject;
@@ -207,7 +203,7 @@ namespace SpeckleCore
           value = new Guid( ( string ) value );
 
         // if it is a property
-        if ( prop != null && prop.CanWrite)
+        if ( prop != null && prop.CanWrite )
         {
           if ( prop.PropertyType.IsEnum )
           {
@@ -507,9 +503,9 @@ namespace SpeckleCore
       //}
 
       //if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
-        return Converter.ToAbstract( myObject, recursionDepth + 1, traversed, path );
+      return Converter.ToAbstract( myObject, recursionDepth + 1, traversed, path );
 
-      
+
 
       return null;
     }
