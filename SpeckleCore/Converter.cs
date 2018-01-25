@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -153,7 +154,15 @@ namespace SpeckleCore
         return Converter.ShallowConvert( obj );
 
       // try to initialise both ways
-      object myObject = null;
+      object myObject;
+
+      if ( type.ContainsGenericParameters )
+      {
+        foreach ( string key in obj.rop )
+        {
+        }
+      }
+
       try
       {
         myObject = Activator.CreateInstance( type );
@@ -492,8 +501,15 @@ namespace SpeckleCore
         return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
       }
 
-      if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
+      //if(myObject is Tuple)
+      //{
+      //  foreach(var filed)
+      //}
+
+      //if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
         return Converter.ToAbstract( myObject, recursionDepth + 1, traversed, path );
+
+      
 
       return null;
     }
