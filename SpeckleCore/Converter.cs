@@ -70,6 +70,21 @@ namespace SpeckleCore
       return Convert.FromBase64String( str );
     }
 
+    // modified version of
+    // https://stackoverflow.com/questions/43126224/dynamically-create-a-tuple-with-all-the-same-type-and-a-known-number-of-elements
+    public static object GetTuple( List<object> values )
+    {
+      Type genericType = Type.GetType( "System.Tuple`" + values.Count );
+
+      Type[ ] typeArgs = values.Select( _ => _ != null ? _.GetType() : typeof(object) ).ToArray();
+
+      Type specificType = genericType.MakeGenericType( typeArgs );
+
+      object[ ] constructorArguments = values.Cast<object>().ToArray();
+
+      return Activator.CreateInstance( specificType, constructorArguments );
+    }
+
     // https://stackoverflow.com/a/299526/3446736
     private static IEnumerable<MethodInfo> GetExtensionMethods( Assembly assembly, Type extendedType, string methodName )
     {
@@ -155,6 +170,16 @@ namespace SpeckleCore
 
       // try to initialise both ways
       object myObject = null;
+
+      if ( type.Name.Contains( "Tuple" ) )
+      {
+        List<object> values = new List<object>();
+        foreach ( string key in obj.Properties.Keys )
+          values.Add( ReadValue( obj.Properties[ key ], root ) );
+
+        return GetTuple( values );
+      }
+
       if ( !type.ContainsGenericParameters )
         try
         {
@@ -165,8 +190,8 @@ namespace SpeckleCore
           myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
         }
 
-      if ( myObject == null )
-        throw new Exception( "Could not instantiate object of type: " + type.ToString() );
+      //if ( myObject == null )
+      //  throw new Exception( "Could not instantiate object of type: " + type.ToString() );
 
       if ( root == null )
         root = myObject;
@@ -243,7 +268,11 @@ namespace SpeckleCore
             }
             catch
             {
-              field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+              try
+              {
+                field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+              }
+              catch { } 
             }
           }
         }
@@ -254,6 +283,7 @@ namespace SpeckleCore
         Converter.ResolveRefs( obj, myObject, "root" );
 
       return myObject;
+
     }
 
     private static object ShallowConvert( SpeckleAbstract obj )
@@ -337,13 +367,20 @@ namespace SpeckleCore
           continue;
         }
 
-        if ( IsProperty( propSource, s ) )
+        try
         {
-          propSource = propSource.GetType().GetProperty( s ).GetValue( propSource );
+          if ( IsProperty( propSource, s ) )
+          {
+            propSource = propSource.GetType().GetProperty( s ).GetValue( propSource );
+          }
+          else
+          {
+            propSource = propSource.GetType().GetField( s ).GetValue( propSource );
+          }
         }
-        else
+        catch
         {
-          propSource = propSource.GetType().GetField( s ).GetValue( propSource );
+          return;
         }
       }
 
@@ -438,16 +475,20 @@ namespace SpeckleCore
       var properties = source.GetType().GetProperties( BindingFlags.Instance | BindingFlags.Public );
       foreach ( var prop in properties )
       {
+        //if ( prop.Name == "Database" ) // hack to stay away from database ggifc
+        //  continue;
+        if ( ( prop.SetMethod != null && true ) || source.GetType().Name.Contains( "Tuple" ) ) //prop.PropertyType.Name
         try
-        {
-          var value = prop.GetValue( source );
-          if ( value == null )
-            continue;
-          dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
-        }
-        catch ( Exception e )
-        {
-        }
+          {
+            var value = prop.GetValue( source );
+            if ( value == null )
+              continue;
+            dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
+          }
+          catch ( Exception e )
+          {
+            // To do
+          }
       }
 
       var fields = source.GetType().GetFields( BindingFlags.Instance | BindingFlags.Public );
@@ -497,17 +538,7 @@ namespace SpeckleCore
         return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
       }
 
-      //if(myObject is Tuple)
-      //{
-      //  foreach(var filed)
-      //}
-
-      //if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
       return Converter.ToAbstract( myObject, recursionDepth + 1, traversed, path );
-
-
-
-      return null;
     }
 
   }
