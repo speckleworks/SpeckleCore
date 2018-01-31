@@ -125,7 +125,7 @@ namespace SpeckleCore
             }
             catch (SwaggerException e)
             {
-                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = "error", EventData = "Could not log in." });
+                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = "error", EventData = "Could not log in: " + e.Message });
                 return null;
             }
 

@@ -158,7 +158,7 @@ namespace SpeckleCore
       {
         myObject = Activator.CreateInstance( type );
       }
-      catch ( Exception e )
+      catch
       {
         myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
       }
@@ -440,8 +440,9 @@ namespace SpeckleCore
             continue;
           dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
         }
-        catch ( Exception e )
+        catch
         {
+          //  TODO
         }
       }
 
@@ -455,8 +456,9 @@ namespace SpeckleCore
             continue;
           dict[ field.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + field.Name );
         }
-        catch ( Exception e )
+        catch
         {
+          // TODO
         }
       }
 
