@@ -36,12 +36,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("apiToken", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ApiToken { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseAccountRegister FromJson(string data)
+        public new static ResponseAccountRegister FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseAccountRegister>(data);
         }
@@ -58,12 +58,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("apiToken", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string ApiToken { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseAccountLogin FromJson(string data)
+        public new static ResponseAccountLogin FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseAccountLogin>(data);
         }
@@ -79,12 +79,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("sharedStreams", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public List<DataStream> SharedWithStreams { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseAccountStreams FromJson(string data)
+        public new static ResponseAccountStreams FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseAccountStreams>(data);
         }
@@ -96,12 +96,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("clients", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public List<SpeckleClient> Clients { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseAccountClients FromJson(string data)
+        public new static ResponseAccountClients FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseAccountClients>(data);
         }
@@ -113,12 +113,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("user", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public User User { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static ResponseAccountProfile FromJson(string data)
+        public new static ResponseAccountProfile FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseAccountProfile>(data);
         }

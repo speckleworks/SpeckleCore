@@ -51,10 +51,8 @@ namespace SpeckleCore
         public Converter Converter { get; set; }
 
         Timer IsReady, WsReconnecter;
-        Timer MetadataSender, DataSender;
 
         // buckets
-        private string BucketName;
         private List<SpeckleLayer> BucketLayers = new List<SpeckleLayer>();
         private List<object> BucketObjects = new List<object>();
         private List<SpeckleObject> SpeckleBucketObjects = new List<SpeckleObject>();
