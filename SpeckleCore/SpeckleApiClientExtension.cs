@@ -51,10 +51,8 @@ namespace SpeckleCore
         public Converter Converter { get; set; }
 
         Timer IsReady, WsReconnecter;
-        Timer MetadataSender, DataSender;
 
         // buckets
-        private string BucketName;
         private List<SpeckleLayer> BucketLayers = new List<SpeckleLayer>();
         private List<object> BucketObjects = new List<object>();
         private List<SpeckleObject> SpeckleBucketObjects = new List<SpeckleObject>();
@@ -127,7 +125,7 @@ namespace SpeckleCore
             }
             catch (SwaggerException e)
             {
-                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = "error", EventData = "Could not log in." });
+                OnError?.Invoke(this, new SpeckleEventArgs() { EventName = "error", EventData = "Could not log in: " + e.Message });
                 return null;
             }
 

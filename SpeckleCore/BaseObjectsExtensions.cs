@@ -519,7 +519,7 @@ namespace SpeckleCore
     [Serializable]
     public class SpeckleNumberInput : SpeckleInputParam
     {
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
         public double Min { get; set; } = 1;
 
@@ -533,7 +533,7 @@ namespace SpeckleCore
     [Serializable]
     public class SpeckleTextInput : SpeckleInputParam
     {
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
         public string Value { get; set; }
     }
@@ -541,7 +541,7 @@ namespace SpeckleCore
     [Serializable]
     public class SpeckleToggleInput : SpeckleInputParam
     {
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
         public bool Value { get; set; }
     }
@@ -549,7 +549,7 @@ namespace SpeckleCore
     [Serializable]
     public class SpecklePointInput : SpeckleInputParam
     {
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
         public double X { get; set; }
         public double Y { get; set; }

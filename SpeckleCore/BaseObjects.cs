@@ -307,12 +307,12 @@ namespace SpeckleCore
             return "SpeckleCore.SpeckleAbstract: " + _Type + " (" + _Assembly + ")"; 
         }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleAbstract FromJson(string data)
+        public new static SpeckleAbstract FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleAbstract>(data);
         }
@@ -346,12 +346,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool? Value { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleBoolean FromJson(string data)
+        public new static SpeckleBoolean FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleBoolean>(data);
         }
@@ -378,12 +378,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double? Value { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleNumber FromJson(string data)
+        public new static SpeckleNumber FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleNumber>(data);
         }
@@ -402,12 +402,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Value { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleString FromJson(string data)
+        public new static SpeckleString FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleString>(data);
         }
@@ -428,12 +428,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double? End { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleInterval FromJson(string data)
+        public new static SpeckleInterval FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleInterval>(data);
         }
@@ -454,12 +454,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("V", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpeckleInterval V { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleInterval2d FromJson(string data)
+        public new static SpeckleInterval2d FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleInterval2d>(data);
         }
@@ -476,12 +476,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double[] Value { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpecklePoint FromJson(string data)
+        public new static SpecklePoint FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpecklePoint>(data);
         }
@@ -498,12 +498,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double[] Value { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleVector FromJson(string data)
+        public new static SpeckleVector FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleVector>(data);
         }
@@ -532,12 +532,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("Ydir", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpeckleVector Ydir { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpecklePlane FromJson(string data)
+        public new static SpecklePlane FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpecklePlane>(data);
         }
@@ -558,12 +558,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("end", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePoint End { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleLine FromJson(string data)
+        public new static SpeckleLine FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleLine>(data);
         }
@@ -588,12 +588,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("D", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePoint D { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleRectangle FromJson(string data)
+        public new static SpeckleRectangle FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleRectangle>(data);
         }
@@ -615,12 +615,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("normal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpeckleVector Normal { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleCircle FromJson(string data)
+        public new static SpeckleCircle FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleCircle>(data);
         }
@@ -649,12 +649,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("plane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePlane Plane { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleArc FromJson(string data)
+        public new static SpeckleArc FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleArc>(data);
         }
@@ -676,12 +676,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("plane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePlane Plane { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleEllipse FromJson(string data)
+        public new static SpeckleEllipse FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleEllipse>(data);
         }
@@ -706,12 +706,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("zSize", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpeckleInterval ZSize { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleBox FromJson(string data)
+        public new static SpeckleBox FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleBox>(data);
         }
@@ -727,12 +727,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public double[] Value { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpecklePolyline FromJson(string data)
+        public new static SpecklePolyline FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpecklePolyline>(data);
         }
@@ -748,12 +748,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("Segments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpeckleObject[] Segments { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpecklePolycurve FromJson(string data)
+        public new static SpecklePolycurve FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpecklePolycurve>(data);
         }
@@ -793,12 +793,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("displayValue", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpecklePolyline DisplayValue { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleCurve FromJson(string data)
+        public new static SpeckleCurve FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleCurve>(data);
         }
@@ -827,12 +827,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("colors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int[] Colors { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleMesh FromJson(string data)
+        public new static SpeckleMesh FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleMesh>(data);
         }
@@ -857,12 +857,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("displayValue", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public SpeckleMesh DisplayValue { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleBrep FromJson(string data)
+        public new static SpeckleBrep FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleBrep>(data);
         }
@@ -884,12 +884,12 @@ namespace SpeckleCore
         [Newtonsoft.Json.JsonProperty("Capped", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public bool Capped { get; set; }
 
-        public string ToJson()
+        public new string ToJson()
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
-        public static SpeckleExtrusion FromJson(string data)
+        public new static SpeckleExtrusion FromJson(string data)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleExtrusion>(data);
         }
