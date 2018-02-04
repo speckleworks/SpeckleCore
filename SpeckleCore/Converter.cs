@@ -99,7 +99,7 @@ namespace SpeckleCore
         return null;
 
       if ( methods.Count >= 1 )
-        System.Diagnostics.Debug.WriteLine( "More ToSpeckle methods found for the same object." );
+        System.Diagnostics.Debug.WriteLine( "More ToSpeckle methods found for the same object: " + o.GetType().ToString() );
 
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
       if ( result != null )
@@ -124,7 +124,7 @@ namespace SpeckleCore
         return null;
 
       if ( methods.Count >= 1 )
-        System.Diagnostics.Debug.WriteLine( "More ToNative methods found for the same object." );
+        System.Diagnostics.Debug.WriteLine( "More ToNative methods found for the same object: " + o.Type );
 
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
       if ( result != null )
@@ -503,7 +503,22 @@ namespace SpeckleCore
 
       if ( myObject is IDictionary )
       {
-        return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
+        var myDict = myObject as IDictionary;
+        var returnDict = new Dictionary<string, object>();
+        foreach ( DictionaryEntry x in myDict )
+        {
+          var y = x.Key;
+          returnDict.Add( x.Key.ToString(), WriteValue( x.Value, recursionDepth, traversed, path + "/{" + x.Key.ToString() + "}" ) );
+        }
+
+
+        return returnDict;
+
+        var xxx = ( ( IDictionary<object, object> ) myObject );
+        var yyy = xxx.Select( keyValPair => new KeyValuePair<string, object>( keyValPair.Key.ToString(), WriteValue( keyValPair.Value, recursionDepth, traversed, path + "/{" + keyValPair.Key.ToString() + "}" ) ) ).ToDictionary( kkpp => kkpp.Key, kkpp => kkpp.Value );
+
+        return yyy;
+        //return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
       }
 
       if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
