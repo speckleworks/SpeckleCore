@@ -180,7 +180,7 @@ namespace SpeckleCore
         var value = ReadValue( obj.Properties[ key ], root );
 
         // handles both hashsets and lists or whatevers
-        if ( value is IEnumerable )
+        if ( value is IEnumerable && value.GetType() != typeof( string ) )
         {
           try
           {
@@ -198,12 +198,11 @@ namespace SpeckleCore
           value = new Guid( ( string ) value );
 
         // if it is a property
-        if ( prop != null && prop.CanWrite)
+        if ( prop != null && prop.CanWrite )
         {
           if ( prop.PropertyType.IsEnum )
-          {
-            prop.SetValue( myObject, Convert.ChangeType( value, typeof( int ) ) );
-          }
+            prop.SetValue( myObject, Enum.ToObject( prop.PropertyType, value ) );
+
           else
           {
             try
@@ -216,10 +215,7 @@ namespace SpeckleCore
               {
                 prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
               }
-              catch
-              {
-                System.Diagnostics.Debug.WriteLine( "Failed to set property" );
-              }
+              catch { }
             }
           }
         }
@@ -227,9 +223,7 @@ namespace SpeckleCore
         else if ( field != null )
         {
           if ( field.FieldType.IsEnum )
-          {
             field.SetValue( myObject, Convert.ChangeType( value, typeof( int ) ) );
-          }
           else
           {
             try
@@ -238,7 +232,11 @@ namespace SpeckleCore
             }
             catch
             {
-              field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+              try
+              {
+                field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+              }
+              catch { }
             }
           }
         }
@@ -386,7 +384,8 @@ namespace SpeckleCore
       if ( IsProperty( propTarget, last ) )
       {
         PropertyInfo toSet = propTarget.GetType().GetProperty( last );
-        toSet.SetValue( propTarget, propSource, null );
+        if ( toSet.CanWrite )
+          toSet.SetValue( propTarget, propSource, null );
       }
       else
       {
@@ -403,13 +402,20 @@ namespace SpeckleCore
 
     /// <summary>
     /// Tries to cast a POCO to a SpeckleAbstract object. It will iterate through public fields and properties.
+    /// Types must  be marked as "Serlializable". Fields marked with "NonSerilaized" are ignored. Properties with private or no setters are also ignored.
+    /// Generic Types are ignored.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="recursionDepth"></param>
+    /// <param name="source">The object you want to serialise.</param>
+    /// <param name="recursionDepth">Leave this blank, unless you really know what you're doing.</param>
+    /// <param name="traversed">Leave this blank, unless you really know what you're doing.</param>
+    /// <param name="path">Leave this blank, unless you really know what you're doing.</param>
     /// <returns></returns>
     public static SpeckleObject ToAbstract( object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "" )
     {
       if ( source == null ) return null;
+
+      if ( !source.GetType().IsSerializable )
+        return null;
 
       if ( traversed == null ) traversed = new Dictionary<int, string>();
 
@@ -431,24 +437,29 @@ namespace SpeckleCore
       Dictionary<string, object> dict = new Dictionary<string, object>();
 
       var properties = source.GetType().GetProperties( BindingFlags.Instance | BindingFlags.Public );
+
       foreach ( var prop in properties )
       {
+        if ( !prop.CanWrite )
+          continue;
+
         try
         {
           var value = prop.GetValue( source );
+
           if ( value == null )
             continue;
+
           dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
         }
-        catch
-        {
-          //  TODO
-        }
+        catch { }
       }
 
       var fields = source.GetType().GetFields( BindingFlags.Instance | BindingFlags.Public );
       foreach ( var field in fields )
       {
+        if ( field.IsNotSerialized )
+          continue;
         try
         {
           var value = field.GetValue( source );
@@ -456,10 +467,7 @@ namespace SpeckleCore
             continue;
           dict[ field.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + field.Name );
         }
-        catch
-        {
-          // TODO
-        }
+        catch { }
       }
 
       result.Properties = dict;
@@ -471,6 +479,7 @@ namespace SpeckleCore
     private static object WriteValue( object myObject, int recursionDepth, Dictionary<int, string> traversed = null, string path = "" )
     {
       if ( myObject == null || recursionDepth > 8 ) return null;
+
       if ( myObject is Enum ) return Convert.ChangeType( ( Enum ) myObject, ( ( Enum ) myObject ).GetTypeCode() );
 
       if ( myObject.GetType().IsPrimitive || myObject is string )
@@ -484,8 +493,11 @@ namespace SpeckleCore
         var rlist = new List<object>(); int index = 0;
 
         foreach ( var x in ( IEnumerable ) myObject )
-          rlist.Add( WriteValue( x, recursionDepth + 1, traversed, path + "/[" + index++ + "]" ) );
-
+        {
+          var obj = WriteValue( x, recursionDepth + 1, traversed, path + "/[" + index++ + "]" );
+          if ( obj != null )
+            rlist.Add( obj );
+        }
         return rlist;
       }
 
