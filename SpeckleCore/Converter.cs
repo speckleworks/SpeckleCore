@@ -88,28 +88,22 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>Null or a speckle object.</returns>
-    public static SpeckleObject TryGetSpeckleObject( object o )
+    public static SpeckleObject Serialise( object o )
     {
-
-
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
+
       List<MethodInfo> methods = new List<MethodInfo>();
       foreach ( var ass in myAss )
         methods.AddRange( Converter.GetExtensionMethods( ass, o.GetType(), "ToSpeckle" ) );
 
       if ( methods.Count == 0 )
-        return null;
-
-      if ( methods.Count >= 1 )
-        System.Diagnostics.Debug.WriteLine( "More ToSpeckle methods found for the same object: " + o.GetType().ToString() );
+        return ToAbstract( o );
 
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
       if ( result != null )
         return result as SpeckleObject;
 
-      
-
-      return null;
+      return ToAbstract( o );
     }
 
     /// <summary>
@@ -117,24 +111,26 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>Null or a speckle object.</returns>
-    public static object TryGetNative( SpeckleObject o )
+    public static object Deserialise( SpeckleObject o )
     {
+      if ( o is SpeckleAbstract )
+        return FromAbstract( o as SpeckleAbstract );
+
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
+
       List<MethodInfo> methods = new List<MethodInfo>();
+
       foreach ( var ass in myAss )
         methods.AddRange( Converter.GetExtensionMethods( ass, o.GetType(), "ToNative" ) );
 
       if ( methods.Count == 0 )
         return null;
 
-      if ( methods.Count >= 1 )
-        System.Diagnostics.Debug.WriteLine( "More ToNative methods found for the same object: " + o.Type );
-
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
       if ( result != null )
         return result;
 
-      return null;
+      return o;
     }
 
     /// <summary>
@@ -262,7 +258,7 @@ namespace SpeckleCore
           }
         }
       }
-      
+
       //  set references too.
       if ( root == myObject )
         Converter.ResolveRefs( obj, myObject, "root" );
@@ -293,7 +289,7 @@ namespace SpeckleCore
         return Converter.FromAbstract( ( SpeckleAbstract ) myObject, root );
 
       if ( myObject is SpeckleObject )
-        return Converter.TryGetNative( ( SpeckleObject ) myObject );
+        return Converter.Deserialise( ( SpeckleObject ) myObject );
 
       if ( myObject is IEnumerable<object> )
         return ( ( IEnumerable<object> ) myObject ).Select( o => ReadValue( o, root ) ).ToList();
@@ -302,7 +298,7 @@ namespace SpeckleCore
       {
         var genericDict = new Dictionary<object, object>();
         foreach ( DictionaryEntry kvp in ( IDictionary ) myObject )
-          genericDict.Add( kvp.Key, ReadValue( kvp.Value, root) );
+          genericDict.Add( kvp.Key, ReadValue( kvp.Value, root ) );
         return genericDict;
       }
 
@@ -327,13 +323,6 @@ namespace SpeckleCore
           Converter.ResolveRefs( kvp.Value, root, currentPath + "/{" + kvp.Key.ToString() + "}" );
       }
 
-      //if ( original is Dictionary<string, object> )
-      //{
-      //  Dictionary<string, object> myDict = ( Dictionary<string, object> ) original;
-      //  foreach ( string key in myDict.Keys )
-      //    Converter.ResolveRefs( myDict[ key ], root, currentPath + "/{" + key + "}" );
-      //}
-
       if ( original is List<object> )
       {
         List<object> myList = ( List<object> ) original; int index = 0;
@@ -355,7 +344,6 @@ namespace SpeckleCore
         {
           var keySrc = s.Substring( 1, s.Length - 2 );
           propSource = ( ( IDictionary ) propSource )[ Convert.ChangeType( keySrc, ( ( IDictionary ) propSource ).GetType().GetGenericArguments()[ 0 ] ) ];
-          //propSource = ( ( Dictionary<string, object> ) propSource )[ s.Substring( 1, s.Length - 2 ) ];
           continue;
         }
         if ( s.Contains( "[" ) ) // special handler for lists
@@ -465,10 +453,6 @@ namespace SpeckleCore
         traversed.Add( source.GetHashCode(), path );
 
       if ( source is SpeckleObject ) return source as SpeckleObject;
-
-      var spk = Converter.TryGetSpeckleObject( source );
-      if ( spk != null )
-        return spk;
 
       SpeckleAbstract result = new SpeckleAbstract();
       result._Type = source.GetType().Name;
