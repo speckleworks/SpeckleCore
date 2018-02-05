@@ -84,64 +84,84 @@ namespace SpeckleCore
     }
 
     /// <summary>
-    /// Will look for an extension method called "ToSpeckle" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
+    /// This method will convert an object to a SpeckleObject, if possible.
+    /// It will look for an extension method called "ToSpeckle" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output. Otherwise, it will try and convert the object to a SpeckleAbstract object. If it fails, returns null.
     /// </summary>
     /// <param name="o">The object.</param>
-    /// <returns>Null or a speckle object.</returns>
-    public static SpeckleObject TryGetSpeckleObject( object o )
+    /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
+    public static SpeckleObject Serialise( object o )
     {
-
-
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
+
       List<MethodInfo> methods = new List<MethodInfo>();
       foreach ( var ass in myAss )
         methods.AddRange( Converter.GetExtensionMethods( ass, o.GetType(), "ToSpeckle" ) );
 
       if ( methods.Count == 0 )
-        return null;
-
-      if ( methods.Count >= 1 )
-        System.Diagnostics.Debug.WriteLine( "More ToSpeckle methods found for the same object: " + o.GetType().ToString() );
+        return ToAbstract( o );
 
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
       if ( result != null )
         return result as SpeckleObject;
 
-      
-
-      return null;
+      return ToAbstract( o );
     }
 
     /// <summary>
-    /// Will look for an extension method called "ToNative" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
+    /// This method will convert an object to a SpeckleObject, if possible.
+    /// It will look for an extension method called "ToSpeckle" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output. Otherwise, it will try and convert the object to a SpeckleAbstract object. If it fails, returns null.
     /// </summary>
     /// <param name="o">The object.</param>
-    /// <returns>Null or a speckle object.</returns>
-    public static object TryGetNative( SpeckleObject o )
+    /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
+    public static List<SpeckleObject> Serialise(IEnumerable<object> objectList)
     {
+      return objectList.Select( obj => Serialise( obj ) ).ToList();
+    }
+
+    /// <summary>
+    /// This method will try and deserialise a SpeckleObject to a native type.
+    /// It will look for an extension method called "ToNative" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
+    /// </summary>
+    /// <param name="o">The object.</param>
+    /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
+    public static object Deserialise( SpeckleObject o )
+    {
+      if ( o is SpeckleAbstract )
+        return FromAbstract( o as SpeckleAbstract );
+
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
+
       List<MethodInfo> methods = new List<MethodInfo>();
+
       foreach ( var ass in myAss )
         methods.AddRange( Converter.GetExtensionMethods( ass, o.GetType(), "ToNative" ) );
 
       if ( methods.Count == 0 )
         return null;
 
-      if ( methods.Count >= 1 )
-        System.Diagnostics.Debug.WriteLine( "More ToNative methods found for the same object: " + o.Type );
-
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
       if ( result != null )
         return result;
 
-      return null;
+      return o;
     }
 
     /// <summary>
-    /// Tries to cast an object back to its native type if the assembly it belongs to is present.
+    /// This method will try and deserialise a SpeckleObject to a native type.
+    /// It will look for an extension method called "ToNative" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
+    /// </summary>
+    /// <param name="o">The object.</param>
+    /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
+    public static List<object> Deserialise( IEnumerable<SpeckleObject> objectList)
+    {
+      return objectList.Select( obj => Deserialise( obj ) ).ToList();
+    }
+
+    /// <summary>
+    /// Tries to cast an object back to its native type if the assembly it belongs to is present. 
     /// </summary>
     /// <param name="obj"></param>
-    /// <returns></returns>
+    /// <returns>an object, a SpeckleAbstract or null.</returns>
     public static object FromAbstract( SpeckleAbstract obj, object root = null )
     {
       if ( obj._Type == "ref" )
@@ -262,7 +282,7 @@ namespace SpeckleCore
           }
         }
       }
-      
+
       //  set references too.
       if ( root == myObject )
         Converter.ResolveRefs( obj, myObject, "root" );
@@ -293,7 +313,7 @@ namespace SpeckleCore
         return Converter.FromAbstract( ( SpeckleAbstract ) myObject, root );
 
       if ( myObject is SpeckleObject )
-        return Converter.TryGetNative( ( SpeckleObject ) myObject );
+        return Converter.Deserialise( ( SpeckleObject ) myObject );
 
       if ( myObject is IEnumerable<object> )
         return ( ( IEnumerable<object> ) myObject ).Select( o => ReadValue( o, root ) ).ToList();
@@ -302,7 +322,7 @@ namespace SpeckleCore
       {
         var genericDict = new Dictionary<object, object>();
         foreach ( DictionaryEntry kvp in ( IDictionary ) myObject )
-          genericDict.Add( kvp.Key, ReadValue( kvp.Value, root) );
+          genericDict.Add( kvp.Key, ReadValue( kvp.Value, root ) );
         return genericDict;
       }
 
@@ -327,13 +347,6 @@ namespace SpeckleCore
           Converter.ResolveRefs( kvp.Value, root, currentPath + "/{" + kvp.Key.ToString() + "}" );
       }
 
-      //if ( original is Dictionary<string, object> )
-      //{
-      //  Dictionary<string, object> myDict = ( Dictionary<string, object> ) original;
-      //  foreach ( string key in myDict.Keys )
-      //    Converter.ResolveRefs( myDict[ key ], root, currentPath + "/{" + key + "}" );
-      //}
-
       if ( original is List<object> )
       {
         List<object> myList = ( List<object> ) original; int index = 0;
@@ -355,7 +368,6 @@ namespace SpeckleCore
         {
           var keySrc = s.Substring( 1, s.Length - 2 );
           propSource = ( ( IDictionary ) propSource )[ Convert.ChangeType( keySrc, ( ( IDictionary ) propSource ).GetType().GetGenericArguments()[ 0 ] ) ];
-          //propSource = ( ( Dictionary<string, object> ) propSource )[ s.Substring( 1, s.Length - 2 ) ];
           continue;
         }
         if ( s.Contains( "[" ) ) // special handler for lists
@@ -465,10 +477,6 @@ namespace SpeckleCore
         traversed.Add( source.GetHashCode(), path );
 
       if ( source is SpeckleObject ) return source as SpeckleObject;
-
-      var spk = Converter.TryGetSpeckleObject( source );
-      if ( spk != null )
-        return spk;
 
       SpeckleAbstract result = new SpeckleAbstract();
       result._Type = source.GetType().Name;
