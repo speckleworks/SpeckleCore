@@ -90,6 +90,8 @@ namespace SpeckleCore
     /// <returns>Null or a speckle object.</returns>
     public static SpeckleObject TryGetSpeckleObject( object o )
     {
+
+
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
       List<MethodInfo> methods = new List<MethodInfo>();
       foreach ( var ass in myAss )
@@ -104,6 +106,8 @@ namespace SpeckleCore
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
       if ( result != null )
         return result as SpeckleObject;
+
+      
 
       return null;
     }
@@ -140,6 +144,9 @@ namespace SpeckleCore
     /// <returns></returns>
     public static object FromAbstract( SpeckleAbstract obj, object root = null )
     {
+      System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+      stopWatch.Start();
+
       if ( obj._Type == "ref" )
         return null;
 
@@ -166,7 +173,7 @@ namespace SpeckleCore
       if ( root == null )
         root = myObject;
 
-
+      System.Diagnostics.Debug.WriteLine( "Elapsed Before Props: " + stopWatch.ElapsedMilliseconds );
       var keys = obj.Properties.Keys;
       foreach ( string key in keys )
       {
@@ -201,11 +208,14 @@ namespace SpeckleCore
             var MyDict = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
 
             foreach ( DictionaryEntry kvp in ( IDictionary ) value )
-              MyDict.GetType().GetMethod( "Add" ).Invoke( MyDict, new object[ ] { Convert.ChangeType( kvp.Key, MyDict.GetType().GetGenericArguments()[ 0 ] ), Convert.ChangeType( kvp.Value, MyDict.GetType().GetGenericArguments()[ 1 ] ) } );
+              MyDict.GetType().GetMethod( "Add" ).Invoke( MyDict, new object[ ] { Convert.ChangeType( kvp.Key, MyDict.GetType().GetGenericArguments()[ 0 ] ), kvp.Value } );
 
             value = MyDict;
           }
-          catch { }
+          catch ( Exception e )
+          {
+            System.Diagnostics.Debug.WriteLine( e.Message );
+          }
         }
 
         // guids are a pain
@@ -257,9 +267,14 @@ namespace SpeckleCore
         }
       }
 
+      System.Diagnostics.Debug.WriteLine( "Elapsed Before Ref: " + stopWatch.ElapsedMilliseconds );
+      
       //  set references too.
       if ( root == myObject )
         Converter.ResolveRefs( obj, myObject, "root" );
+
+      stopWatch.Stop();
+      System.Diagnostics.Debug.WriteLine( "Elapsed End: " + stopWatch.ElapsedMilliseconds );
 
       return myObject;
     }
@@ -296,7 +311,7 @@ namespace SpeckleCore
       {
         var genericDict = new Dictionary<object, object>();
         foreach ( DictionaryEntry kvp in ( IDictionary ) myObject )
-          genericDict.Add( kvp.Key, kvp.Value );
+          genericDict.Add( kvp.Key, ReadValue( kvp.Value, root) );
         return genericDict;
       }
 
@@ -315,12 +330,18 @@ namespace SpeckleCore
             Converter.ResolveRefs( myObj.Properties[ key ], root, currentPath + "/" + key );
       }
 
-      if ( original is Dictionary<string, object> )
+      if ( original is IDictionary )
       {
-        Dictionary<string, object> myDict = ( Dictionary<string, object> ) original;
-        foreach ( string key in myDict.Keys )
-          Converter.ResolveRefs( myDict[ key ], root, currentPath + "/{" + key + "}" );
+        foreach ( DictionaryEntry kvp in ( IDictionary ) original )
+          Converter.ResolveRefs( kvp.Value, root, currentPath + "/{" + kvp.Key.ToString() + "}" );
       }
+
+      //if ( original is Dictionary<string, object> )
+      //{
+      //  Dictionary<string, object> myDict = ( Dictionary<string, object> ) original;
+      //  foreach ( string key in myDict.Keys )
+      //    Converter.ResolveRefs( myDict[ key ], root, currentPath + "/{" + key + "}" );
+      //}
 
       if ( original is List<object> )
       {
@@ -341,7 +362,9 @@ namespace SpeckleCore
         if ( s == "root" ) continue;
         if ( s.Contains( "{" ) ) // special handler for dicts
         {
-          propSource = ( ( Dictionary<string, object> ) propSource )[ s.Substring( 1, s.Length - 2 ) ];
+          var keySrc = s.Substring( 1, s.Length - 2 );
+          propSource = ( ( IDictionary ) propSource )[ Convert.ChangeType( keySrc, ( ( IDictionary ) propSource ).GetType().GetGenericArguments()[ 0 ] ) ];
+          //propSource = ( ( Dictionary<string, object> ) propSource )[ s.Substring( 1, s.Length - 2 ) ];
           continue;
         }
         if ( s.Contains( "[" ) ) // special handler for lists
@@ -368,7 +391,9 @@ namespace SpeckleCore
         if ( s == "root" ) continue;
         if ( s.Contains( "{" ) ) // special handler for dicts
         {
-          propTarget = ( ( Dictionary<string, object> ) propTarget )[ s.Substring( 1, s.Length - 2 ) ];
+          var keySrc = s.Substring( 1, s.Length - 2 );
+          propTarget = ( ( IDictionary ) propTarget )[ Convert.ChangeType( keySrc, ( ( IDictionary ) propTarget ).GetType().GetGenericArguments()[ 0 ] ) ];
+          //propTarget = ( ( Dictionary<string, object> ) propTarget )[ s.Substring( 1, s.Length - 2 ) ];
           continue;
         }
 
@@ -392,7 +417,9 @@ namespace SpeckleCore
 
       if ( last.Contains( '{' ) )
       {
-        ( ( Dictionary<string, object> ) propTarget )[ last.Substring( 1, last.Length - 2 ) ] = propSource;
+        var keySrc = last.Substring( 1, last.Length - 2 );
+        ( ( IDictionary ) propTarget )[ Convert.ChangeType( keySrc, ( ( IDictionary ) propTarget ).GetType().GetGenericArguments()[ 0 ] ) ] = propSource;
+        //( ( Dictionary<string, object> ) propTarget )[ last.Substring( 1, last.Length - 2 ) ] = propSource;
         return;
       }
       if ( last.Contains( '[' ) )
@@ -445,6 +472,8 @@ namespace SpeckleCore
         return new SpeckleAbstract() { _Type = "ref", _Ref = traversed[ source.GetHashCode() ] };
       else
         traversed.Add( source.GetHashCode(), path );
+
+      if ( source is SpeckleObject ) return source as SpeckleObject;
 
       var spk = Converter.TryGetSpeckleObject( source );
       if ( spk != null )
