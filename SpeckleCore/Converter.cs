@@ -144,9 +144,6 @@ namespace SpeckleCore
     /// <returns></returns>
     public static object FromAbstract( SpeckleAbstract obj, object root = null )
     {
-      System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
-      stopWatch.Start();
-
       if ( obj._Type == "ref" )
         return null;
 
@@ -173,7 +170,6 @@ namespace SpeckleCore
       if ( root == null )
         root = myObject;
 
-      System.Diagnostics.Debug.WriteLine( "Elapsed Before Props: " + stopWatch.ElapsedMilliseconds );
       var keys = obj.Properties.Keys;
       foreach ( string key in keys )
       {
@@ -266,15 +262,10 @@ namespace SpeckleCore
           }
         }
       }
-
-      System.Diagnostics.Debug.WriteLine( "Elapsed Before Ref: " + stopWatch.ElapsedMilliseconds );
       
       //  set references too.
       if ( root == myObject )
         Converter.ResolveRefs( obj, myObject, "root" );
-
-      stopWatch.Stop();
-      System.Diagnostics.Debug.WriteLine( "Elapsed End: " + stopWatch.ElapsedMilliseconds );
 
       return myObject;
     }
