@@ -180,7 +180,7 @@ namespace SpeckleCore
         var value = ReadValue( obj.Properties[ key ], root );
 
         // handles both hashsets and lists or whatevers
-        if ( value is IEnumerable && value.GetType() != typeof( string ) )
+        if ( value is IEnumerable && !( value is IDictionary ) && value.GetType() != typeof( string ) )
         {
           try
           {
@@ -189,6 +189,21 @@ namespace SpeckleCore
               mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
 
             value = mySubList;
+          }
+          catch { }
+        }
+
+        // handles dictionaries of all sorts (kind-of!)
+        if ( value is IDictionary )
+        {
+          try
+          {
+            var MyDict = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
+
+            foreach ( DictionaryEntry kvp in ( IDictionary ) value )
+              MyDict.GetType().GetMethod( "Add" ).Invoke( MyDict, new object[ ] { Convert.ChangeType( kvp.Key, MyDict.GetType().GetGenericArguments()[ 0 ] ), Convert.ChangeType( kvp.Value, MyDict.GetType().GetGenericArguments()[ 1 ] ) } );
+
+            value = MyDict;
           }
           catch { }
         }
@@ -277,8 +292,13 @@ namespace SpeckleCore
       if ( myObject is IEnumerable<object> )
         return ( ( IEnumerable<object> ) myObject ).Select( o => ReadValue( o, root ) ).ToList();
 
-      if ( myObject is IDictionary<string, object> )
-        return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, ReadValue( kvp.Value, root ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
+      if ( myObject is IDictionary )
+      {
+        var genericDict = new Dictionary<object, object>();
+        foreach ( DictionaryEntry kvp in ( IDictionary ) myObject )
+          genericDict.Add( kvp.Key, kvp.Value );
+        return genericDict;
+      }
 
       return null;
     }
@@ -510,8 +530,6 @@ namespace SpeckleCore
           var y = x.Key;
           returnDict.Add( x.Key.ToString(), WriteValue( x.Value, recursionDepth, traversed, path + "/{" + x.Key.ToString() + "}" ) );
         }
-
-
         return returnDict;
 
         var xxx = ( ( IDictionary<object, object> ) myObject );
