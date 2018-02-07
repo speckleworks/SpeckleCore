@@ -91,6 +91,7 @@ namespace SpeckleCore
     /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
     public static SpeckleObject Serialise( object o )
     {
+      if ( o == null ) return null;
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
 
       List<MethodInfo> methods = new List<MethodInfo>();
@@ -113,7 +114,7 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
-    public static List<SpeckleObject> Serialise(IEnumerable<object> objectList)
+    public static List<SpeckleObject> Serialise( IEnumerable<object> objectList )
     {
       return objectList.Select( obj => Serialise( obj ) ).ToList();
     }
@@ -126,6 +127,8 @@ namespace SpeckleCore
     /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
     public static object Deserialise( SpeckleObject o )
     {
+      if ( o == null ) return null;
+
       if ( o is SpeckleAbstract )
         return FromAbstract( o as SpeckleAbstract );
 
@@ -152,7 +155,7 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
-    public static List<object> Deserialise( IEnumerable<SpeckleObject> objectList)
+    public static List<object> Deserialise( IEnumerable<SpeckleObject> objectList )
     {
       return objectList.Select( obj => Deserialise( obj ) ).ToList();
     }
@@ -176,8 +179,8 @@ namespace SpeckleCore
       if ( type == null ) // type not present in the assembly
         return Converter.ShallowConvert( obj );
 
-      // try to initialise both ways
       object myObject = null;
+
       try
       {
         myObject = Activator.CreateInstance( type );
@@ -186,6 +189,9 @@ namespace SpeckleCore
       {
         myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
       }
+
+      if ( myObject == null )
+        return null;
 
       if ( root == null )
         root = myObject;
@@ -238,12 +244,12 @@ namespace SpeckleCore
         if ( ( prop != null && prop.PropertyType == typeof( Guid ) ) || ( field != null && field.FieldType == typeof( Guid ) ) )
           value = new Guid( ( string ) value );
 
+        // Actually set the value below, whether it's a property or field
         // if it is a property
         if ( prop != null && prop.CanWrite )
         {
           if ( prop.PropertyType.IsEnum )
-            prop.SetValue( myObject, Enum.ToObject( prop.PropertyType, value ) );
-
+            prop.SetValue( myObject, Enum.ToObject( prop.PropertyType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
           else
           {
             try
@@ -264,7 +270,7 @@ namespace SpeckleCore
         else if ( field != null )
         {
           if ( field.FieldType.IsEnum )
-            field.SetValue( myObject, Convert.ChangeType( value, typeof( int ) ) );
+            field.SetValue( myObject, Enum.ToObject( field.FieldType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
           else
           {
             try
@@ -464,8 +470,8 @@ namespace SpeckleCore
     {
       if ( source == null ) return null;
 
-      if ( !source.GetType().IsSerializable )
-        return null;
+      //if ( !source.GetType().IsSerializable )
+      //  return null;
 
       if ( traversed == null ) traversed = new Dictionary<int, string>();
 
@@ -559,12 +565,6 @@ namespace SpeckleCore
           returnDict.Add( x.Key.ToString(), WriteValue( x.Value, recursionDepth, traversed, path + "/{" + x.Key.ToString() + "}" ) );
         }
         return returnDict;
-
-        var xxx = ( ( IDictionary<object, object> ) myObject );
-        var yyy = xxx.Select( keyValPair => new KeyValuePair<string, object>( keyValPair.Key.ToString(), WriteValue( keyValPair.Value, recursionDepth, traversed, path + "/{" + keyValPair.Key.ToString() + "}" ) ) ).ToDictionary( kkpp => kkpp.Key, kkpp => kkpp.Value );
-
-        return yyy;
-        //return ( ( IDictionary<string, object> ) myObject ).Select( kvp => new KeyValuePair<string, object>( kvp.Key, WriteValue( kvp.Value, recursionDepth, traversed, path + "/{" + kvp.Key + "}" ) ) ).ToDictionary( kvp => kvp.Key, kvp => kvp.Value );
       }
 
       if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
