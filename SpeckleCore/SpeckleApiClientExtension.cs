@@ -60,7 +60,7 @@ namespace SpeckleCore
         private Dictionary<string, SpeckleObject> ObjectCache = new Dictionary<string, SpeckleObject>();
 
 
-        public SpeckleApiClient(string baseUrl, Converter converter, bool isPersistent = false) : base()
+        public SpeckleApiClient(string baseUrl, bool isPersistent = false) : base()
         {
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(() =>
             {
@@ -73,7 +73,6 @@ namespace SpeckleCore
 
             BaseUrl = baseUrl;
             IsPersistent = isPersistent;
-            Converter = converter;
 
             SetReadyTimer();
         }
