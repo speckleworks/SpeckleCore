@@ -89,10 +89,13 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
-    public static SpeckleObject Serialise( object o )
+    public static SpeckleObject Serialize( object o )
     {
       if ( o == null ) return null;
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
+
+      var myType = o.GetType().ToString();
+
 
       List<MethodInfo> methods = new List<MethodInfo>();
       foreach ( var ass in myAss )
@@ -116,7 +119,7 @@ namespace SpeckleCore
     /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
     public static List<SpeckleObject> Serialise( IEnumerable<object> objectList )
     {
-      return objectList.Select( obj => Serialise( obj ) ).ToList();
+      return objectList.Select( obj => Serialize( obj ) ).ToList();
     }
 
     /// <summary>
@@ -125,7 +128,7 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
-    public static object Deserialise( SpeckleObject o )
+    public static object Deserialize( SpeckleObject o )
     {
       if ( o == null ) return null;
 
@@ -155,9 +158,9 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
-    public static List<object> Deserialise( IEnumerable<SpeckleObject> objectList )
+    public static List<object> Deserialize( IEnumerable<SpeckleObject> objectList )
     {
-      return objectList.Select( obj => Deserialise( obj ) ).ToList();
+      return objectList.Select( obj => Deserialize( obj ) ).ToList();
     }
 
     /// <summary>
@@ -319,7 +322,7 @@ namespace SpeckleCore
         return Converter.FromAbstract( ( SpeckleAbstract ) myObject, root );
 
       if ( myObject is SpeckleObject )
-        return Converter.Deserialise( ( SpeckleObject ) myObject );
+        return Converter.Deserialize( ( SpeckleObject ) myObject );
 
       if ( myObject is IEnumerable<object> )
         return ( ( IEnumerable<object> ) myObject ).Select( o => ReadValue( o, root ) ).ToList();
