@@ -398,7 +398,7 @@ namespace SpeckleCore
     {
         public SpeckleExtrusion() { }
 
-        public SpeckleExtrusion(SpeckleCurve profile, double length, bool capped, string applicationId = null, Dictionary<string, object> properties = null)
+        public SpeckleExtrusion(SpeckleObject profile, double length, bool capped, string applicationId = null, Dictionary<string, object> properties = null)
         {
             this.Profile = profile;
             this.Length = length;
