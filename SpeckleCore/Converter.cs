@@ -162,7 +162,11 @@ namespace SpeckleCore
 
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
 
-      toNativeMethods.Add( o.Type, methods[ 0 ] );
+      try
+      {
+        toNativeMethods.Add( o.Type, methods[ 0 ] );
+      }
+      catch { }
 
       if ( result != null )
         return result;
