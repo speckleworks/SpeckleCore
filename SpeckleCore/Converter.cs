@@ -24,6 +24,11 @@ namespace SpeckleCore
     public abstract IEnumerable<object> ToNative( IEnumerable<SpeckleObject> _objects );
     public abstract object ToNative( SpeckleObject _object );
 
+    public static Dictionary<string, MethodInfo> toSpeckleMethods = new Dictionary<string, MethodInfo>();
+
+    public static Dictionary<string, MethodInfo> toNativeMethods = new Dictionary<string, MethodInfo>();
+
+
     public static string getBase64( object obj )
     {
       using ( System.IO.MemoryStream ms = new System.IO.MemoryStream() )
@@ -92,6 +97,10 @@ namespace SpeckleCore
     public static SpeckleObject Serialize( object o )
     {
       if ( o == null ) return null;
+
+      if ( toSpeckleMethods.ContainsKey( o.GetType().ToString() ) )
+        return toSpeckleMethods[ o.GetType().ToString() ].Invoke( o, new object[ ] { o } ) as SpeckleObject;
+
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
 
       var myType = o.GetType().ToString();
@@ -105,6 +114,9 @@ namespace SpeckleCore
         return ToAbstract( o );
 
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
+
+      toSpeckleMethods.Add( o.GetType().ToString(), methods[0] );
+
       if ( result != null )
         return result as SpeckleObject;
 
@@ -135,6 +147,9 @@ namespace SpeckleCore
       if ( o is SpeckleAbstract )
         return FromAbstract( o as SpeckleAbstract );
 
+      if ( toNativeMethods.ContainsKey( o.GetType().ToString() ) )
+        return toNativeMethods[ o.GetType().ToString() ].Invoke( o, new object[ ] { o } );
+
       List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
 
       List<MethodInfo> methods = new List<MethodInfo>();
@@ -146,6 +161,13 @@ namespace SpeckleCore
         return null;
 
       var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
+
+      try
+      {
+        toNativeMethods.Add( o.Type, methods[ 0 ] );
+      }
+      catch { }
+
       if ( result != null )
         return result;
 
