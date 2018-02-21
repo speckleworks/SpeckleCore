@@ -170,133 +170,140 @@ namespace SpeckleCore
     /// <returns>an object, a SpeckleAbstract or null.</returns>
     public static object FromAbstract( SpeckleAbstract obj, object root = null )
     {
-      if ( obj._Type == "ref" )
-        return null;
-
-      var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == obj._Assembly );
-
-      if ( assembly == null ) // we can't deserialise for sure
-        return Converter.ShallowConvert( obj );
-
-      var type = assembly.GetTypes().FirstOrDefault( t => t.Name == obj._Type );
-      if ( type == null ) // type not present in the assembly
-        return Converter.ShallowConvert( obj );
-
-      object myObject = null;
-
       try
       {
-        myObject = Activator.CreateInstance( type );
+        if ( obj._Type == "ref" )
+          return null;
+
+        var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == obj._Assembly );
+
+        if ( assembly == null ) // we can't deserialise for sure
+          return Converter.ShallowConvert( obj );
+
+        var type = assembly.GetTypes().FirstOrDefault( t => t.Name == obj._Type );
+        if ( type == null ) // type not present in the assembly
+          return Converter.ShallowConvert( obj );
+
+        object myObject = null;
+
+        try
+        {
+          myObject = Activator.CreateInstance( type );
+        }
+        catch
+        {
+          myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
+        }
+
+        if ( myObject == null )
+          return null;
+
+        if ( root == null )
+          root = myObject;
+
+        var keys = obj.Properties.Keys;
+        foreach ( string key in keys )
+        {
+          var prop = type.GetProperty( key );
+          var field = type.GetField( key );
+
+          if ( prop == null && field == null ) continue;
+
+          if ( obj.Properties[ key ] == null ) continue;
+
+          var value = ReadValue( obj.Properties[ key ], root );
+
+          // handles both hashsets and lists or whatevers
+          if ( value is IEnumerable && !( value is IDictionary ) && value.GetType() != typeof( string ) )
+          {
+            try
+            {
+              var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
+              foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
+                mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
+
+              value = mySubList;
+            }
+            catch { }
+          }
+
+          // handles dictionaries of all sorts (kind-of!)
+          if ( value is IDictionary )
+          {
+            try
+            {
+              var MyDict = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
+
+              foreach ( DictionaryEntry kvp in ( IDictionary ) value )
+                MyDict.GetType().GetMethod( "Add" ).Invoke( MyDict, new object[ ] { Convert.ChangeType( kvp.Key, MyDict.GetType().GetGenericArguments()[ 0 ] ), kvp.Value } );
+
+              value = MyDict;
+            }
+            catch ( Exception e )
+            {
+              System.Diagnostics.Debug.WriteLine( e.Message );
+            }
+          }
+
+          // guids are a pain
+          if ( ( prop != null && prop.PropertyType == typeof( Guid ) ) || ( field != null && field.FieldType == typeof( Guid ) ) )
+            value = new Guid( ( string ) value );
+
+          // Actually set the value below, whether it's a property or field
+          // if it is a property
+          if ( prop != null && prop.CanWrite )
+          {
+            if ( prop.PropertyType.IsEnum )
+              prop.SetValue( myObject, Enum.ToObject( prop.PropertyType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
+            else
+            {
+              try
+              {
+                prop.SetValue( myObject, value );
+              }
+              catch
+              {
+                try
+                {
+                  prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
+                }
+                catch { }
+              }
+            }
+          }
+          // if it is a field
+          else if ( field != null )
+          {
+            if ( field.FieldType.IsEnum )
+              field.SetValue( myObject, Enum.ToObject( field.FieldType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
+            else
+            {
+              try
+              {
+                field.SetValue( obj, value );
+              }
+              catch
+              {
+                try
+                {
+                  field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
+                }
+                catch { }
+              }
+            }
+          }
+        }
+
+        //  set references too.
+        if ( root == myObject )
+          Converter.ResolveRefs( obj, myObject, "root" );
+
+        return myObject;
       }
       catch
       {
-        myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
-      }
-
-      if ( myObject == null )
         return null;
-
-      if ( root == null )
-        root = myObject;
-
-      var keys = obj.Properties.Keys;
-      foreach ( string key in keys )
-      {
-        var prop = type.GetProperty( key );
-        var field = type.GetField( key );
-
-        if ( prop == null && field == null ) continue;
-
-        if ( obj.Properties[ key ] == null ) continue;
-
-        var value = ReadValue( obj.Properties[ key ], root );
-
-        // handles both hashsets and lists or whatevers
-        if ( value is IEnumerable && !( value is IDictionary ) && value.GetType() != typeof( string ) )
-        {
-          try
-          {
-            var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
-            foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
-              mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
-
-            value = mySubList;
-          }
-          catch { }
-        }
-
-        // handles dictionaries of all sorts (kind-of!)
-        if ( value is IDictionary )
-        {
-          try
-          {
-            var MyDict = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
-
-            foreach ( DictionaryEntry kvp in ( IDictionary ) value )
-              MyDict.GetType().GetMethod( "Add" ).Invoke( MyDict, new object[ ] { Convert.ChangeType( kvp.Key, MyDict.GetType().GetGenericArguments()[ 0 ] ), kvp.Value } );
-
-            value = MyDict;
-          }
-          catch ( Exception e )
-          {
-            System.Diagnostics.Debug.WriteLine( e.Message );
-          }
-        }
-
-        // guids are a pain
-        if ( ( prop != null && prop.PropertyType == typeof( Guid ) ) || ( field != null && field.FieldType == typeof( Guid ) ) )
-          value = new Guid( ( string ) value );
-
-        // Actually set the value below, whether it's a property or field
-        // if it is a property
-        if ( prop != null && prop.CanWrite )
-        {
-          if ( prop.PropertyType.IsEnum )
-            prop.SetValue( myObject, Enum.ToObject( prop.PropertyType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
-          else
-          {
-            try
-            {
-              prop.SetValue( myObject, value );
-            }
-            catch
-            {
-              try
-              {
-                prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
-              }
-              catch { }
-            }
-          }
-        }
-        // if it is a field
-        else if ( field != null )
-        {
-          if ( field.FieldType.IsEnum )
-            field.SetValue( myObject, Enum.ToObject( field.FieldType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
-          else
-          {
-            try
-            {
-              field.SetValue( obj, value );
-            }
-            catch
-            {
-              try
-              {
-                field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
-              }
-              catch { }
-            }
-          }
-        }
       }
-
-      //  set references too.
-      if ( root == myObject )
-        Converter.ResolveRefs( obj, myObject, "root" );
-
-      return myObject;
     }
 
     private static object ShallowConvert( SpeckleAbstract obj )
