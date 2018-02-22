@@ -210,7 +210,11 @@ namespace SpeckleCore
 
         try
         {
-          myObject = Activator.CreateInstance( type );
+           ConstructorInfo constructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[] { }, null);
+          if (constructor != null)
+            myObject = constructor.Invoke(new object[] { });
+          if(myObject == null)
+            myObject = Activator.CreateInstance( type );
         }
         catch
         {
