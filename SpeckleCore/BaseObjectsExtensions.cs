@@ -394,7 +394,7 @@ namespace SpeckleCore
         }
     }
 
-    public partial class  SpeckleExtrusion
+    public partial class SpeckleExtrusion
     {
         public SpeckleExtrusion() { }
 

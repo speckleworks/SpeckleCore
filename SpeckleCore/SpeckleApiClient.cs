@@ -11,7 +11,7 @@ namespace SpeckleCore
 {
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "11.3.3.0")]
- 
+
     public partial class SpeckleApiClient
     {
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
@@ -59,7 +59,7 @@ namespace SpeckleCore
         partial void PrepareRequest(HttpClient client, HttpRequestMessage request, string url)
         {
             if (AuthToken != "")
-                request.Headers.Add("Authorization", AuthToken);   
+                request.Headers.Add("Authorization", AuthToken);
 
             if (UseGzip && request.Method != HttpMethod.Get)
                 request.Content = new GzipContent(request.Content);
