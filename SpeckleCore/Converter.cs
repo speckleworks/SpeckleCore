@@ -210,7 +210,7 @@ namespace SpeckleCore
 
                 try
                 {
-                    ConstructorInfo constructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[] { }, null);
+                    var constructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[] { }, null);
                     if (constructor != null)
                         myObject = constructor.Invoke(new object[] { });
                     if (myObject == null)
@@ -230,7 +230,7 @@ namespace SpeckleCore
                 var keys = obj.Properties.Keys;
                 foreach (string key in keys)
                 {
-                    var prop = type.GetProperty(key);
+                    var prop = TryGetProperty(type, key);
                     var field = type.GetField(key);
 
                     if (prop == null && field == null) continue;
@@ -417,10 +417,10 @@ namespace SpeckleCore
                     propSource = ((IEnumerable<object>)propSource).ToList()[int.Parse(s.Substring(1, s.Length - 2))];
                     continue;
                 }
-
-                if (IsProperty(propSource, s))
+                var propertySource = TryGetProperty(propSource, s);
+                if (propertySource != null)
                 {
-                    propSource = propSource.GetType().GetProperty(s).GetValue(propSource);
+                    propSource = propertySource.GetValue(propSource);
                 }
                 else
                 {
@@ -448,9 +448,10 @@ namespace SpeckleCore
                     continue;
                 }
 
-                if (IsProperty(propTarget, s))
+                var propertyTarget = TryGetProperty(propTarget.GetType(), s);
+                if (propertyTarget != null)
                 {
-                    propTarget = propTarget.GetType().GetProperty(s).GetValue(propTarget);
+                    propTarget = propertyTarget.GetValue(propTarget);
                 }
                 else
                 {
@@ -472,24 +473,46 @@ namespace SpeckleCore
                 ((IList)propTarget)[int.Parse(last.Substring(1, last.Length - 2))] = propSource;
                 return;
             }
-
-            if (IsProperty(propTarget, last))
+            PropertyInfo toSet = TryGetProperty(propTarget.GetType(), last);
+            if (toSet != null)
             {
-                PropertyInfo toSet = propTarget.GetType().GetProperty(last);
                 if (toSet.CanWrite)
                     toSet.SetValue(propTarget, propSource, null);
             }
             else
             {
-                var toSet = propTarget.GetType().GetField(last);
-                toSet.SetValue(propTarget, propSource);
+                var toSetField = propTarget.GetType().GetField(last);
+                toSetField.SetValue(propTarget, propSource);
             }
         }
 
-        private static bool IsProperty(object obj, string name)
+        private static PropertyInfo TryGetProperty(object obj, string name)
         {
-            var prop = obj.GetType().GetProperty(name);
-            return prop != null;
+            return TryGetProperty(obj.GetType(), name);
+        }
+        private static PropertyInfo TryGetProperty(Type type, string name)
+        {
+            try
+            {
+                return type.GetProperty(name);
+            }
+            catch (AmbiguousMatchException)
+            {
+                PropertyInfo property = null;
+                Type declaringType = null;
+                foreach (var propInfo in type.GetProperties())
+                {
+                    if (string.Compare(name, propInfo.Name) == 0)
+                    {
+                        if (property == null || propInfo.DeclaringType.IsSubclassOf(declaringType))
+                        {
+                            property = propInfo;
+                            declaringType = propInfo.DeclaringType;
+                        }
+                    }
+                }
+                return property;
+            }
         }
 
         /// <summary>

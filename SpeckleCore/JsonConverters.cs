@@ -226,8 +226,12 @@ namespace SpeckleCore
 
             try
             {
-                type = obj[discriminatorName].Value<string>();
-                isSpeckleObject = true;
+                var jObject = obj[discriminatorName];
+                if (jObject != null)
+                {
+                    type = obj[discriminatorName].Value<string>();
+                    isSpeckleObject = true;
+                }
             }
             catch
             {
