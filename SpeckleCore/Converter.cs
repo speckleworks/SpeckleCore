@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -98,6 +99,9 @@ namespace SpeckleCore
         {
             if (o == null) return null;
 
+            if (o is ISpeckleSerializable serializable)
+                return serializable.ToSpeckle();
+
             if (toSpeckleMethods.ContainsKey(o.GetType().ToString()))
                 return toSpeckleMethods[o.GetType().ToString()].Invoke(o, new object[] { o }) as SpeckleObject;
 
@@ -186,6 +190,44 @@ namespace SpeckleCore
         }
 
         /// <summary>
+        /// Detects Assembly defining the object. 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>an object, a SpeckleAbstract or null.</returns>
+        public static Assembly FindAssembly(SpeckleAbstract obj)
+        {
+            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == obj._Assembly);
+            if (assembly != null)
+                return assembly;
+
+            StackFrame[] frames = new StackTrace().GetFrames();
+            foreach (string assemblyName in (from f in frames select f.GetMethod().ReflectedType.Assembly.FullName).Distinct())
+            {
+                try
+                {
+                    assembly = AppDomain.CurrentDomain.GetAssemblies().SingleOrDefault(a => a.FullName == assemblyName);
+                    if (assembly != null)
+                    {
+                        foreach (Type t in assembly.GetTypes())
+                        {
+                            if (string.Compare(t.Name, obj._Type, true) == 0)
+                                return assembly;
+                        }
+                    }
+                }
+                catch (Exception) { }
+            }
+            foreach(Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type t in a.GetTypes())
+                {
+                    if (string.Compare(t.Name, obj._Type, true) == 0)
+                        return assembly;
+                }
+            }
+            return null;
+        }
+        /// <summary>
         /// Tries to cast an object back to its native type if the assembly it belongs to is present. 
         /// </summary>
         /// <param name="obj"></param>
@@ -197,11 +239,9 @@ namespace SpeckleCore
                 if (obj._Type == "ref")
                     return null;
 
-                var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == obj._Assembly);
-
-                if (assembly == null) // we can't deserialise for sure
+                Assembly assembly = FindAssembly(obj); 
+                if (assembly == null)
                     return Converter.ShallowConvert(obj);
-
                 var type = assembly.GetTypes().FirstOrDefault(t => t.Name == obj._Type);
                 if (type == null) // type not present in the assembly
                     return Converter.ShallowConvert(obj);

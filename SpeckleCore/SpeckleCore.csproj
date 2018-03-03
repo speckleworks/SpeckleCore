@@ -52,6 +52,7 @@
     <Compile Include="ClassesForAbstractTests.cs" />
     <Compile Include="Converter.cs" />
     <Compile Include="GzipContent.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="Payloads.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
