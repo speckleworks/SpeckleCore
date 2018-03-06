@@ -280,15 +280,46 @@ namespace SpeckleCore
                     var value = ReadValue(obj.Properties[key], root);
 
                     // handles both hashsets and lists or whatevers
+                    
                     if (value is IEnumerable && !(value is IDictionary) && value.GetType() != typeof(string))
                     {
+                       
                         try
                         {
-                            var mySubList = Activator.CreateInstance(prop != null ? prop.PropertyType : field.FieldType);
-                            foreach (var myObj in ((IEnumerable<object>)value))
-                                mySubList.GetType().GetMethod("Add").Invoke(mySubList, new object[] { myObj });
+                            if (prop != null && prop.PropertyType.ToString().EndsWith("[][]"))
+                            {
+                                IEnumerable enumerable = value as IEnumerable;
 
-                            value = mySubList;
+                                List<object> objects = new List<object>();
+                                foreach (var myObj in ((IEnumerable<object>)value))
+                                {
+                                    objects.Add(myObj);
+                                }
+                                Type elementType = prop.PropertyType.GetElementType();
+                                var myArray = Array.CreateInstance(elementType, objects.Count);
+                                int pos = 0;
+                                foreach (var myObj in objects)
+                                {
+                                    Type nestedType = elementType.GetElementType();
+                                    List<object> nestedObjects = new List<object>();
+                                    foreach (var myNestedObj in ((IEnumerable<object>)myObj))
+                                        nestedObjects.Add(myNestedObj);
+                                    var nestedArray = Array.CreateInstance(nestedType, nestedObjects.Count);
+                                    int nestedPos = 0;
+                                    foreach (var myNestedObj in nestedObjects)
+                                        nestedArray.SetValue(myNestedObj, nestedPos++);
+                                    myArray.SetValue(nestedArray, pos++);
+                                }
+                                value = myArray;
+                            }
+                            else
+                            {
+                                var mySubList = Activator.CreateInstance(prop != null ? prop.PropertyType : field.FieldType);
+                                foreach (var myObj in ((IEnumerable<object>)value))
+                                    mySubList.GetType().GetMethod("Add").Invoke(mySubList, new object[] { myObj });
+
+                                value = mySubList;
+                            }
                         }
                         catch { }
                     }
@@ -388,7 +419,12 @@ namespace SpeckleCore
         {
             if (myObject == null) return null;
 
-            if (myObject.GetType().IsPrimitive || myObject.GetType() == typeof(string))
+            Newtonsoft.Json.Linq.JValue jValue = myObject as Newtonsoft.Json.Linq.JValue;
+            if(jValue != null)
+                return jValue.Value;
+
+            Type objectType = myObject.GetType();
+            if (objectType.IsPrimitive || objectType == typeof(string))
                 return myObject;
 
             if (myObject is SpeckleAbstract)
