@@ -94,86 +94,14 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
-    //public static SpeckleObject Serialize( object o )
-    //{
-    //  if ( o == null ) return null;
-
-    //  if ( toSpeckleMethods.ContainsKey( o.GetType().ToString() ) )
-    //    return toSpeckleMethods[ o.GetType().ToString() ].Invoke( o, new object[ ] { o } ) as SpeckleObject;
-
-    //  List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
-
-    //  List<MethodInfo> methods = new List<MethodInfo>();
-    //  foreach ( var ass in myAss )
-    //    methods.AddRange( Converter.GetExtensionMethods( ass, o.GetType(), "ToSpeckle" ) );
-
-    //  if ( methods.Count == 0 )
-    //    return ToAbstract( o );
-
-    //  var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
-
-    //  toSpeckleMethods.Add( o.GetType().ToString(), methods[ 0 ] );
-
-    //  if ( result != null )
-    //    return result as SpeckleObject;
-
-    //  return ToAbstract( o );
-    //}
-
-    /// <summary>
-    /// This method will convert an object to a SpeckleObject, if possible.
-    /// It will look for an extension method called "ToSpeckle" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output. Otherwise, it will try and convert the object to a SpeckleAbstract object. If it fails, returns null.
-    /// </summary>
-    /// <param name="o">The object.</param>
-    /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
     public static List<SpeckleObject> Serialise( IEnumerable<object> objectList )
     {
       return objectList.Select( obj => Serialise( obj ) ).ToList();
     }
 
-    /// <summary>
-    /// This method will try and deserialise a SpeckleObject to a native type.
-    /// It will look for an extension method called "ToNative" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
-    /// </summary>
-    /// <param name="o">The object.</param>
-    /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
-    //public static object Deserialize( SpeckleObject o )
-    //{
-    //  if ( o == null ) return null;
-
-    //  if ( o is SpeckleAbstract )
-    //    return FromAbstract( o as SpeckleAbstract );
-
-    //  if ( toNativeMethods.ContainsKey( o.GetType().ToString() ) )
-    //    return toNativeMethods[ o.GetType().ToString() ].Invoke( o, new object[ ] { o } );
-
-    //  List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
-
-    //  List<MethodInfo> methods = new List<MethodInfo>();
-
-    //  foreach ( var ass in myAss )
-    //    methods.AddRange( Converter.GetExtensionMethods( ass, o.GetType(), "ToNative" ) );
-
-    //  if ( methods.Count == 0 )
-    //    return null;
-
-    //  var result = methods[ 0 ].Invoke( o, new object[ ] { o } );
-
-    //  try
-    //  {
-    //    toNativeMethods.Add( o.Type, methods[ 0 ] );
-    //  }
-    //  catch { }
-
-    //  if ( result != null )
-    //    return result;
-
-    //  return o;
-    //}
 
     /// <summary>
-    /// This method will try and deserialise a SpeckleObject to a native type.
-    /// It will look for an extension method called "ToNative" in all the plausible loaded assemblies (the assembly name needs to contain "Speckle" and "Converter"). If found, it will invoke it and return its output.
+    /// Deserialises a list of speckle objects.
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
@@ -182,9 +110,9 @@ namespace SpeckleCore
       return objectList.Select( obj => Deserialise( obj ) ).ToList();
     }
 
-    /// <summary>
-    /// Tries to cast an object back to its native type if the assembly it belongs to is present. 
-    /// </summary>
+    /// <summary>                                                  
+    /// Deserialises a speckle object.                             
+    /// </summary>                                                 
     /// <param name="obj"></param>
     /// <returns>an object, a SpeckleAbstract or null.</returns>
     public static object Deserialise( SpeckleObject obj, object root = null )
@@ -198,7 +126,9 @@ namespace SpeckleCore
         if ( !( obj is SpeckleAbstract ) )
         {
           // assembly check 
-          if ( toNativeMethods.ContainsKey( obj.GetType().ToString() ) )
+          var type = obj.GetType().ToString();
+
+          if ( toNativeMethods.ContainsKey( type ) )
             return toNativeMethods[ obj.GetType().ToString() ].Invoke( obj, new object[ ] { obj } );
 
           List<Assembly> myAss = System.AppDomain.CurrentDomain.GetAssemblies().ToList().FindAll( s => s.FullName.Contains( "Speckle" ) && s.FullName.Contains( "Converter" ) );
@@ -211,7 +141,7 @@ namespace SpeckleCore
           // if we have some ToNative method
           if ( methods.Count > 0 )
           {
-            toNativeMethods.Add( obj.Type, methods[ 0 ] );
+            toNativeMethods.Add( type, methods[ 0 ] );
             var result = methods[ 0 ].Invoke( obj, new object[ ] { obj } );
             if ( result != null ) return result;
           }
@@ -546,9 +476,7 @@ namespace SpeckleCore
     }
 
     /// <summary>
-    /// Tries to cast a POCO to a SpeckleAbstract object. It will iterate through public fields and properties.
-    /// Types must  be marked as "Serlializable". Fields marked with "NonSerilaized" are ignored. Properties with private or no setters are also ignored.
-    /// Generic Types are ignored.
+    /// Serialises an object to a speckle object.
     /// </summary>
     /// <param name="source">The object you want to serialise.</param>
     /// <param name="recursionDepth">Leave this blank, unless you really know what you're doing.</param>
