@@ -203,11 +203,18 @@ namespace SpeckleCore
             {
               try
               {
-                var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
-                foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
-                  mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
+                if ( prop.PropertyType.IsArray || field.FieldType.IsArray )
+                {
+                  value = ( ( List<object> ) value ).ToArray();
+                }
+                else
+                {
+                  var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
+                  foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
+                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
 
-                value = mySubList;
+                  value = mySubList;
+                }
               }
               catch { }
             }
