@@ -52,7 +52,7 @@ namespace SpeckleCore
 
     public void SetGeometryHash( object fromWhat )
     {
-      this.GeometryHash = this.Type + "." + GetMd5FromObject( fromWhat, 12 );
+      this.GeometryHash = GetMd5FromObject( fromWhat, 12 );
     }
 
     public void SetHashes( object uniqueProperties )
@@ -164,21 +164,11 @@ namespace SpeckleCore
 
     public SpecklePoint( double x, double y, double z = 0, string applicationId = null, Dictionary<string, object> properties = null )
     {
-      this.Value = new double[ ] { x, y, z };
+      this.Value = new List<double>() { x, y, z };
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
       SetHashes( this.Value );
-    }
-
-    public static implicit operator double[ ] ( SpecklePoint p )
-    {
-      return p.Value;
-    }
-
-    public static implicit operator SpeckleVector( SpecklePoint p )
-    {
-      return new SpeckleVector( p.Value[ 0 ], p.Value[ 1 ], p.Value[ 2 ], null, p.Properties );
     }
   }
 
@@ -188,21 +178,11 @@ namespace SpeckleCore
 
     public SpeckleVector( double x, double y, double z = 0, string applicationId = null, Dictionary<string, object> properties = null )
     {
-      this.Value = new double[ ] { x, y, z };
+      this.Value = new List<double>() { x, y, z };
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
       SetHashes( this.Value );
-    }
-
-    public static implicit operator double[ ] ( SpeckleVector p )
-    {
-      return p.Value;
-    }
-
-    public static implicit operator SpecklePoint( SpeckleVector p )
-    {
-      return new SpecklePoint( p.Value[ 0 ], p.Value[ 1 ], p.Value[ 2 ], null, p.Properties );
     }
   }
 
@@ -227,31 +207,13 @@ namespace SpeckleCore
   {
     public SpeckleLine( ) { }
 
-    public SpeckleLine( SpecklePoint start, SpecklePoint end, string applicationId = null, Dictionary<string, object> properties = null )
+    public SpeckleLine( IEnumerable<double> coordinatesArray, string applicationId = null, Dictionary<string, object> properties = null )
     {
-      this.Start = start;
-      this.End = end;
+      this.Value = coordinatesArray.ToList();
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( Start.GeometryHash + End.GeometryHash );
-    }
-  }
-
-  public partial class SpeckleRectangle
-  {
-    public SpeckleRectangle( ) { }
-
-    public SpeckleRectangle( SpecklePoint A, SpecklePoint B, SpecklePoint C, SpecklePoint D, string applicationId = null, Dictionary<string, object> properties = null )
-    {
-      this.A = A;
-      this.B = B;
-      this.C = C;
-      this.D = D;
-      this.ApplicationId = applicationId;
-      this.Properties = properties;
-
-      SetHashes( A.GeometryHash + B.GeometryHash + C.GeometryHash + D.GeometryHash );
+      SetHashes( this.Value );
     }
   }
 
@@ -327,18 +289,9 @@ namespace SpeckleCore
   {
     public SpecklePolyline( ) { }
 
-    public SpecklePolyline( IEnumerable<SpecklePoint> pointArray, string applicationId = null, Dictionary<string, object> properties = null )
-    {
-      this.Value = pointArray.SelectMany( item => ( double[ ] ) item ).ToArray();
-      this.ApplicationId = applicationId;
-      this.Properties = properties;
-
-      SetHashes( this.Value );
-    }
-
     public SpecklePolyline( IEnumerable<double> coordinatesArray, string applicationId = null, Dictionary<string, object> properties = null )
     {
-      this.Value = coordinatesArray.ToArray();
+      this.Value = coordinatesArray.ToList();
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
@@ -366,15 +319,14 @@ namespace SpeckleCore
 
     public SpeckleMesh( double[ ] vertices, int[ ] faces, int[ ] colors, double[ ] texture_coords, string applicationId = null, Dictionary<string, object> properties = null )
     {
-      this.Vertices = vertices;
-      this.Faces = faces;
-      this.Colors = colors;
-      this.TextureCoordinates = texture_coords;
+      this.Vertices = vertices.ToList();
+      this.Faces = faces.ToList();
+      this.Colors = colors.ToList();
       this.ApplicationId = applicationId;
 
       this.Properties = properties;
 
-      SetHashes( JsonConvert.SerializeObject( Vertices ) + JsonConvert.SerializeObject( Faces ) + JsonConvert.SerializeObject( Colors ) + JsonConvert.SerializeObject( TextureCoordinates ) );
+      SetHashes( JsonConvert.SerializeObject( Vertices ) + JsonConvert.SerializeObject( Faces ) + JsonConvert.SerializeObject( Colors ) );
     }
   }
 
@@ -382,9 +334,9 @@ namespace SpeckleCore
   {
     public SpeckleBrep( ) { }
 
-    public SpeckleBrep( string base64, string provenance, SpeckleMesh displayValue, string applicationId = null, Dictionary<string, object> properties = null )
+    public SpeckleBrep( object rawData, string provenance, SpeckleMesh displayValue, string applicationId = null, Dictionary<string, object> properties = null )
     {
-      this.Base64 = base64;
+      this.RawData = rawData;
       this.Provenance = provenance;
       this.DisplayValue = displayValue;
       this.ApplicationId = applicationId;
@@ -411,25 +363,15 @@ namespace SpeckleCore
   }
 
   [Serializable]
-  public class SpeckleAnnotation : SpeckleObject
+  public partial class SpeckleAnnotation : SpeckleObject
   {
-    public override string Type { get; set; } = "Annotation";
-    public string Text { get; set; }
-    public double TextHeight { get; set; }
-    public string FaceName { get; set; }
-    public bool Bold { get; set; }
-    public bool Italic { get; set; }
-    public SpecklePlane Plane { get; set; }
-    public SpecklePoint Location { get; set; }
-
-
     public SpeckleAnnotation( ) { }
 
-    public SpeckleAnnotation( string text, double textHeight, string faceName, bool bold, bool italic, SpecklePlane plane, SpecklePoint location, string applicationId = null, Dictionary<string, object> properties = null )
+    public SpeckleAnnotation( string text, double textHeight, string fontName, bool bold, bool italic, SpecklePlane plane, SpecklePoint location, string applicationId = null, Dictionary<string, object> properties = null )
     {
       this.Text = text;
       this.TextHeight = textHeight;
-      this.FaceName = faceName;
+      this.FontName = fontName;
       this.Bold = bold;
       this.Italic = italic;
       this.Plane = plane;
@@ -437,16 +379,16 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.Text + this.FaceName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash + this.Location.GeometryHash );
+      SetHashes( this.Text + this.FontName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash + this.Location.GeometryHash );
     }
   }
 
 
-  public partial class SpeckleLayer : IEquatable<SpeckleLayer>
+  public partial class Layer : IEquatable<Layer>
   {
-    public SpeckleLayer( ) { }
+    public Layer( ) { }
 
-    public SpeckleLayer( string name, string guid, string topology, int objectCount, int startIndex, int orderIndex )
+    public Layer( string name, string guid, string topology, int objectCount, int startIndex, int orderIndex )
     {
       this.Name = name;
       this.Guid = guid;
@@ -456,112 +398,30 @@ namespace SpeckleCore
       this.OrderIndex = orderIndex;
     }
 
-    public static void DiffLayerLists( IEnumerable<SpeckleLayer> oldLayers, IEnumerable<SpeckleLayer> newLayers, ref List<SpeckleLayer> toRemove, ref List<SpeckleLayer> toAdd, ref List<SpeckleLayer> toUpdate )
+    public static void DiffLayerLists( IEnumerable<Layer> oldLayers, IEnumerable<Layer> newLayers, ref List<Layer> toRemove, ref List<Layer> toAdd, ref List<Layer> toUpdate )
     {
       toRemove = oldLayers.Except( newLayers, new SpeckleLayerComparer() ).ToList();
       toAdd = newLayers.Except( oldLayers, new SpeckleLayerComparer() ).ToList();
       toUpdate = newLayers.Intersect( oldLayers, new SpeckleLayerComparer() ).ToList();
     }
 
-    public bool Equals( SpeckleLayer other )
+    public bool Equals( Layer other )
     {
       return this.Guid == other.Guid;
     }
   }
 
-  internal class SpeckleLayerComparer : IEqualityComparer<SpeckleLayer>
+  internal class SpeckleLayerComparer : IEqualityComparer<Layer>
   {
-    public bool Equals( SpeckleLayer x, SpeckleLayer y )
+    public bool Equals( Layer x, Layer y )
     {
       return x.Guid == y.Guid;
     }
 
-    public int GetHashCode( SpeckleLayer obj )
+    public int GetHashCode( Layer obj )
     {
       return obj.Guid.GetHashCode();
     }
   }
-
-  public interface ISpeckleControllerParam
-  {
-  }
-
-  [Serializable]
-  public class SpeckleOutputParam : ISpeckleControllerParam
-  {
-    public string Name { get; set; }
-
-    public int OrderIndex { get; set; }
-
-    public bool IsPrincipal { get; set; } = false;
-
-    public string Unit { get; set; }
-
-    public string Value { get; set; }
-
-    public string Guid { get; set; }
-
-    public string Type { get; set; } = "Text";
-  }
-
-  [Serializable]
-  public class SpeckleInputParam : ISpeckleControllerParam
-  {
-    public string Name { get; set; }
-
-    public int OrderIndex { get; set; }
-
-    public string Type { get; set; }
-
-    public string Guid { get; set; }
-  }
-
-  [Serializable]
-  public class SpeckleNumberInput : SpeckleInputParam
-  {
-    public new string Name { get; set; }
-
-    public double Min { get; set; } = 1;
-
-    public double Max { get; set; } = -1;
-
-    public double Step { get; set; } = 1 / 10e2;
-
-    public double Value { get; set; } = 0;
-  }
-
-  [Serializable]
-  public class SpeckleTextInput : SpeckleInputParam
-  {
-    public new string Name { get; set; }
-
-    public string Value { get; set; }
-  }
-
-  [Serializable]
-  public class SpeckleToggleInput : SpeckleInputParam
-  {
-    public new string Name { get; set; }
-
-    public bool Value { get; set; }
-  }
-
-  [Serializable]
-  public class SpecklePointInput : SpeckleInputParam
-  {
-    public new string Name { get; set; }
-
-    public double X { get; set; }
-    public double Y { get; set; }
-    public double Z { get; set; }
-
-    public double MaxX { get; set; }
-    public double MaxY { get; set; }
-    public double MaxZ { get; set; }
-    public double MinX { get; set; }
-    public double MinY { get; set; }
-    public double MinZ { get; set; }
-  }
-
 
 }
