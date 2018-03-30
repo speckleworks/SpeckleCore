@@ -153,15 +153,15 @@ namespace SpeckleCore
           // we have a speckle abstract object
           SpeckleAbstract absObj = obj as SpeckleAbstract;
 
-          if ( absObj._Type == "ref" )
+          if ( absObj._type == "ref" )
             return null;
 
-          var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == absObj._Assembly );
+          var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == absObj._assembly );
 
           if ( assembly == null ) // we can't deserialise for sure
             return Converter.ShallowConvert( absObj );
 
-          var type = assembly.GetTypes().FirstOrDefault( t => t.Name == absObj._Type );
+          var type = assembly.GetTypes().FirstOrDefault( t => t.Name == absObj._type );
           if ( type == null ) // type not present in the assembly
             return Converter.ShallowConvert( absObj );
 
@@ -343,8 +343,8 @@ namespace SpeckleCore
       if ( original is SpeckleAbstract )
       {
         SpeckleAbstract myObj = ( SpeckleAbstract ) original;
-        if ( myObj._Type == "ref" )
-          Converter.LinkRef( root, myObj._Ref, currentPath );
+        if ( myObj._type == "ref" )
+          Converter.LinkRef( root, myObj._ref, currentPath );
         else
           foreach ( var key in myObj.Properties.Keys )
             Converter.ResolveRefs( myObj.Properties[ key ], root, currentPath + "/" + key );
@@ -502,7 +502,7 @@ namespace SpeckleCore
 
       // check references
       if ( traversed.ContainsKey( source.GetHashCode() ) )
-        return new SpeckleAbstract() { _Type = "ref", _Ref = traversed[ source.GetHashCode() ] };
+        return new SpeckleAbstract() { _type = "ref", _ref = traversed[ source.GetHashCode() ] };
       else
         traversed.Add( source.GetHashCode(), path );
 
@@ -527,8 +527,8 @@ namespace SpeckleCore
 
       // else just continue with the to abstract part
       SpeckleAbstract result = new SpeckleAbstract();
-      result._Type = source.GetType().Name;
-      result._Assembly = source.GetType().Assembly.FullName;
+      result._type = source.GetType().Name;
+      result._assembly = source.GetType().Assembly.FullName;
 
       Dictionary<string, object> dict = new Dictionary<string, object>();
 

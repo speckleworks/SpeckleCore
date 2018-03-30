@@ -147,14 +147,14 @@ namespace SpeckleCore
       if ( ClientId == null )
       {
         LogEvent( "Creating a new client." );
-        var payload = new PayloadClientCreate() { Client = new SpeckleClient() { StreamId = StreamId, Role = Role.ToString(), Online = true, DocumentGuid = documentGuid, DocumentName = documentName, DocumentType = documentType } };
-        ClientId = ( await this.ClientCreateAsync( payload ) ).ClientId;
+        var myClient = new AppClient() { StreamId = StreamId, Role = Role.ToString(), Online = true, DocumentGuid = documentGuid, DocumentName = documentName, DocumentType = documentType };
+
+        ClientId = ( await this.ClientCreateAsync( myClient ) ).Resource._id;
       }
       else
       {
         LogEvent( "Setting client to alive." );
-        var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = true } };
-        this.ClientUpdate( payload, ClientId );
+        await ClientUpdateAsync( ClientId, new AppClient() { Online = true } );
       }
     }
 
@@ -266,7 +266,7 @@ namespace SpeckleCore
       AuthToken = info.GetString( "ApiToken" );
       ClientId = info.GetString( "ClientId" );
 
-      Stream = StreamGet( StreamId ).Stream;
+      Stream = StreamGetAsync( StreamId, null ).Result.Resource;
 
       // does not need waiting for, as we already have a clientid.
       SetupClient();
@@ -291,13 +291,12 @@ namespace SpeckleCore
 
       if ( !delete )
       {
-        var payload = new PayloadClientUpdate() { Client = new SpeckleClient() { Online = false } };
-        ClientUpdateAsync( payload, ClientId );
+        ClientUpdateAsync( ClientId, new AppClient() { Online = false } );
         WebsocketClient?.Close();
         return;
       }
 
-      this.ClientDeleteAsync( ClientId );
+      ClientUpdateAsync( ClientId, new AppClient() { Online = false,  Deleted = true } );
       WebsocketClient?.Close();
     }
   }

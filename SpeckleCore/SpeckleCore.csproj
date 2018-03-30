@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,16 +42,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseObjects.cs" />
-    <Compile Include="BaseObjectsExtensions.cs" />
+    <Compile Include="ModelBase.cs" />
+    <Compile Include="ModelObjects.cs" />
+    <Compile Include="ModelObjectsExt.cs" />
     <Compile Include="ClassesForAbstractTests.cs" />
     <Compile Include="Converter.cs" />
     <Compile Include="GzipContent.cs" />
     <Compile Include="JsonConverters.cs" />
-    <Compile Include="Payloads.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Responses.cs" />
-    <Compile Include="SpeckleApiClient.cs" />
+    <Compile Include="ModelResponses.cs" />
+    <Compile Include="SpeckleApiClientApiCalls.cs" />
+    <Compile Include="SpeckleApiClientHead.cs" />
     <Compile Include="SpeckleApiClientExtension.cs" />
   </ItemGroup>
   <ItemGroup>
