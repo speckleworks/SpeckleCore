@@ -114,6 +114,10 @@ namespace SpeckleCore
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   public partial class SpeckleObject : ResourceBase
   {
+    [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
+    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Abstract;
+
     /// <summary>Object's unique hash.</summary>
     [Newtonsoft.Json.JsonProperty( "hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Hash { get; set; }
@@ -604,13 +608,13 @@ namespace SpeckleCore
     public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Curve;
 
     [Newtonsoft.Json.JsonProperty( "degree", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public double? Degree { get; set; }
+    public int Degree { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "periodic", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public double? Periodic { get; set; }
+    public bool Periodic { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "rational", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public double? Rational { get; set; }
+    public bool Rational { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "points", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<double> Points { get; set; }
@@ -657,6 +661,10 @@ namespace SpeckleCore
     /// <summary>If any, the colours per vertex.</summary>
     [Newtonsoft.Json.JsonProperty( "colors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<int> Colors { get; set; }
+
+    /// <summary>If any, the colours per vertex.</summary>
+    [Newtonsoft.Json.JsonProperty( "textureCoordinates", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public List<double> TextureCoordinates { get; set; }
 
     public string ToJson( )
     {
