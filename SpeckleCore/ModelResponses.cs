@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SpeckleCore
 {
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseBase
   {
     /// <summary>Besides the http status code, this tells you whether the call succeeded or not.</summary>
@@ -34,6 +36,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseUser : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "resource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -55,6 +58,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseClient : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "resource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -76,6 +80,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseProject : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "resource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -97,6 +102,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseComment : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "resource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -118,6 +124,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseStream : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "resource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -139,6 +146,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseObject : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "resource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -160,6 +168,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseStreamClone : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "clone", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -181,6 +190,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResponseStreamDiff : ResponseBase
   {
     [Newtonsoft.Json.JsonProperty( "objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -203,6 +213,7 @@ namespace SpeckleCore
 
   /// <summary>The resource type you want to comment on.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public enum ResourceType
   {
     [System.Runtime.Serialization.EnumMember( Value = "stream" )]
@@ -221,6 +232,7 @@ namespace SpeckleCore
 
   /// <summary>it's a timestamp for each login.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class LoginDateProperty
   {
     [Newtonsoft.Json.JsonProperty( "date", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -239,6 +251,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class Resource
   {
     [Newtonsoft.Json.JsonProperty( "resourceType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -260,6 +273,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleBaseColor
   {
     /// <summary>alpha value</summary>
@@ -283,6 +297,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class DiffObjectsResult
   {
     [Newtonsoft.Json.JsonProperty( "common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -307,6 +322,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class DiffLayersResult
   {
     [Newtonsoft.Json.JsonProperty( "common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -331,6 +347,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NSwag", "11.16.1.0 (NJsonSchema v9.10.41.0 (Newtonsoft.Json v9.0.0.0))" )]
+  [Serializable]
   public partial class SpeckleException : System.Exception
   {
     public int StatusCode { get; private set; }
@@ -354,6 +371,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NSwag", "11.16.1.0 (NJsonSchema v9.10.41.0 (Newtonsoft.Json v9.0.0.0))" )]
+  [Serializable]
   public partial class SpeckleException<TResult> : SpeckleException
   {
     public TResult Result { get; private set; }

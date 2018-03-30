@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 {
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public enum SpeckleObjectType
   {
     [System.Runtime.Serialization.EnumMember( Value = "Null" )]
@@ -112,6 +113,7 @@ namespace SpeckleCore
   [JsonInheritanceAttribute( "SpeckleAnnotation", typeof( SpeckleAnnotation ) )]
   [JsonInheritanceAttribute( "SpeckleBlock", typeof( SpeckleBlock ) )]
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleObject : ResourceBase
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -133,7 +135,7 @@ namespace SpeckleCore
     /// <summary>The extra properties field of a speckle object.</summary>
     [Newtonsoft.Json.JsonProperty( "properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( SpecklePropertiesConverter ) )]
-    public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+    public Dictionary<string, object> Properties { get; set; }
 
     /// <summary>If this object is a child, the parent's objectid.</summary>
     [Newtonsoft.Json.JsonProperty( "parent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -160,6 +162,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleAbstract : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -191,6 +194,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpecklePlaceholder : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -210,6 +214,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleBoolean : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -232,6 +237,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleNumber : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -255,6 +261,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleString : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -278,6 +285,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleInterval : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -303,6 +311,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleInterval2d : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -330,6 +339,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpecklePoint : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -353,6 +363,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleVector : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -376,6 +387,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpecklePlane : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -411,6 +423,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleCircle : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -439,6 +452,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleArc : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -473,6 +487,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleEllipse : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -501,6 +516,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpecklePolycurve : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -523,6 +539,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleBox : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -554,6 +571,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleLine : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -576,6 +594,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpecklePolyline : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -601,6 +620,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleCurve : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -644,6 +664,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleMesh : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -679,6 +700,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleBrep : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -710,6 +732,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleExtrusion : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -747,6 +770,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleAnnotation : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -787,6 +811,7 @@ namespace SpeckleCore
   }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleBlock : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]

@@ -8,6 +8,7 @@ namespace SpeckleCore
 {
   /// <summary>Base class that adds a set of simple properties related to authorisation and commenting to all applicable resources (not users).</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class ResourceBase
   {
     [Newtonsoft.Json.JsonProperty( "_id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -34,7 +35,7 @@ namespace SpeckleCore
 
     /// <summary>Controls archival status - does not actually delete anything</summary>
     [Newtonsoft.Json.JsonProperty( "deleted", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public bool? Deleted { get; set; } = false;
+    public bool? Deleted { get; set; }
 
     public string ToJson( )
     {
@@ -50,6 +51,7 @@ namespace SpeckleCore
 
   /// <summary>Describes a user.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class User
   {
     /// <summary>Database uuid.</summary>
@@ -110,6 +112,7 @@ namespace SpeckleCore
 
   /// <summary>A speckle client.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class AppClient : ResourceBase
   {
     /// <summary>Database uuid.</summary>
@@ -154,6 +157,7 @@ namespace SpeckleCore
 
   /// <summary>A project contains a group of streams and users.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class Project : ResourceBase
   {
     [Newtonsoft.Json.JsonProperty( "_id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -185,6 +189,7 @@ namespace SpeckleCore
 
   /// <summary>A comment/issue.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class Comment : ResourceBase
   {
     [Newtonsoft.Json.JsonProperty( "resource", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -222,6 +227,7 @@ namespace SpeckleCore
 
   /// <summary>A stream is essentially a collection of objects, with added properties.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpeckleStream : ResourceBase
   {
     /// <summary>The stream's short id.</summary>
@@ -249,7 +255,7 @@ namespace SpeckleCore
     public object GlobalMeasures { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "isComputedResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public bool? IsComputedResult { get; set; } = false;
+    public bool? IsComputedResult { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "viewerLayers", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<object> ViewerLayers { get; set; }
@@ -280,6 +286,7 @@ namespace SpeckleCore
 
   /// <summary>Describes a speckle layer. To assign objects to a speckle layer, you'll need to start at `objects[ layer.startIndex ]` and finish at `objects[ layer.startIndex + layer.objectCount ]`.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class Layer
   {
     /// <summary>Layer's name</summary>
@@ -323,6 +330,7 @@ namespace SpeckleCore
 
   /// <summary>Holds stream layer properties, mostly for displaying purposes. This object will be filled up with garbage from threejs and others, but below is a minimal schema.</summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class LayerProperties
   {
     [Newtonsoft.Json.JsonProperty( "color", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]

@@ -362,7 +362,7 @@ namespace SpeckleCore
     }
   }
 
-  [Serializable]
+
   public partial class SpeckleAnnotation : SpeckleObject
   {
     public SpeckleAnnotation( ) { }
