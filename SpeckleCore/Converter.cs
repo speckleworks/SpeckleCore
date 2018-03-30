@@ -107,7 +107,8 @@ namespace SpeckleCore
     /// <returns>A native type, a SpeckleAbstract if no explicit conversion found, or null.</returns>
     public static List<object> Deserialise( IEnumerable<SpeckleObject> objectList )
     {
-      return objectList.Select( obj => Deserialise( obj ) ).ToList();
+      var copy = objectList.ToArray();
+      return copy.Select( obj => Deserialise( obj ) ).ToList();
     }
 
     /// <summary>                                                  
