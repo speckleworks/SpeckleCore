@@ -754,6 +754,15 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "pathCurve", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleObject PathCurve { get; set; }
 
+    [Newtonsoft.Json.JsonProperty("pathTangent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public SpeckleObject PathTangent { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("profileTransformation", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public Object ProfileTransformation { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("profiles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public List<SpeckleObject> Profiles { get; set; }
+     
     [Newtonsoft.Json.JsonProperty( "length", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? Length;
 
