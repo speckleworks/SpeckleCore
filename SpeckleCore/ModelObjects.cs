@@ -84,7 +84,13 @@ namespace SpeckleCore
     Extrusion = 23,
 
     [System.Runtime.Serialization.EnumMember( Value = "Block" )]
-    Block = 24
+    Block = 24,
+    
+    [System.Runtime.Serialization.EnumMember( Value = "Input")]
+    Input = 25,
+    
+    [System.Runtime.Serialization.EnumMember(Value = "Output")]
+    Output = 26
 
   }
 
@@ -112,6 +118,8 @@ namespace SpeckleCore
   [JsonInheritanceAttribute( "SpeckleExtrusion", typeof( SpeckleExtrusion ) )]
   [JsonInheritanceAttribute( "SpeckleAnnotation", typeof( SpeckleAnnotation ) )]
   [JsonInheritanceAttribute( "SpeckleBlock", typeof( SpeckleBlock ) )]
+  [JsonInheritanceAttribute("SpeckleInput", typeof(SpeckleInput))]
+  [JsonInheritanceAttribute("SpeckleOutput", typeof(SpeckleOutput))]
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
   public partial class SpeckleObject : ResourceBase
@@ -844,6 +852,60 @@ namespace SpeckleCore
     public static SpeckleBlock FromJson( string data )
     {
       return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleBlock>( data );
+    }
+
+  }
+
+  public partial class SpeckleInput : SpeckleObject
+  {
+    [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Input;
+
+    [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Name { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("min", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public float Min { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("max", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public float Max { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public float Value { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("inputType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string InputType { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("guid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Guid { get; set; }
+    
+    public string ToJson()
+    {
+      return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+    }
+
+    public static SpeckleInput FromJson(string data)
+    {
+      return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleInput>(data);
+    }
+
+  }
+
+  public partial class SpeckleOutput : SpeckleObject
+  {
+    [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Output;
+
+    public string ToJson()
+    {
+      return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+    }
+
+    public static SpeckleOutput FromJson(string data)
+    {
+      return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleOutput>(data);
     }
 
   }

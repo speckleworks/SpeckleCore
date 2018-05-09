@@ -383,6 +383,22 @@ namespace SpeckleCore
     }
   }
 
+  public partial class SpeckleInput : SpeckleObject
+  {
+    public SpeckleInput() { }
+
+    public SpeckleInput( string name, float min, float max, float value, string inputType, string guid)
+    {
+      this.Name = name;
+      this.Guid = guid;
+      this.Min = min;
+      this.Max = max;
+      this.Value = value;
+      this.InputType = inputType;
+    }
+  }
+
+
 
   public partial class Layer : IEquatable<Layer>
   {
