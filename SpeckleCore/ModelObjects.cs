@@ -395,19 +395,19 @@ namespace SpeckleCore
     public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Plane;
 
     /// <summary>The origin of the plane.</summary>
-    [Newtonsoft.Json.JsonProperty( "Origin", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonProperty( "origin", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpecklePoint Origin { get; set; }
 
     /// <summary>The normal of the plane.</summary>
-    [Newtonsoft.Json.JsonProperty( "Normal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonProperty( "normal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleVector Normal { get; set; }
 
     /// <summary>The X axis of the plane.</summary>
-    [Newtonsoft.Json.JsonProperty( "Xdir", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonProperty( "xdir", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleVector Xdir { get; set; }
 
     /// <summary>The Y axis of the plane.</summary>
-    [Newtonsoft.Json.JsonProperty( "Ydir", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonProperty( "ydir", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleVector Ydir { get; set; }
 
     public string ToJson( )
