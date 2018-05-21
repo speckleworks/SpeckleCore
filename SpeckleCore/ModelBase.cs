@@ -166,6 +166,9 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Name { get; set; }
 
+    [Newtonsoft.Json.JsonProperty( "number", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public string number { get; set; }
+
     [Newtonsoft.Json.JsonProperty( "users", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<string> Users { get; set; }
 
