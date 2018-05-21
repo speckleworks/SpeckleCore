@@ -538,6 +538,9 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "domain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleInterval Domain { get; set; }
 
+    [Newtonsoft.Json.JsonProperty( "closed", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public bool Closed { get; set; }
+
     public string ToJson( )
     {
       return Newtonsoft.Json.JsonConvert.SerializeObject( this );
@@ -620,7 +623,7 @@ namespace SpeckleCore
     public List<double> Value { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "closed", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public bool closed { get; set; }
+    public bool Closed { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "domain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleInterval Domain { get; set; }
@@ -668,6 +671,9 @@ namespace SpeckleCore
 
     [Newtonsoft.Json.JsonProperty( "displayValue", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpecklePolyline DisplayValue { get; set; }
+
+    [Newtonsoft.Json.JsonProperty( "closed", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public bool Closed { get; set; }
 
     public string ToJson( )
     {
