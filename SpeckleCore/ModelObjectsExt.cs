@@ -68,7 +68,73 @@ namespace SpeckleCore
     /// <param name="factor">Scaling factor</param>
     public virtual void Scale( double factor )
     {
-      // TODO: go through properties and scale stuff that can be scaled - recursively! 
+      this.Properties = ScaleDictionary( this.Properties, factor );
+    }
+
+    public Dictionary<string, object> ScaleDictionary(Dictionary<string,object> dict, double factor)
+    {
+      if ( dict == null ) return null;
+      foreach(var kvp in dict)
+      {
+        switch(kvp.Value)
+        {
+          case Dictionary<string, object> d:
+            dict[ kvp.Key ] = ScaleDictionary( d, factor );
+            break;
+          case SpeckleInterval obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleInterval2d obj:
+            obj.Scale( factor );
+            break;
+          case SpecklePoint obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleVector obj:
+            obj.Scale( factor );
+            break;
+          case SpecklePlane obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleLine obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleCircle obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleEllipse obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleArc obj:
+            obj.Scale( factor );
+            break;
+          case SpecklePolyline obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleBox obj:
+            obj.Scale( factor );
+            break;
+          case SpecklePolycurve obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleCurve obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleMesh obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleBrep obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleExtrusion obj:
+            obj.Scale( factor );
+            break;
+          case SpeckleAnnotation obj:
+            obj.Scale( factor );
+            break;
+        }
+      }
+      return dict;
     }
   }
 
@@ -198,7 +264,7 @@ namespace SpeckleCore
 
     public override void Scale( double factor )
     {
-      this.Value.Select( coord => coord * factor );
+      for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
       base.Scale( factor );
     }
   }
@@ -218,7 +284,7 @@ namespace SpeckleCore
 
     public override void Scale( double factor )
     {
-      this.Value.Select( coord => coord * factor );
+      for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
       base.Scale( factor );
     }
   }
@@ -264,7 +330,7 @@ namespace SpeckleCore
 
     public override void Scale( double factor )
     {
-      this.Value.Select( coord => coord * factor );
+      for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
       base.Scale( factor );
     }
   }
@@ -382,7 +448,7 @@ namespace SpeckleCore
 
     public override void Scale( double factor )
     {
-      this.Value.Select( x => x * factor );
+      for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
       base.Scale( factor );
     }
   }
@@ -431,7 +497,7 @@ namespace SpeckleCore
 
     public override void Scale( double factor )
     {
-      this.Points.Select( x => x * factor );
+      for ( int i = 0; i < Points.Count; i++ ) Points[ i ] *= factor;
       this.DisplayValue.Scale( factor );
       base.Scale( factor );
     }
@@ -455,7 +521,7 @@ namespace SpeckleCore
 
     public override void Scale( double factor )
     {
-      this.Vertices.Select( x => x * factor );
+      for ( int i = 0; i < Vertices.Count; i++ ) Vertices[ i ] *= factor;
       base.Scale( factor );
     }
   }
@@ -531,7 +597,6 @@ namespace SpeckleCore
     }
   }
 
-
   public partial class SpeckleAnnotation : SpeckleObject
   {
     public SpeckleAnnotation( ) { }
@@ -559,7 +624,6 @@ namespace SpeckleCore
       base.Scale( factor );
     }
   }
-
 
   public partial class Layer : IEquatable<Layer>
   {
