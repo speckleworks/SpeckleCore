@@ -60,6 +60,16 @@ namespace SpeckleCore
       SetGeometryHash( uniqueProperties );
       SetFullHash();
     }
+
+    /// <summary>
+    /// Use only for unit conversions. This will not affect the object hashes, thus potentially causing 
+    /// inconsistencies if used to save objects on a server.
+    /// </summary>
+    /// <param name="factor">Scaling factor</param>
+    public virtual void Scale( double factor )
+    {
+      // TODO: go through properties and scale stuff that can be scaled - recursively! 
+    }
   }
 
   public partial class SpeckleBoolean
@@ -133,6 +143,13 @@ namespace SpeckleCore
 
       SetHashes( start + "." + end );
     }
+
+    public override void Scale( double factor )
+    {
+      this.Start *= factor;
+      this.End *= factor;
+      base.Scale( factor );
+    }
   }
 
   public partial class SpeckleInterval2d
@@ -156,6 +173,14 @@ namespace SpeckleCore
 
       SetHashes( U.GeometryHash + V.GeometryHash );
     }
+
+    public override void Scale( double factor )
+    {
+      this.U.Scale( factor );
+      this.V.Scale( factor );
+      base.Scale( factor );
+    }
+
   }
 
   public partial class SpecklePoint
@@ -170,6 +195,12 @@ namespace SpeckleCore
 
       SetHashes( this.Value );
     }
+
+    public override void Scale( double factor )
+    {
+      this.Value.Select( coord => coord * factor );
+      base.Scale( factor );
+    }
   }
 
   public partial class SpeckleVector
@@ -183,6 +214,12 @@ namespace SpeckleCore
       this.Properties = properties;
 
       SetHashes( this.Value );
+    }
+
+    public override void Scale( double factor )
+    {
+      this.Value.Select( coord => coord * factor );
+      base.Scale( factor );
     }
   }
 
@@ -201,6 +238,15 @@ namespace SpeckleCore
 
       SetHashes( origin.GeometryHash + normal.GeometryHash + Xdir.GeometryHash + YDir.GeometryHash );
     }
+
+    public override void Scale( double factor )
+    {
+      this.Origin.Scale( factor );
+      this.Normal.Scale( factor );
+      this.Xdir.Scale( factor );
+      this.Ydir.Scale( factor );
+      base.Scale( factor );
+    }
   }
 
   public partial class SpeckleLine
@@ -214,6 +260,12 @@ namespace SpeckleCore
       this.Properties = properties;
 
       SetHashes( this.Value );
+    }
+
+    public override void Scale( double factor )
+    {
+      this.Value.Select( coord => coord * factor );
+      base.Scale( factor );
     }
   }
 
@@ -230,6 +282,14 @@ namespace SpeckleCore
       this.Properties = properties;
 
       SetHashes( Center.GeometryHash + Normal.GeometryHash + Radius );
+    }
+
+    public override void Scale( double factor )
+    {
+      this.Center.Scale( factor );
+      this.Normal.Scale( factor );
+      this.Radius *= factor;
+      base.Scale( factor );
     }
   }
 
@@ -249,6 +309,13 @@ namespace SpeckleCore
 
       SetHashes( plane.GeometryHash + radius + startAngle + endAngle );
     }
+
+    public override void Scale( double factor )
+    {
+      this.Radius *= factor;
+      this.Plane.Scale( factor );
+      base.Scale( factor );
+    }
   }
 
   public partial class SpeckleEllipse
@@ -266,6 +333,12 @@ namespace SpeckleCore
       SetHashes( Plane.GeometryHash + radius1 + radius2 );
     }
 
+    public override void Scale( double factor )
+    {
+      this.Plane.Scale( factor );
+      this.FirstRadius *= factor; this.SecondRadius *= factor;
+      base.Scale( factor );
+    }
   }
 
   public partial class SpeckleBox
@@ -283,6 +356,15 @@ namespace SpeckleCore
 
       SetHashes( BasePlane.GeometryHash + XSize.GeometryHash + YSize.GeometryHash + ZSize.GeometryHash );
     }
+
+    public override void Scale( double factor )
+    {
+      this.BasePlane.Scale( factor );
+      this.XSize.Scale( factor );
+      this.YSize.Scale( factor );
+      this.ZSize.Scale( factor );
+      base.Scale( factor );
+    }
   }
 
   public partial class SpecklePolyline
@@ -297,6 +379,41 @@ namespace SpeckleCore
 
       SetHashes( this.Value );
     }
+
+    public override void Scale( double factor )
+    {
+      this.Value.Select( x => x * factor );
+      base.Scale( factor );
+    }
+  }
+
+  public partial class SpecklePolycurve
+  {
+    public SpecklePolycurve() { }
+
+    public override void Scale( double factor )
+    {
+      foreach ( var segment in this.Segments )
+      {
+        switch ( segment )
+        {
+          case SpeckleCore.SpeckleCurve crv:
+            crv.Scale( factor );
+            break;
+          case SpeckleCore.SpeckleLine crv:
+            crv.Scale( factor );
+            break;
+          case SpeckleCore.SpeckleArc crv:
+            crv.Scale( factor );
+            break;
+          case SpeckleCore.SpecklePolyline crv:
+            crv.Scale( factor );
+            break;
+        }
+      }
+      base.Scale( factor );
+    }
+
   }
 
   public partial class SpeckleCurve
@@ -310,6 +427,13 @@ namespace SpeckleCore
       this.Properties = properties;
 
       SetHashes( this.DisplayValue.GeometryHash );
+    }
+
+    public override void Scale( double factor )
+    {
+      this.Points.Select( x => x * factor );
+      this.DisplayValue.Scale( factor );
+      base.Scale( factor );
     }
   }
 
@@ -328,6 +452,12 @@ namespace SpeckleCore
 
       SetHashes( JsonConvert.SerializeObject( Vertices ) + JsonConvert.SerializeObject( Faces ) + JsonConvert.SerializeObject( Colors ) );
     }
+
+    public override void Scale( double factor )
+    {
+      this.Vertices.Select( x => x * factor );
+      base.Scale( factor );
+    }
   }
 
   public partial class SpeckleBrep
@@ -344,6 +474,12 @@ namespace SpeckleCore
 
       SetHashes( this.DisplayValue.GeometryHash );
     }
+
+    public override void Scale( double factor )
+    {
+      this.DisplayValue.Scale( factor );
+      base.Scale( factor );
+    }
   }
 
   public partial class SpeckleExtrusion
@@ -359,6 +495,39 @@ namespace SpeckleCore
       this.Properties = properties;
 
       this.SetHashes( Profile.GeometryHash + "len " + length + "cap " + capped );
+    }
+
+    public override void Scale( double factor )
+    {
+      this.Length *= factor;
+      switch(this.Profile)
+      {
+        case SpeckleCurve c:
+          c.Scale( factor );
+          break;
+        case SpecklePolycurve p:
+          p.Scale( factor );
+          break;
+        case SpecklePolyline p:
+          p.Scale( factor );
+          break;
+        case SpeckleCircle c:
+          c.Scale( factor );
+          break;
+        case SpeckleArc a:
+          a.Scale( factor );
+          break;
+        case SpeckleEllipse e:
+          e.Scale( factor );
+          break;
+        case SpeckleLine l:
+          l.Scale( factor);
+          break;
+        default:
+          break;
+      }
+      
+      base.Scale( factor );
     }
   }
 
@@ -380,6 +549,14 @@ namespace SpeckleCore
       this.Properties = properties;
 
       SetHashes( this.Text + this.FontName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash + this.Location.GeometryHash );
+    }
+
+    public override void Scale( double factor )
+    {
+      this.Plane.Scale( factor );
+      this.Location.Scale( factor );
+      this.TextHeight *= factor;
+      base.Scale( factor );
     }
   }
 
