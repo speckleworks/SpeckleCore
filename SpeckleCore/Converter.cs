@@ -494,7 +494,7 @@ namespace SpeckleCore
     public static SpeckleObject Serialise( object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "" )
     {
       // null  check
-      if ( source == null ) return null;
+      if ( source == null ) return new SpeckleNull();
 
       // init optional parameters
       if ( traversed == null ) traversed = new Dictionary<int, string>();

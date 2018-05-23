@@ -92,6 +92,7 @@ namespace SpeckleCore
   [Newtonsoft.Json.JsonConverter( typeof( SpeckleObjectConverter ), "type" )]
   [JsonInheritanceAttribute( "SpeckleAbstract", typeof( SpeckleAbstract ) )]
   [JsonInheritanceAttribute( "SpecklePlaceholder", typeof( SpecklePlaceholder ) )]
+  [JsonInheritanceAttribute( "SpeckleNull", typeof( SpeckleNull ) )]
   [JsonInheritanceAttribute( "SpeckleBoolean", typeof( SpeckleBoolean ) )]
   [JsonInheritanceAttribute( "SpeckleNumber", typeof( SpeckleNumber ) )]
   [JsonInheritanceAttribute( "SpeckleString", typeof( SpeckleString ) )]
@@ -118,7 +119,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Abstract;
+    public virtual SpeckleObjectType Type { get; set; } = SpeckleObjectType.Abstract;
 
     /// <summary>Object's unique hash.</summary>
     [Newtonsoft.Json.JsonProperty( "hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -167,7 +168,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Abstract;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Abstract;
 
     /// <summary>the original type of the object</summary>
     [Newtonsoft.Json.JsonProperty( "_type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -195,11 +196,25 @@ namespace SpeckleCore
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
+  public partial class SpeckleNull : SpeckleObject
+  {
+    [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Null;
+    
+    public SpeckleNull()
+    {
+      this.GeometryHash = "Null.0"; this.Hash = "Null.0"; 
+    }
+  }
+
+  [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
   public partial class SpecklePlaceholder : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Placeholder;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Placeholder;
 
     public string ToJson( )
     {
@@ -219,7 +234,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Boolean;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Boolean;
 
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public bool? Value { get; set; }
@@ -242,7 +257,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Number;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Number;
 
     /// <summary>A number. Can be float, double, etc.</summary>
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -266,7 +281,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.String;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.String;
 
     /// <summary>A string.</summary>
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -290,7 +305,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Interval;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Interval;
 
     [Newtonsoft.Json.JsonProperty( "start", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? Start { get; set; }
@@ -316,7 +331,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Interval2d;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Interval2d;
 
     /// <summary>U interval.</summary>
     [Newtonsoft.Json.JsonProperty( "U", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -344,7 +359,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Point;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Point;
 
     /// <summary>An array containing the X, Y and Z coords of the point.</summary>
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -368,7 +383,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Vector;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Vector;
 
     /// <summary>An array containing the X, Y and Z coords of the vector.</summary>
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -392,7 +407,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Plane;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Plane;
 
     /// <summary>The origin of the plane.</summary>
     [Newtonsoft.Json.JsonProperty( "origin", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -428,7 +443,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Circle;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Circle;
 
     [Newtonsoft.Json.JsonProperty( "radius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? Radius { get; set; }
@@ -460,7 +475,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Arc;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Arc;
 
     [Newtonsoft.Json.JsonProperty( "radius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? Radius { get; set; }
@@ -498,7 +513,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Ellipse;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Ellipse;
 
     [Newtonsoft.Json.JsonProperty( "firstRadius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? FirstRadius { get; set; }
@@ -530,7 +545,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Polycurve;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Polycurve;
 
     [Newtonsoft.Json.JsonProperty( "segments", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<SpeckleObject> Segments { get; set; }
@@ -559,7 +574,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Box;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Box;
 
     [Newtonsoft.Json.JsonProperty( "basePlane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpecklePlane BasePlane { get; set; }
@@ -591,7 +606,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Line;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Line;
 
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<double> Value { get; set; }
@@ -617,7 +632,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Polyline;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Polyline;
 
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<double> Value { get; set; }
@@ -646,7 +661,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Curve;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Curve;
 
     [Newtonsoft.Json.JsonProperty( "degree", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public int Degree { get; set; }
@@ -693,7 +708,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Mesh;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Mesh;
 
     /// <summary>The mesh's vertices array, in a flat array (ie, `x1, y1, z1, x2, y2, ...`)</summary>
     [Newtonsoft.Json.JsonProperty( "vertices", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -729,7 +744,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Brep;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Brep;
 
     /// <summary>The brep's raw (serialisation) data.</summary>
     [Newtonsoft.Json.JsonProperty( "rawData", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -761,7 +776,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Extrusion;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Extrusion;
 
     [Newtonsoft.Json.JsonProperty( "capped", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public bool? Capped { get; set; }
@@ -778,15 +793,15 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "pathCurve", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleObject PathCurve { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("pathTangent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "pathTangent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleObject PathTangent { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("profileTransformation", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "profileTransformation", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public Object ProfileTransformation { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("profiles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "profiles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<SpeckleObject> Profiles { get; set; }
-     
+
     [Newtonsoft.Json.JsonProperty( "length", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? Length;
 
@@ -808,7 +823,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Annotation;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Annotation;
 
     [Newtonsoft.Json.JsonProperty( "text", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Text { get; set; }
@@ -849,7 +864,7 @@ namespace SpeckleCore
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public SpeckleObjectType Type { get; set; } = SpeckleObjectType.Block;
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Block;
 
     [Newtonsoft.Json.JsonProperty( "name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Name { get; set; }
