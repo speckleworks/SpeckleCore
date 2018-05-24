@@ -494,7 +494,7 @@ namespace SpeckleCore
     public static SpeckleObject Serialise( object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "" )
     {
       // null  check
-      if ( source == null ) return null;
+      if ( source == null ) return new SpeckleNull();
 
       // init optional parameters
       if ( traversed == null ) traversed = new Dictionary<int, string>();
@@ -568,7 +568,7 @@ namespace SpeckleCore
       }
 
       result.Properties = dict;
-      result.SetHashes( result.Properties );
+      result.Hash = result.GeometryHash = result.GetMd5FromObject( result.Properties );
 
       return result;
     }
