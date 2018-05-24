@@ -21,6 +21,10 @@ namespace SpeckleCore
     /// <param name="fromWhat"></param>
     public string GetMd5FromObject( object fromWhat, int length = 0 )
     {
+      if(fromWhat == null)
+      {
+        return "null";
+      }
       using ( System.IO.MemoryStream ms = new System.IO.MemoryStream() )
       {
         new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter().Serialize( ms, fromWhat );
@@ -42,24 +46,13 @@ namespace SpeckleCore
     }
 
     /// <summary>
-    /// Generates and sets this object's full hash, generated from its GeometryHash + Properties.
-    /// Does not apply to non-geometric types.
+    /// ovveride this method in a speckle object to generate a geometry hash
     /// </summary>
-    public void SetFullHash( )
+    public virtual void GenerateHash( )
     {
-      this.Hash = GetMd5FromObject( this.GeometryHash + JsonConvert.SerializeObject( this.Properties ) );
+      this.GeometryHash = this.Type.ToString() + ".";
     }
 
-    public void SetGeometryHash( object fromWhat )
-    {
-      this.GeometryHash = GetMd5FromObject( fromWhat, 12 );
-    }
-
-    public void SetHashes( object uniqueProperties )
-    {
-      SetGeometryHash( uniqueProperties );
-      SetFullHash();
-    }
 
     /// <summary>
     /// Use only for unit conversions. This will not affect the object hashes, thus potentially causing 
@@ -68,10 +61,15 @@ namespace SpeckleCore
     /// <param name="factor">Scaling factor</param>
     public virtual void Scale( double factor )
     {
-      this.Properties = ScaleDictionary( this.Properties, factor );
     }
 
-    public Dictionary<string, object> ScaleDictionary(Dictionary<string,object> dict, double factor)
+    /// <summary>
+    /// Scales any speckle objects that can be found in an Dictionary.
+    /// </summary>
+    /// <param name="dict"></param>
+    /// <param name="factor"></param>
+    /// <returns></returns>
+    internal Dictionary<string, object> ScaleProperties(Dictionary<string,object> dict, double factor)
     {
       if ( dict == null ) return null;
       foreach(var kvp in dict)
@@ -79,7 +77,7 @@ namespace SpeckleCore
         switch(kvp.Value)
         {
           case Dictionary<string, object> d:
-            dict[ kvp.Key ] = ScaleDictionary( d, factor );
+            dict[ kvp.Key ] = ScaleProperties( d, factor );
             break;
           case SpeckleInterval obj:
             obj.Scale( factor );
@@ -136,6 +134,8 @@ namespace SpeckleCore
       }
       return dict;
     }
+
+
   }
 
   public partial class SpeckleBoolean
@@ -147,8 +147,16 @@ namespace SpeckleCore
       this.Value = value;
       this.Properties = properties;
 
-      SetHashes( this.Value );
+      GenerateHash();
     }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += this.Value.ToString();
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
+    }
+
   }
 
   public partial class SpeckleNumber
@@ -160,7 +168,14 @@ namespace SpeckleCore
       this.Value = value;
       this.Properties = properties;
 
-      SetHashes( this.Value );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += this.Value.ToString();
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
 
     public static implicit operator double? ( SpeckleNumber n )
@@ -183,7 +198,14 @@ namespace SpeckleCore
       this.Value = value;
       this.Properties = properties;
 
-      SetHashes( this.Value );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( this.Value );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
 
     public static implicit operator string( SpeckleString s )
@@ -207,14 +229,23 @@ namespace SpeckleCore
       this.End = end;
       this.Properties = properties;
 
-      SetHashes( start + "." + end );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       this.Start *= factor;
       this.End *= factor;
-      base.Scale( factor );
+
+      this.Properties = ScaleProperties( this.Properties, factor );
+      this.GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Start + End );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -228,7 +259,7 @@ namespace SpeckleCore
       this.V = V;
       this.Properties = properties;
 
-      SetHashes( U.GeometryHash + V.GeometryHash );
+      GenerateHash();
     }
 
     public SpeckleInterval2d( double start_u, double end_u, double start_v, double end_v, Dictionary<string, object> properties = null )
@@ -237,14 +268,23 @@ namespace SpeckleCore
       this.V = new SpeckleInterval( start_v, end_v );
       this.Properties = properties;
 
-      SetHashes( U.GeometryHash + V.GeometryHash );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       this.U.Scale( factor );
       this.V.Scale( factor );
-      base.Scale( factor );
+
+      this.Properties = ScaleProperties( this.Properties, factor );
+      this.GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( U.GeometryHash + V.GeometryHash );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
 
   }
@@ -259,13 +299,22 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.Value );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
-      base.Scale( factor );
+
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( this.Value );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -279,13 +328,21 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.Value );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( this.Value );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -302,7 +359,7 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( origin.GeometryHash + normal.GeometryHash + Xdir.GeometryHash + YDir.GeometryHash );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
@@ -311,7 +368,16 @@ namespace SpeckleCore
       this.Normal.Scale( factor );
       this.Xdir.Scale( factor );
       this.Ydir.Scale( factor );
-      base.Scale( factor );
+
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Origin.GeometryHash + Normal.GeometryHash + Xdir.GeometryHash + Ydir.GeometryHash );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -325,13 +391,21 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.Value );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Value );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -347,7 +421,7 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( Center.GeometryHash + Normal.GeometryHash + Radius );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
@@ -355,7 +429,15 @@ namespace SpeckleCore
       this.Center.Scale( factor );
       this.Normal.Scale( factor );
       this.Radius *= factor;
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Center.GeometryHash + Normal.GeometryHash + Radius );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -373,14 +455,22 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( plane.GeometryHash + radius + startAngle + endAngle );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       this.Radius *= factor;
       this.Plane.Scale( factor );
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Plane.GeometryHash + Radius + StartAngle + EndAngle );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -396,14 +486,22 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( Plane.GeometryHash + radius1 + radius2 );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       this.Plane.Scale( factor );
       this.FirstRadius *= factor; this.SecondRadius *= factor;
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Plane.GeometryHash + FirstRadius + SecondRadius );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -420,7 +518,7 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( BasePlane.GeometryHash + XSize.GeometryHash + YSize.GeometryHash + ZSize.GeometryHash );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
@@ -429,8 +527,17 @@ namespace SpeckleCore
       this.XSize.Scale( factor );
       this.YSize.Scale( factor );
       this.ZSize.Scale( factor );
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
     }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( BasePlane.GeometryHash + XSize.GeometryHash + YSize.GeometryHash + ZSize.GeometryHash );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
+    }
+
   }
 
   public partial class SpecklePolyline
@@ -443,13 +550,21 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.Value );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       for ( int i = 0; i < Value.Count; i++ ) Value[ i ] *= factor;
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Value );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -477,9 +592,16 @@ namespace SpeckleCore
             break;
         }
       }
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
     }
 
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Segments.Select( obj => obj.Hash ).ToArray() );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
+    }
   }
 
   public partial class SpeckleCurve
@@ -492,15 +614,24 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.DisplayValue.GeometryHash );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       for ( int i = 0; i < Points.Count; i++ ) Points[ i ] *= factor;
       this.DisplayValue.Scale( factor );
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
     }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( this.DisplayValue.GeometryHash );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
+    }
+
   }
 
   public partial class SpeckleMesh
@@ -516,13 +647,21 @@ namespace SpeckleCore
 
       this.Properties = properties;
 
-      SetHashes( JsonConvert.SerializeObject( Vertices ) + JsonConvert.SerializeObject( Faces ) + JsonConvert.SerializeObject( Colors ) );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       for ( int i = 0; i < Vertices.Count; i++ ) Vertices[ i ] *= factor;
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( JsonConvert.SerializeObject( Vertices ) + JsonConvert.SerializeObject( Faces ) + JsonConvert.SerializeObject( Colors ) );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -538,14 +677,24 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.DisplayValue.GeometryHash );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
     {
       this.DisplayValue.Scale( factor );
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+
+      GenerateHash();
     }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( this.DisplayValue.GeometryHash );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
+    }
+
   }
 
   public partial class SpeckleExtrusion
@@ -560,7 +709,7 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      this.SetHashes( Profile.GeometryHash + "len " + length + "cap " + capped );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
@@ -593,7 +742,15 @@ namespace SpeckleCore
           break;
       }
       
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
+    }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( Profile.GeometryHash + Length + Capped );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
 
@@ -613,7 +770,7 @@ namespace SpeckleCore
       this.ApplicationId = applicationId;
       this.Properties = properties;
 
-      SetHashes( this.Text + this.FontName + this.Bold.ToString() + this.Italic.ToString() + this.Plane.GeometryHash + this.Location.GeometryHash );
+      GenerateHash();
     }
 
     public override void Scale( double factor )
@@ -621,8 +778,17 @@ namespace SpeckleCore
       this.Plane.Scale( factor );
       this.Location.Scale( factor );
       this.TextHeight *= factor;
-      base.Scale( factor );
+      this.Properties = ScaleProperties( this.Properties, factor );
+      GenerateHash();
     }
+
+    public override void GenerateHash( )
+    {
+      base.GenerateHash();
+      this.GeometryHash += GetMd5FromObject( this );
+      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
+    }
+
   }
 
   public partial class Layer : IEquatable<Layer>

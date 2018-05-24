@@ -568,7 +568,7 @@ namespace SpeckleCore
       }
 
       result.Properties = dict;
-      result.SetHashes( result.Properties );
+      result.Hash = result.GeometryHash = result.GetMd5FromObject( result.Properties );
 
       return result;
     }
