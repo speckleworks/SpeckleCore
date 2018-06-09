@@ -125,7 +125,7 @@ namespace SpeckleCore
 
       try
       {
-        Stream = ( await this.StreamCreateAsync( new SpeckleStream() )).Resource;
+        Stream = ( await this.StreamCreateAsync( new SpeckleStream() ) ).Resource;
         StreamId = Stream.StreamId;
 
         await SetupClient( documentName, documentType, documentGuid );
@@ -186,9 +186,13 @@ namespace SpeckleCore
       };
     }
 
-    private void SetupWebsocket( )
+    public void SetupWebsocket( )
     {
       SetWsReconnectTimer();
+
+      //generates a random guid
+      if ( ClientId == null )
+        ClientId = Guid.NewGuid().ToString();
 
       WebsocketClient = new WebSocket( BaseUrl.Replace( "http", "ws" ) + "?access_token=" + AuthToken + "&stream_id=" + StreamId + "&client_id=" + ClientId );
 
@@ -210,8 +214,18 @@ namespace SpeckleCore
         if ( e.Data == "ping" ) { WebsocketClient.Send( "alive" ); LogEvent( "Got a ws ping." ); return; }
 
         LogEvent( "Got a ws message." );
-
-        OnWsMessage?.Invoke( this, new SpeckleEventArgs() { EventName = "websocket-message", EventObject = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>( e.Data ), EventData = e.Data } );
+        try
+        {
+          OnWsMessage?.Invoke( this, new SpeckleEventArgs() { EventName = "websocket-message", EventObject = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>( e.Data ), EventData = e.Data } );
+        }
+        catch
+        {
+          OnWsMessage?.Invoke( this, new SpeckleEventArgs()
+          {
+            EventName = "websocket-message-unparsed",
+            EventData = e.Data
+          } );
+        }
       };
 
       WebsocketClient.Connect();
@@ -219,6 +233,12 @@ namespace SpeckleCore
 
     public void SendMessage( string receipientId, dynamic args )
     {
+      if ( !WsConnected )
+      {
+        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
+        return;
+      }
+
       var eventData = new
       {
         eventName = "message",
@@ -233,12 +253,54 @@ namespace SpeckleCore
 
     public void BroadcastMessage( dynamic args )
     {
+      if ( !WsConnected )
+      {
+        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
+        return;
+      }
+
       var eventData = new
       {
         eventName = "broadcast",
         senderId = ClientId,
         streamId = StreamId,
         args = args
+      };
+
+      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
+    }
+
+    public void JoinRoom( string streamId )
+    {
+      if ( !WsConnected )
+      {
+        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
+        return;
+      }
+
+      var eventData = new
+      {
+        eventName = "join",
+        senderId  = ClientId,
+        streamId = streamId
+      };
+
+      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
+    }
+
+    public void LeaveRoom( string streamId )
+    {
+      if ( !WsConnected )
+      {
+        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
+        return;
+      }
+
+      var eventData = new
+      {
+        eventName = "leave",
+        senderId = ClientId,
+        streamId = streamId
       };
 
       WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
@@ -296,7 +358,7 @@ namespace SpeckleCore
         return;
       }
 
-      ClientUpdateAsync( ClientId, new AppClient() { Online = false,  Deleted = true } );
+      ClientUpdateAsync( ClientId, new AppClient() { Online = false, Deleted = true } );
       WebsocketClient?.Close();
     }
   }
