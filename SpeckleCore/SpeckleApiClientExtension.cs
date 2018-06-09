@@ -210,8 +210,18 @@ namespace SpeckleCore
         if ( e.Data == "ping" ) { WebsocketClient.Send( "alive" ); LogEvent( "Got a ws ping." ); return; }
 
         LogEvent( "Got a ws message." );
-
-        OnWsMessage?.Invoke( this, new SpeckleEventArgs() { EventName = "websocket-message", EventObject = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>( e.Data ), EventData = e.Data } );
+        try
+        {
+          OnWsMessage?.Invoke( this, new SpeckleEventArgs() { EventName = "websocket-message", EventObject = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>( e.Data ), EventData = e.Data } );
+        }
+        catch
+        {
+          OnWsMessage?.Invoke( this, new SpeckleEventArgs()
+          {
+            EventName = "websocket-message-unparsed",
+            EventData = e.Data
+          } );
+        }
       };
 
       WebsocketClient.Connect();
