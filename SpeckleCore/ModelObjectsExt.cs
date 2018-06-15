@@ -831,4 +831,50 @@ namespace SpeckleCore
     }
   }
 
+public partial class SpeckleInput : SpeckleObject
+{
+    public SpeckleInput() { }
+    
+    [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Name { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("guid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string Guid { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public float Value { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("inputType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string InputType { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("max", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public float Max { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("min", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public float Min { get; set; }
+
+    public SpeckleInput(string name, float min, float max, float value, string inputType, string guid)
+    {
+        this.Name = name;
+        this.Guid = guid;
+        this.Min = min;
+        this.Max = max;
+        this.Value = value;
+        this.InputType = inputType;
+    }
+}
+  public partial class SpeckleOutput : SpeckleObject
+    {
+        public SpeckleOutput() { }
+        public string Name { get; set; }
+        public string Guid { get; set; }
+        public string Value { get; set; }
+
+        public SpeckleOutput(string name, string value, string guid)
+        {
+            this.Name = name;
+            this.Guid = guid;
+            this.Value = value;
+        }
+    }
 }
