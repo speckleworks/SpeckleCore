@@ -454,11 +454,11 @@ namespace SpeckleCore
 
     [Obsolete( "Will be deprecated. Use this circle's plane origin to get its center." )]
     [Newtonsoft.Json.JsonProperty( "center", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public SpecklePoint Center { get { return Plane.Origin; } set { Plane.Origin = value; } }
+    public SpecklePoint Center { get { return Plane?.Origin; } }
 
     [Obsolete( "Will be deprecated. Use this circle's plane normal." )]
     [Newtonsoft.Json.JsonProperty( "normal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public SpeckleVector Normal { get { return Plane.Normal; } set { Plane.Normal = value; } }
+    public SpeckleVector Normal { get { return Plane?.Normal; } }
 
     [Newtonsoft.Json.JsonProperty( "plane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpecklePlane Plane { get; set; }
