@@ -448,11 +448,16 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "radius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? Radius { get; set; }
 
+    [Obsolete("Will be deprecated. Use this circle's plane origin to get its center.")]
     [Newtonsoft.Json.JsonProperty( "center", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpecklePoint Center { get; set; }
 
+    [Obsolete( "Will be deprecated. Use this circle's plane normal." )]
     [Newtonsoft.Json.JsonProperty( "normal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleVector Normal { get; set; }
+
+    [Newtonsoft.Json.JsonProperty( "plane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public SpecklePlane Plane { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "domain", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpeckleInterval Domain { get; set; }
