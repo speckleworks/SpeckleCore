@@ -413,10 +413,9 @@ namespace SpeckleCore
   {
     public SpeckleCircle( ) { }
 
-    public SpeckleCircle( SpecklePoint center, SpeckleVector normal, double radius, string applicationId = null, Dictionary<string, object> properties = null )
+    public SpeckleCircle( SpecklePlane plane, double radius, string applicationId = null, Dictionary<string, object> properties = null )
     {
-      this.Center = center;
-      this.Normal = normal;
+      this.Plane = plane;
       this.Radius = radius;
       this.ApplicationId = applicationId;
       this.Properties = properties;
@@ -426,8 +425,7 @@ namespace SpeckleCore
 
     public override void Scale( double factor )
     {
-      this.Center.Scale( factor );
-      this.Normal.Scale( factor );
+      this.Plane.Scale( factor );
       this.Radius *= factor;
       this.Properties = ScaleProperties( this.Properties, factor );
       GenerateHash();
@@ -436,7 +434,7 @@ namespace SpeckleCore
     public override void GenerateHash( )
     {
       base.GenerateHash();
-      this.GeometryHash += GetMd5FromObject( Center.GeometryHash + Normal.GeometryHash + Radius );
+      this.GeometryHash += GetMd5FromObject( Plane.GeometryHash + Radius );
       this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
     }
   }
