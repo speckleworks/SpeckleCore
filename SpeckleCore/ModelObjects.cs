@@ -125,8 +125,12 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Hash { get; set; }
 
+    /// <summary>Object's transform.</summary>
+    [Newtonsoft.Json.JsonProperty( "transform", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public List<double> Transform { get; set; }
+
     /// <summary>Object's geometry hash</summary>
-    [Newtonsoft.Json.JsonProperty( "geometryHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [ Newtonsoft.Json.JsonProperty( "geometryHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string GeometryHash { get; set; }
 
     /// <summary>The id/guid that the origin application identifies this object by.</summary>
@@ -201,10 +205,10 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
     public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Null;
-    
-    public SpeckleNull()
+
+    public SpeckleNull( )
     {
-      this.GeometryHash = "Null.0"; this.Hash = "Null.0"; 
+      this.GeometryHash = "Null.0"; this.Hash = "Null.0";
     }
   }
 
@@ -448,13 +452,13 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "radius", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public double? Radius { get; set; }
 
-    [Obsolete("Will be deprecated. Use this circle's plane origin to get its center.")]
+    [Obsolete( "Will be deprecated. Use this circle's plane origin to get its center." )]
     [Newtonsoft.Json.JsonProperty( "center", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public SpecklePoint Center { get; set; }
+    public SpecklePoint Center { get { return Plane.Origin; } set { Plane.Origin = value; } }
 
     [Obsolete( "Will be deprecated. Use this circle's plane normal." )]
     [Newtonsoft.Json.JsonProperty( "normal", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public SpeckleVector Normal { get; set; }
+    public SpeckleVector Normal { get { return Plane.Normal; } set { Plane.Normal = value; } }
 
     [Newtonsoft.Json.JsonProperty( "plane", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public SpecklePlane Plane { get; set; }
