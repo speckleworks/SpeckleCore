@@ -204,7 +204,8 @@ namespace SpeckleCore
             {
               try
               {
-                if ( prop.PropertyType.IsArray || field.FieldType.IsArray )
+
+                if ( (prop!=null && prop.PropertyType.IsArray) || (field!=null && field.FieldType.IsArray) )
                 {
                   value = ( ( List<object> ) value ).ToArray();
                 }
@@ -260,7 +261,9 @@ namespace SpeckleCore
                   {
                     prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
                   }
-                  catch { }
+                  catch
+                  {
+                  }
                 }
               }
             }
