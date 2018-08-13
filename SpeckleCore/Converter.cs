@@ -535,7 +535,6 @@ namespace SpeckleCore
         {
           return new SpeckleNull();
         }
-        //return methods[ 0 ].Invoke( source, new object[ ] { source } ) as SpeckleObject;
       }
 
       // else just continue with the to abstract part
