@@ -526,7 +526,15 @@ namespace SpeckleCore
       // if we have a "ToSpeckle" extension method, then invoke that and return its result
       if ( methods.Count > 0 )
       {
-        return methods[ 0 ].Invoke( source, new object[ ] { source } ) as SpeckleObject;
+        try
+        {
+          var obj = methods[ 0 ].Invoke( source, new object[ ] { source } );
+          return obj as SpeckleObject;
+        }
+        catch
+        {
+          return new SpeckleNull();
+        }
       }
 
       // else just continue with the to abstract part
