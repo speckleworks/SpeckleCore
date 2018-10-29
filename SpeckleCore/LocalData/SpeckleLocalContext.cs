@@ -40,7 +40,7 @@ namespace SpeckleCore
     {
       Database?.Close();
     }
-
+    
     #region Accounts
     /// <summary>
     /// Migrates existing accounts stored in text files to the sqlite db.
@@ -143,13 +143,18 @@ namespace SpeckleCore
         var currentDefault = GetDefaultAccount(); currentDefault.IsDefault = false;
         Database.Update( currentDefault );
       }
-      catch ( Exception e )
+      catch
       {
-
+        // fail silently, it's not major
       }
 
       account.IsDefault = true;
       Database.Update( account );
+    }
+
+    public static void RemoveAccount(Account ac)
+    {
+      Database.Delete<Account>( ac.AccountId );
     }
 
     #endregion
