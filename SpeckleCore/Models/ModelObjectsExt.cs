@@ -21,7 +21,7 @@ namespace SpeckleCore
     /// <param name="fromWhat"></param>
     public string GetMd5FromObject( object fromWhat, int length = 0 )
     {
-      if(fromWhat == null)
+      if ( fromWhat == null )
       {
         return "null";
       }
@@ -69,12 +69,12 @@ namespace SpeckleCore
     /// <param name="dict"></param>
     /// <param name="factor"></param>
     /// <returns></returns>
-    internal Dictionary<string, object> ScaleProperties(Dictionary<string,object> dict, double factor)
+    internal Dictionary<string, object> ScaleProperties( Dictionary<string, object> dict, double factor )
     {
       if ( dict == null ) return null;
-      foreach(var kvp in dict)
+      foreach ( var kvp in dict )
       {
-        switch(kvp.Value)
+        switch ( kvp.Value )
         {
           case Dictionary<string, object> d:
             dict[ kvp.Key ] = ScaleProperties( d, factor );
@@ -568,7 +568,7 @@ namespace SpeckleCore
 
   public partial class SpecklePolycurve
   {
-    public SpecklePolycurve() { }
+    public SpecklePolycurve( ) { }
 
     public override void Scale( double factor )
     {
@@ -713,7 +713,7 @@ namespace SpeckleCore
     public override void Scale( double factor )
     {
       this.Length *= factor;
-      switch(this.Profile)
+      switch ( this.Profile )
       {
         case SpeckleCurve c:
           c.Scale( factor );
@@ -734,12 +734,12 @@ namespace SpeckleCore
           e.Scale( factor );
           break;
         case SpeckleLine l:
-          l.Scale( factor);
+          l.Scale( factor );
           break;
         default:
           break;
       }
-      
+
       this.Properties = ScaleProperties( this.Properties, factor );
       GenerateHash();
     }
@@ -829,50 +829,56 @@ namespace SpeckleCore
     }
   }
 
-public partial class SpeckleInput : SpeckleObject
-{
-    public SpeckleInput() { }
-    
-    [Newtonsoft.Json.JsonProperty("name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+
+  // These two classes are used for the stream controller functionality.
+
+  // Input parameter (ie, width, height)
+  public partial class SpeckleInput : SpeckleObject
+  {
+    public SpeckleInput( ) { }
+
+    [Newtonsoft.Json.JsonProperty( "name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Name { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("guid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "guid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Guid { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public float Value { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("inputType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "inputType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string InputType { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("max", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "max", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public float Max { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("min", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    [Newtonsoft.Json.JsonProperty( "min", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public float Min { get; set; }
 
-    public SpeckleInput(string name, float min, float max, float value, string inputType, string guid)
+    public SpeckleInput( string name, float min, float max, float value, string inputType, string guid )
     {
-        this.Name = name;
-        this.Guid = guid;
-        this.Min = min;
-        this.Max = max;
-        this.Value = value;
-        this.InputType = inputType;
+      this.Name = name;
+      this.Guid = guid;
+      this.Min = min;
+      this.Max = max;
+      this.Value = value;
+      this.InputType = inputType;
     }
-}
-  public partial class SpeckleOutput : SpeckleObject
-    {
-        public SpeckleOutput() { }
-        public string Name { get; set; }
-        public string Guid { get; set; }
-        public string Value { get; set; }
+  }
 
-        public SpeckleOutput(string name, string value, string guid)
-        {
-            this.Name = name;
-            this.Guid = guid;
-            this.Value = value;
-        }
+  // Output parameter (price, area)
+  public partial class SpeckleOutput : SpeckleObject
+  {
+    public SpeckleOutput( ) { }
+    public string Name { get; set; }
+    public string Guid { get; set; }
+    public string Value { get; set; }
+
+    public SpeckleOutput( string name, string value, string guid )
+    {
+      this.Name = name;
+      this.Guid = guid;
+      this.Value = value;
     }
+  }
 }
