@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Accounts\AccountsUtils.cs" />
+    <Compile Include="LocalData\AccountsUtils.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\ModelObjects.cs" />
     <Compile Include="Models\ModelObjectsExt.cs" />
@@ -57,14 +57,11 @@
     <Compile Include="SpeckleApiClientExtension.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore">
-      <Version>2.1.4</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core">
-      <Version>2.1.4</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="sqlite-net-pcl">
+      <Version>1.5.231</Version>
     </PackageReference>
     <PackageReference Include="WebSocketSharp">
       <Version>1.0.3-rc11</Version>
