@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LocalData\AccountsUtils.cs" />
+    <Compile Include="LocalData\Models.cs" />
+    <Compile Include="LocalData\SpeckleLocalContext.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\ModelObjects.cs" />
     <Compile Include="Models\ModelObjectsExt.cs" />
