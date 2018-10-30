@@ -33,12 +33,26 @@ namespace SpeckleCore
   /// </summary>
   public class CachedObject
   {
-    [PrimaryKey, Indexed]
-    public string Hash { get; set; }
+    /// <summary>
+    /// Represents hash(databaseId + restApi)
+    /// </summary>
+    [PrimaryKey, Indexed(Unique =true)]
+    public string CombinedHash { get; set; }
 
     [Indexed]
     public string RestApi { get; set; }
 
+    [Indexed]
+    public string DatabaseId { get; set; }
+
+    [Indexed]
+    public string Hash { get; set; }
+
     public byte[ ] Bytes { get; set; }
+
+    public SpeckleObject ToSpeckle( )
+    {
+      return SpeckleCore.Converter.getObjFromBytes( this.Bytes ) as SpeckleObject;
+    }
   }
 }

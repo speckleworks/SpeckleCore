@@ -74,6 +74,33 @@ namespace SpeckleCore
       return Convert.FromBase64String( str );
     }
 
+    /// <summary>
+    /// Returns a stringifed MD5 hash of a string.
+    /// </summary>
+    /// <param name="str">String from which to generate the hash</param>
+    /// <param name="length">If 0, the full hasdh will be returned, otherwise it will be trimmed to the specified lenght</param>
+    /// <returns></returns>
+    public static string getMd5Hash( string str, int length = 0)
+    {
+      using ( System.IO.MemoryStream ms = new System.IO.MemoryStream() )
+      {
+        new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter().Serialize( ms, str );
+        byte[ ] hash;
+        using ( System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create() )
+        {
+          hash = md5.ComputeHash( ms.ToArray() );
+          StringBuilder sb = new StringBuilder();
+          foreach ( byte bbb in hash )
+            sb.Append( bbb.ToString( "X2" ) );
+
+          if ( length != 0 )
+            return sb.ToString().ToLower().Substring( 0, length );
+          else
+            return sb.ToString().ToLower();
+        }
+      }
+    }
+
     // https://stackoverflow.com/a/299526/3446736
     private static IEnumerable<MethodInfo> GetExtensionMethods( Assembly assembly, Type extendedType, string methodName )
     {

@@ -40,7 +40,7 @@ namespace SpeckleCore
     {
       Database?.Close();
     }
-    
+
     #region Accounts
     /// <summary>
     /// Migrates existing accounts stored in text files to the sqlite db.
@@ -116,7 +116,7 @@ namespace SpeckleCore
     /// <returns></returns>
     public static Account GetAccountByEmailAndRestApi( string email, string restApi )
     {
-      var res = Database.Query<Account>( String.Format("SELECT * from Account WHERE RestApi = '{0}' AND Email='{1}'", restApi, email) );
+      var res = Database.Query<Account>( String.Format( "SELECT * from Account WHERE RestApi = '{0}' AND Email='{1}'", restApi, email ) );
       if ( res.Count >= 1 ) return res[ 0 ];
       else throw new Exception( "Could not find account." );
     }
@@ -152,7 +152,7 @@ namespace SpeckleCore
       Database.Update( account );
     }
 
-    public static void RemoveAccount(Account ac)
+    public static void RemoveAccount( Account ac )
     {
       Database.Delete<Account>( ac.AccountId );
     }
@@ -160,7 +160,64 @@ namespace SpeckleCore
     #endregion
 
     #region Objects
-    // TODO
+
+    /// <summary>
+    /// Adds a speckle object to the local cache.
+    /// </summary>
+    /// <param name="obj">The object to add.</param>
+    /// <param name="restApi">The server url of where it has been persisted.</param>
+    public static void AddObject( SpeckleObject obj, string restApi )
+    {
+      var bytes = SpeckleCore.Converter.getBytes( obj );
+      var combinedHash = Converter.getMd5Hash( obj._id + restApi );
+      var cached = new CachedObject()
+      {
+        RestApi = restApi,
+        Bytes = bytes,
+        DatabaseId = obj._id,
+        CombinedHash = combinedHash,
+        Hash = obj.Hash
+      };
+
+      try
+      {
+        Database.Insert( cached );
+      }
+      catch
+      {
+        // object was already there
+      }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="objs"></param>
+    /// <returns></returns>
+    public static List<SpeckleObject> GetObjects( List<SpeckleObject> objs, string restApi )
+    {
+      var combinedHashes = objs.Select( obj => Converter.getMd5Hash( obj._id + restApi ) ).ToList();
+      var res = Database.Table<CachedObject>().Where( obj => combinedHashes.Contains( obj.CombinedHash ) ).Select( o => o.ToSpeckle() ).ToList();
+
+      // populate the original list with whatever objects we found in the database.
+      for ( int i = 0; i < objs.Count; i++ )
+      {
+        var placeholder = objs[ i ];
+        var myObject = res.Find( o => o._id == placeholder._id );
+        if ( myObject != null ) objs[ i ] = myObject;
+      }
+
+      return objs;
+    }
+
+    public static SpeckleObject GetObject( string combinedHash )
+    {
+
+      return null;
+    }
+
+    //public static 
+
     #endregion
   }
 
