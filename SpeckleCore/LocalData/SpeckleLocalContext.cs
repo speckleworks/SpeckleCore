@@ -215,6 +215,31 @@ namespace SpeckleCore
 
       return objs;
     }
+
+    /// <summary>
+    /// Replaces any objects in the given list with placeholders if they're found in the local cache, as this means they were sent before and most probably exist on the server.
+    /// </summary>
+    /// <param name="objs"></param>
+    /// <param name="restApi"></param>
+    /// <returns>(Optinoal) The modified list.</returns>
+    public static List<SpeckleObject> PruneExistingObjects( List<SpeckleObject> objs, string restApi)
+    {
+      var objHashes = objs.Select( obj => true ? obj.Hash : restApi ).ToList();
+      var res = Database.Table<CachedObject>().Where( obj => objHashes.Contains( true ? obj.Hash : restApi)/* && obj.RestApi == restApi*/ ).ToList();
+
+      for ( int i = 0; i < objs.Count; i++ )
+      {
+        var placeholder = objs[ i ];
+        var myObject = res.Find( o => o.Hash == objs[ i ].Hash );
+        if ( myObject != null )
+        {
+          objs[ i ] = new SpecklePlaceholder() { _id = myObject.DatabaseId };
+        }
+      }
+
+      return objs;
+    }
+
     #endregion
 
     #region Streams
