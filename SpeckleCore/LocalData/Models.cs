@@ -36,9 +36,12 @@ namespace SpeckleCore
     /// <summary>
     /// Represents hash(databaseId + restApi)
     /// </summary>
-    [PrimaryKey, Indexed(Unique =true)]
+    [PrimaryKey, Indexed( Unique = true )]
     public string CombinedHash { get; set; }
-
+    
+    /// <summary>
+    /// Represents the api this object came from
+    /// </summary>
     [Indexed]
     public string RestApi { get; set; }
 
@@ -48,11 +51,46 @@ namespace SpeckleCore
     [Indexed]
     public string Hash { get; set; }
 
+    public DateTime AddedOn {get;set;}
+
     public byte[ ] Bytes { get; set; }
 
+    /// <summary>
+    /// Returns the speckle object from cache.
+    /// </summary>
+    /// <returns></returns>
     public SpeckleObject ToSpeckle( )
     {
       return SpeckleCore.Converter.getObjFromBytes( this.Bytes ) as SpeckleObject;
+    }
+  }
+
+  public class CachedStream
+  {
+    /// <summary>
+    /// Represents hash(streamId + restApi)
+    /// </summary>
+    [PrimaryKey, Indexed( Unique = true )]
+    public string CombinedHash { get; set; }
+
+    /// <summary>
+    /// Represents the api this object came from
+    /// </summary>
+    [Indexed]
+    public string RestApi { get; set; }
+
+    [Indexed]
+    public string StreamId { get; set; }
+
+    public DateTime AddedOn { get; set; }
+
+    public DateTime UpdatedOn { get; set; }
+
+    public byte[ ] Bytes { get; set; }
+
+    public SpeckleStream ToSpeckle()
+    {
+      return SpeckleCore.Converter.getObjFromBytes( this.Bytes ) as SpeckleStream;
     }
   }
 }

@@ -9,8 +9,11 @@ using SQLite;
 
 namespace SpeckleCore
 {
-
-  public static partial class SpeckleLocalContext
+  /// <summary>
+  /// <para>This class holds the keys to the local sqlite database that acts as a local cache for various speckle things.</para>
+  /// <para>You can access accounts from here across speckle integrations, as well as the local object cache.</para>
+  /// </summary>
+  public static partial class LocalContext
   {
     private static bool IsInit = false;
 
@@ -30,6 +33,7 @@ namespace SpeckleCore
       Database = new SQLiteConnection( DbPath );
       Database.CreateTable<Account>();
       Database.CreateTable<CachedObject>();
+      Database.CreateTable<CachedStream>();
 
       MigrateAccounts();
 
@@ -176,7 +180,8 @@ namespace SpeckleCore
         Bytes = bytes,
         DatabaseId = obj._id,
         CombinedHash = combinedHash,
-        Hash = obj.Hash
+        Hash = obj.Hash,
+        AddedOn = DateTime.Now
       };
 
       try
@@ -190,9 +195,10 @@ namespace SpeckleCore
     }
 
     /// <summary>
-    /// 
+    /// Does a cache check on a list of speckle object placeholders. It will populate the original list with any objects it can find in the cache. If none are found, the list is returned unmodified.
     /// </summary>
-    /// <param name="objs"></param>
+    /// <param name="objs">Speckle object placeholders to check against the cache.</param>
+    /// <param name="restApi">The rest api these objects are expected to come from.</param>
     /// <returns></returns>
     public static List<SpeckleObject> GetObjects( List<SpeckleObject> objs, string restApi )
     {
@@ -209,14 +215,45 @@ namespace SpeckleCore
 
       return objs;
     }
+    #endregion
 
-    public static SpeckleObject GetObject( string combinedHash )
+    #region Streams
+
+    // TODO
+
+    public static void AddOrUpdateStream( SpeckleStream stream, string restApi )
     {
+      var bytes = SpeckleCore.Converter.getBytes( stream );
+      var combinedHash = Converter.getMd5Hash( stream._id + restApi );
 
-      return null;
+      var cacheRes = Database.Table<CachedStream>().Where( existing => existing.CombinedHash == combinedHash ).ToList();
+
+      if ( cacheRes.Count >= 1 )
+      {
+        var toUpdate = cacheRes[ 0 ];
+        toUpdate.Bytes = bytes;
+        toUpdate.UpdatedOn = DateTime.Now;
+        Database.Update( toUpdate );
+      }
+      else
+      {
+        var toCache = new CachedStream()
+        {
+          CombinedHash = combinedHash,
+          Bytes = bytes,
+          RestApi = restApi,
+          StreamId = stream.StreamId,
+          AddedOn = DateTime.Now,
+          UpdatedOn = DateTime.Now
+        };
+        Database.Insert( toCache );
+      }
+
+      //throw new NotImplementedException();
     }
 
-    //public static 
+    public static void UpdateStream( SpeckleStream stream, string restApi ) { throw new NotImplementedException(); }
+    public static void GetStream( string streamId, string restApi ) { throw new NotImplementedException(); }
 
     #endregion
   }
