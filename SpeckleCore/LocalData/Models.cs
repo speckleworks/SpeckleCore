@@ -90,7 +90,7 @@ namespace SpeckleCore
 
     public SpeckleStream ToSpeckle()
     {
-      return SpeckleCore.Converter.getObjFromBytes( this.Bytes ) as SpeckleStream;
+      return SpeckleStream.FromJson( SpeckleCore.Converter.getObjFromBytes( this.Bytes ) as string ); // ((SpeckleCore.Converter.getObjFromBytes( this.Bytes ) as SpeckleStream;
     }
   }
 }

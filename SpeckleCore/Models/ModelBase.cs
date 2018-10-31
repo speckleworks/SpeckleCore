@@ -251,17 +251,17 @@ namespace SpeckleCore
 
     /// <summary>Units, tolerances, etc.</summary>
     [Newtonsoft.Json.JsonProperty( "baseProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public object BaseProperties { get; set; }
+    public dynamic BaseProperties { get; set; }
 
     /// <summary>Any performance measures can go in here.</summary>
     [Newtonsoft.Json.JsonProperty( "globalMeasures", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public object GlobalMeasures { get; set; }
+    public dynamic GlobalMeasures { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "isComputedResult", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public bool? IsComputedResult { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "viewerLayers", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public List<object> ViewerLayers { get; set; }
+    public List<dynamic> ViewerLayers { get; set; }
 
     /// <summary>If this stream is a child, the parent's streamId.</summary>
     [Newtonsoft.Json.JsonProperty( "parent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]

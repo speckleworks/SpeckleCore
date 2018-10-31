@@ -219,11 +219,14 @@ namespace SpeckleCore
 
     #region Streams
 
-    // TODO
-
+    /// <summary>
+    /// Updates or inserts a stream in the local cache.
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="restApi"></param>
     public static void AddOrUpdateStream( SpeckleStream stream, string restApi )
     {
-      var bytes = SpeckleCore.Converter.getBytes( stream );
+      var bytes = SpeckleCore.Converter.getBytes( stream.ToJson() );
       var combinedHash = Converter.getMd5Hash( stream._id + restApi );
 
       var cacheRes = Database.Table<CachedStream>().Where( existing => existing.CombinedHash == combinedHash ).ToList();
@@ -248,12 +251,22 @@ namespace SpeckleCore
         };
         Database.Insert( toCache );
       }
-
       //throw new NotImplementedException();
     }
 
-    public static void UpdateStream( SpeckleStream stream, string restApi ) { throw new NotImplementedException(); }
-    public static void GetStream( string streamId, string restApi ) { throw new NotImplementedException(); }
+    /// <summary>
+    /// Gets a stream from the local cache.
+    /// </summary>
+    /// <param name="streamId"></param>
+    /// <param name="restApi"></param>
+    /// <returns>Null, if nothing found, or the speckle stream.</returns>
+    public static SpeckleStream GetStream( string streamId, string restApi )
+    {
+      var combinedHash = Converter.getMd5Hash( streamId + restApi );
+      var res = Database.Table<CachedStream>().Where( str => str.CombinedHash == combinedHash ).ToArray();
+      if ( res.Length > 0 ) return res[ 0 ].ToSpeckle();
+      return null;
+    }
 
     #endregion
   }
