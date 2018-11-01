@@ -142,15 +142,8 @@ namespace SpeckleCore
     /// <param name="account"></param>
     public static void SetDefaultAccount( Account account )
     {
-      try
-      {
-        var currentDefault = GetDefaultAccount(); currentDefault.IsDefault = false;
-        Database.Update( currentDefault );
-      }
-      catch
-      {
-        // fail silently, it's not major
-      }
+
+      Database.Execute( "UPDATE Account SET IsDefault='false'" );
 
       account.IsDefault = true;
       Database.Update( account );
