@@ -225,7 +225,7 @@ namespace SpeckleCore
     public static List<SpeckleObject> PruneExistingObjects( List<SpeckleObject> objs, string restApi)
     {
       var objHashes = objs.Select( obj => true ? obj.Hash : restApi ).ToList();
-      var res = Database.Table<CachedObject>().Where( obj => objHashes.Contains( true ? obj.Hash : restApi)/* && obj.RestApi == restApi*/ ).ToList();
+      var res = Database.Table<CachedObject>().Where( obj => objHashes.Contains( obj.Hash) && obj.RestApi == restApi ).ToList();
 
       for ( int i = 0; i < objs.Count; i++ )
       {
