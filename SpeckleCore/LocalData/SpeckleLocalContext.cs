@@ -143,7 +143,7 @@ namespace SpeckleCore
     public static void SetDefaultAccount( Account account )
     {
 
-      Database.Execute( "UPDATE Account SET IsDefault='false'" );
+      Database.Execute( "UPDATE Account SET IsDefault=0" );
 
       account.IsDefault = true;
       Database.Update( account );
