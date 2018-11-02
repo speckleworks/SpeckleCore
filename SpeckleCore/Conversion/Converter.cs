@@ -184,7 +184,16 @@ namespace SpeckleCore
           if ( absObj._type == "ref" )
             return null;
 
+          //var shortName = absObj._assembly.Split( ',' )[ 0 ];
+
           var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == absObj._assembly );
+          
+          //try again
+          if(assembly == null)
+          {
+             var shortName = absObj._assembly.Split( ',' )[ 0 ];
+             assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName.Contains(shortName ));
+          }
 
           if ( assembly == null ) // we can't deserialise for sure
             return Converter.ShallowConvert( absObj );
