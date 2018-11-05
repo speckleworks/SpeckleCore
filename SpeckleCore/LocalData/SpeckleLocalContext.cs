@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SQLite;
 
 namespace SpeckleCore
@@ -69,12 +67,30 @@ namespace SpeckleCore
         var res = Database.InsertAll(accounts);
 
         Directory.CreateDirectory(SettingsFolderPath + @"\MigratedAccounts\");
-        int k = 0;
+
         foreach (string file in Directory.EnumerateFiles(SettingsFolderPath, "*.txt"))
-          File.Move(file, SettingsFolderPath + @"\MigratedAccounts\old_account_" + k++ + ".txt");
+        {
+          try
+          {
+            var newName = Path.Combine(SettingsFolderPath, "MigratedAccounts", Path.GetFileName(file));
+            if (File.Exists(newName))
+            {
+              File.Delete(newName);
+            }
+
+            File.Move(file, newName);
+          }
+          catch (Exception e)
+          {
+            Debug.WriteLine("yolo");
+          }
+        }
+
       }
       else
+      {
         Debug.WriteLine("No existing account text files found.");
+      }
     }
 
     /// <summary>
@@ -124,8 +140,14 @@ namespace SpeckleCore
     public static Account GetAccountByEmailAndRestApi(string email, string restApi)
     {
       var res = Database.Query<Account>(String.Format("SELECT * from Account WHERE RestApi = '{0}' AND Email='{1}'", restApi, email));
-      if (res.Count >= 1) return res[0];
-      else throw new Exception("Could not find account.");
+      if (res.Count >= 1)
+      {
+        return res[0];
+      }
+      else
+      {
+        throw new Exception("Could not find account.");
+      }
     }
 
     /// <summary>
@@ -135,8 +157,14 @@ namespace SpeckleCore
     public static Account GetDefaultAccount()
     {
       var res = Database.Query<Account>("SELECT * FROM Account WHERE IsDefault='true' LIMIT 1");
-      if (res.Count == 1) return res[0];
-      else throw new Exception("No default account set.");
+      if (res.Count == 1)
+      {
+        return res[0];
+      }
+      else
+      {
+        throw new Exception("No default account set.");
+      }
     }
 
     /// <summary>
@@ -206,7 +234,10 @@ namespace SpeckleCore
       {
         var placeholder = objs[i];
         var myObject = res.Find(o => o._id == placeholder._id);
-        if (myObject != null) objs[i] = myObject;
+        if (myObject != null)
+        {
+          objs[i] = myObject;
+        }
       }
 
       return objs;
@@ -285,7 +316,11 @@ namespace SpeckleCore
     {
       var combinedHash = Converter.getMd5Hash(streamId + restApi);
       var res = Database.Table<CachedStream>().Where(str => str.CombinedHash == combinedHash).ToArray();
-      if (res.Length > 0) return res[0].ToSpeckle();
+      if (res.Length > 0)
+      {
+        return res[0].ToSpeckle();
+      }
+
       return null;
     }
 
