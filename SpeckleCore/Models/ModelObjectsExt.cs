@@ -13,7 +13,20 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 {
 
-  public partial class SpeckleObject
+    public class SpeckleObjectComparer : IEqualityComparer<SpeckleObject>
+    {
+        public bool Equals( SpeckleObject x, SpeckleObject y )
+        {
+            return x.Hash == y.Hash;
+        }
+
+        public int GetHashCode( SpeckleObject obj )
+        {
+            return obj.Hash.GetHashCode();
+        }
+    }
+
+    public partial class SpeckleObject
   {
     /// <summary>
     /// Generates a truncated (to 12) md5 hash of an object.
