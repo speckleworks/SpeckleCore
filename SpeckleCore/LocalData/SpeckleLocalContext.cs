@@ -10,6 +10,8 @@ namespace SpeckleCore
   /// <summary>
   /// <para>This class holds the keys to the local sqlite database that acts as a local cache for various speckle things.</para>
   /// <para>You can access accounts from here across speckle integrations, as well as the local object cache.</para>
+  /// <para>The cache holds the following tables: Accounts, CachedObjects, SentObjects, CachedStreams.</para>
+  /// <para>Cached objects are objects that a receiver requested. They are stored fully (with a binary blob of their speckle representation). SentObjects are objects that have been previously sent by a sender and are stored without their speckle representation (they're just refs) as a log against which to diff what to send or not.</para>
   /// </summary>
   public static partial class LocalContext
   {
@@ -46,6 +48,41 @@ namespace SpeckleCore
     {
       Database?.Close();
     }
+
+    #region Cleanup & Table Purging
+    /// <summary>
+    /// Purges the sent objects table. WARNING: Don't do this unless you know what you're doing.
+    /// </summary>
+    public static void PurgeSentObjects()
+    {
+      Database?.Execute( "DELETE FROM SentObject" );
+    }
+
+    /// <summary>
+    /// Purges the received objects table. WARNING: Don't do this unless you know what you're doing.
+    /// </summary>
+    public static void PurgeCachedObjects( )
+    {
+      Database?.Execute( "DELETE FROM CachedObject" );
+    }
+
+    /// <summary>
+    /// Purges the accounts. WARNING: Don't do this unless you know what you're doing.
+    /// </summary>
+    public static void PurgeAccounts( )
+    {
+      Database?.Execute( "DELETE FROM Account" );
+    }
+
+    /// <summary>
+    /// Purges the streams table. WARNING: Don't do this unless you know what you're doing.
+    /// </summary>
+    public static void PurgeCachedStreams()
+    {
+      Database?.Execute( "DELETE FROM CachedStream" );
+    }
+
+    #endregion
 
     #region Accounts
     /// <summary>
@@ -188,14 +225,14 @@ namespace SpeckleCore
 
     #endregion
 
-    #region Received Objects
+    #region Received Objects (CachedObject)
 
     /// <summary>
     /// Adds a speckle object to the local cache.
     /// </summary>
     /// <param name="obj">The object to add.</param>
     /// <param name="restApi">The server url of where it has been persisted.</param>
-    public static void AddObject(SpeckleObject obj, string restApi)
+    public static void AddCachedObject(SpeckleObject obj, string restApi)
     {
       var bytes = SpeckleCore.Converter.getBytes(obj);
       var combinedHash = Converter.getMd5Hash(obj._id + restApi);
@@ -225,7 +262,7 @@ namespace SpeckleCore
     /// <param name="objs">Speckle object placeholders to check against the cache.</param>
     /// <param name="restApi">The rest api these objects are expected to come from.</param>
     /// <returns></returns>
-    public static List<SpeckleObject> GetObjects(List<SpeckleObject> objs, string restApi)
+    public static List<SpeckleObject> GetCachedObjects(List<SpeckleObject> objs, string restApi)
     {
       var combinedHashes = objs.Select(obj => Converter.getMd5Hash(obj._id + restApi)).ToList();
       var res = Database.Table<CachedObject>().Where(obj => combinedHashes.Contains(obj.CombinedHash)).Select(o => o.ToSpeckle()).ToList();
@@ -246,8 +283,15 @@ namespace SpeckleCore
 
     #endregion
 
-    #region Sent Objects
+    #region Sent Objects (SentObject)
 
+    /// <summary>
+    /// Adds an object that has been sent by a sender in the local cache.
+    /// This does not store the full object, it's just a log that it has been sent
+    /// to a server so it does not get sent again.
+    /// </summary>
+    /// <param name="obj">Object to store as sent ref in the local database.</param>
+    /// <param name="restApi">The server's url.</param>
     public static void AddSentObject(SpeckleObject obj, string restApi)
     {
       var sentObj = new SentObject()
@@ -292,7 +336,7 @@ namespace SpeckleCore
 
     #endregion
 
-    #region Streams
+    #region Streams (CachedStream)
 
     /// <summary>
     /// Updates or inserts a stream in the local cache.
