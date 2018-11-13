@@ -29,6 +29,24 @@ namespace SpeckleCore
   }
 
   /// <summary>
+  /// Special class for efficiently storing sent objects. Why? We do not want to store them fully as they are already stored in the users's file. Kind of duplicates the CachedObject.
+  /// </summary>
+  public class SentObject
+  {
+    /// <summary>
+    /// Represents the api this object came from
+    /// </summary>
+    [Indexed]
+    public string RestApi { get; set; }
+
+    [Indexed]
+    public string DatabaseId { get; set; }
+
+    [PrimaryKey, Indexed]
+    public string Hash { get; set; }
+  }
+
+  /// <summary>
   /// A class for storing cached objects (that have been retrieved from a database).
   /// </summary>
   public class CachedObject

@@ -34,6 +34,7 @@ namespace SpeckleCore
       Database = new SQLiteConnection(DbPath);
       Database.CreateTable<Account>();
       Database.CreateTable<CachedObject>();
+      Database.CreateTable<SentObject>();
       Database.CreateTable<CachedStream>();
 
       MigrateAccounts();
@@ -187,7 +188,7 @@ namespace SpeckleCore
 
     #endregion
 
-    #region Objects
+    #region Received Objects
 
     /// <summary>
     /// Adds a speckle object to the local cache.
@@ -243,6 +244,28 @@ namespace SpeckleCore
       return objs;
     }
 
+    #endregion
+
+    #region Sent Objects
+
+    public static void AddSentObject(SpeckleObject obj, string restApi)
+    {
+      var sentObj = new SentObject()
+      {
+        RestApi = restApi,
+        DatabaseId = obj._id,
+        Hash = obj.Hash
+      };
+
+      try
+      {
+        Database.Insert( sentObj );
+      } catch
+      {
+        // object was already there, no panic!
+      }
+    }
+
     /// <summary>
     /// Replaces any objects in the given list with placeholders if they're found in the local cache, as this means they were sent before and most probably exist on the server.
     /// </summary>
@@ -252,7 +275,7 @@ namespace SpeckleCore
     public static List<SpeckleObject> PruneExistingObjects(List<SpeckleObject> objs, string restApi)
     {
       var objHashes = objs.Select(obj => true ? obj.Hash : restApi).ToList();
-      var res = Database.Table<CachedObject>().Where(obj => objHashes.Contains(obj.Hash) && obj.RestApi == restApi).ToList();
+      var res = Database.Table<SentObject>().Where(obj => objHashes.Contains(obj.Hash) && obj.RestApi == restApi).ToList();
 
       for (int i = 0; i < objs.Count; i++)
       {
