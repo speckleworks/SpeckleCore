@@ -281,7 +281,7 @@ namespace SpeckleCore
       var eventData = new
       {
         eventName = "join",
-        senderId  = ClientId,
+        senderId = ClientId,
         streamId = streamId
       };
 
@@ -325,8 +325,35 @@ namespace SpeckleCore
       BaseUrl = info.GetString( "BaseUrl" );
       StreamId = info.GetString( "StreamId" );
       Role = ( ClientRole ) info.GetInt32( "Role" );
-      AuthToken = info.GetString( "ApiToken" );
       ClientId = info.GetString( "ClientId" );
+
+      //AuthToken = info.GetString( "ApiToken" );
+      //string userEmail = null;
+
+      // old clients will not have a user email field :/
+      try
+      {
+        var userEmail = info.GetString( "UserEmail" );
+        var acc = LocalContext.GetAccountByEmailAndRestApi( userEmail, BaseUrl );
+        if ( acc != null )
+        {
+          AuthToken = acc.Token;
+          User = new User() { Email = acc.Email };
+        }
+      }
+      catch
+      {
+        var accs = LocalContext.GetAccountsByRestApi( BaseUrl );
+        if ( accs.Count == 0 )
+        {
+          throw new Exception( "You do not have an account that matches this stream's server." );
+        }
+        else
+        {
+          AuthToken = accs[ 0 ].Token;
+          User = new User() { Email = accs[ 0 ].Email };
+        }
+      }
 
       Stream = StreamGetAsync( StreamId, null ).Result.Resource;
 
@@ -340,11 +367,13 @@ namespace SpeckleCore
 
     public void GetObjectData( SerializationInfo info, StreamingContext context )
     {
+      info.AddValue( "UserEmail", User.Email );
       info.AddValue( "BaseUrl", BaseUrl );
       info.AddValue( "StreamId", StreamId );
       info.AddValue( "Role", Role );
-      info.AddValue( "ApiToken", AuthToken );
       info.AddValue( "ClientId", ClientId );
+
+      //info.AddValue( "ApiToken", AuthToken );
     }
 
     public void Dispose( bool delete = false )

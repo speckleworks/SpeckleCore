@@ -174,7 +174,7 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="email"></param>
     /// <param name="restApi"></param>
-    /// <returns></returns>
+    /// <returns>null if no account is found.</returns>
     public static Account GetAccountByEmailAndRestApi(string email, string restApi)
     {
       var res = Database.Query<Account>(String.Format("SELECT * from Account WHERE RestApi = '{0}' AND Email='{1}'", restApi, email));
@@ -184,7 +184,8 @@ namespace SpeckleCore
       }
       else
       {
-        throw new Exception("Could not find account.");
+        return null;
+        //throw new Exception("Could not find account.");
       }
     }
 
