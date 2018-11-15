@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace SpeckleCore
 {
@@ -80,7 +82,7 @@ namespace SpeckleCore
     /// <param name="str">String from which to generate the hash</param>
     /// <param name="length">If 0, the full hasdh will be returned, otherwise it will be trimmed to the specified lenght</param>
     /// <returns></returns>
-    public static string getMd5Hash( string str, int length = 0)
+    public static string getMd5Hash( string str, int length = 0 )
     {
       using ( System.IO.MemoryStream ms = new System.IO.MemoryStream() )
       {
@@ -187,12 +189,12 @@ namespace SpeckleCore
           //var shortName = absObj._assembly.Split( ',' )[ 0 ];
 
           var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == absObj._assembly );
-          
+
           //try again
-          if(assembly == null)
+          if ( assembly == null )
           {
-             var shortName = absObj._assembly.Split( ',' )[ 0 ];
-             assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName.Contains(shortName ));
+            var shortName = absObj._assembly.Split( ',' )[ 0 ];
+            assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName.Contains( shortName ) );
           }
 
           if ( assembly == null ) // we can't deserialise for sure
@@ -241,7 +243,7 @@ namespace SpeckleCore
               try
               {
 
-                if ( (prop!=null && prop.PropertyType.IsArray) || (field!=null && field.FieldType.IsArray) )
+                if ( ( prop != null && prop.PropertyType.IsArray ) || ( field != null && field.FieldType.IsArray ) )
                 {
                   value = ( ( List<object> ) value ).ToArray();
                 }
@@ -664,4 +666,5 @@ namespace SpeckleCore
     }
 
   }
+
 }
