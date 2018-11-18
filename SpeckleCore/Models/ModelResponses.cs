@@ -274,7 +274,7 @@ namespace SpeckleCore
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
-  public partial class SpeckleBaseColor : SpeckleObject
+  public partial class SpeckleBaseColor
   {
     /// <summary>alpha value</summary>
     [Newtonsoft.Json.JsonProperty( "a", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]

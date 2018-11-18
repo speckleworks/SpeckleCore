@@ -13,20 +13,20 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 {
 
-    public class SpeckleObjectComparer : IEqualityComparer<SpeckleObject>
+  public class SpeckleObjectComparer : IEqualityComparer<SpeckleObject>
+  {
+    public bool Equals( SpeckleObject x, SpeckleObject y )
     {
-        public bool Equals( SpeckleObject x, SpeckleObject y )
-        {
-            return x.Hash == y.Hash;
-        }
-
-        public int GetHashCode( SpeckleObject obj )
-        {
-            return obj.Hash.GetHashCode();
-        }
+      return x.Hash == y.Hash;
     }
 
-    public partial class SpeckleObject
+    public int GetHashCode( SpeckleObject obj )
+    {
+      return obj.Hash.GetHashCode();
+    }
+  }
+
+  public partial class SpeckleObject
   {
     /// <summary>
     /// Generates a truncated (to 12) md5 hash of an object.
@@ -545,8 +545,8 @@ namespace SpeckleCore
     public override void GenerateHash( )
     {
       base.GenerateHash();
-      this.GeometryHash += GetMd5FromObject( BasePlane.GeometryHash + XSize.GeometryHash + YSize.GeometryHash + ZSize.GeometryHash );
-      this.Hash = GetMd5FromObject( this.GeometryHash + GetMd5FromObject( this.Properties ) );
+      this.GeometryHash += GetMd5FromObject( BasePlane.ToJson() + XSize.ToJson() + YSize.ToJson() + ZSize.ToJson() );
+      this.Hash = GetMd5FromObject( this );
     }
 
   }
@@ -857,16 +857,19 @@ namespace SpeckleCore
     public string Guid { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public float Value { get; set; }
+    public double Value { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "inputType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string InputType { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "max", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public float Max { get; set; }
+    public double Max { get; set; }
 
     [Newtonsoft.Json.JsonProperty( "min", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public float Min { get; set; }
+    public double Min { get; set; }
+
+    [Newtonsoft.Json.JsonProperty( "step", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public double Step { get; set; }
 
     public SpeckleInput( string name, float min, float max, float value, string inputType, string guid )
     {
