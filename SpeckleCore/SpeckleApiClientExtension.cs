@@ -386,8 +386,7 @@ namespace SpeckleCore
         WebsocketClient?.Close();
         return;
       }
-
-      ClientUpdateAsync( ClientId, new AppClient() { Online = false, Deleted = true } );
+      ClientDeleteAsync( ClientId );
       WebsocketClient?.Close();
     }
   }
