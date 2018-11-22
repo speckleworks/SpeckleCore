@@ -19,21 +19,21 @@ namespace SpeckleCore
 
     private static SQLiteConnection Database;
 
-    public static string DbPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + @"\SpeckleSettings\SpeckleCache.db";
+    public static string DbPath = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleSettings\SpeckleCache.db";
 
-    public static string SettingsFolderPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + @"\SpeckleSettings\";
+    public static string SettingsFolderPath = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleSettings\";
 
     /// <summary>
     /// Initialises the database context, ensures tables are created and powers up the rocket engines.
     /// </summary>
-    public static void Init()
+    public static void Init( )
     {
-      if (IsInit) return;
+      if ( IsInit ) return;
 
-      if (!Directory.Exists(SettingsFolderPath))
-        Directory.CreateDirectory(SettingsFolderPath);
+      if ( !Directory.Exists( SettingsFolderPath ) )
+        Directory.CreateDirectory( SettingsFolderPath );
 
-      Database = new SQLiteConnection(DbPath);
+      Database = new SQLiteConnection( DbPath );
       Database.CreateTable<Account>();
       Database.CreateTable<CachedObject>();
       Database.CreateTable<SentObject>();
@@ -44,7 +44,7 @@ namespace SpeckleCore
       IsInit = true;
     }
 
-    public static void Close()
+    public static void Close( )
     {
       Database?.Close();
     }
@@ -53,7 +53,7 @@ namespace SpeckleCore
     /// <summary>
     /// Purges the sent objects table. WARNING: Don't do this unless you know what you're doing.
     /// </summary>
-    public static void PurgeSentObjects()
+    public static void PurgeSentObjects( )
     {
       Database?.Execute( "DELETE FROM SentObject" );
     }
@@ -77,7 +77,7 @@ namespace SpeckleCore
     /// <summary>
     /// Purges the streams table. WARNING: Don't do this unless you know what you're doing.
     /// </summary>
-    public static void PurgeCachedStreams()
+    public static void PurgeCachedStreams( )
     {
       Database?.Execute( "DELETE FROM CachedStream" );
     }
@@ -88,46 +88,46 @@ namespace SpeckleCore
     /// <summary>
     /// Migrates existing accounts stored in text files to the sqlite db.
     /// </summary>
-    private static void MigrateAccounts()
+    private static void MigrateAccounts( )
     {
       List<Account> accounts = new List<Account>();
 
-      if (Directory.Exists(SettingsFolderPath) && Directory.EnumerateFiles(SettingsFolderPath, "*.txt").Count() > 0)
+      if ( Directory.Exists( SettingsFolderPath ) && Directory.EnumerateFiles( SettingsFolderPath, "*.txt" ).Count() > 0 )
       {
-        foreach (string file in Directory.EnumerateFiles(SettingsFolderPath, "*.txt"))
+        foreach ( string file in Directory.EnumerateFiles( SettingsFolderPath, "*.txt" ) )
         {
-          string content = File.ReadAllText(file);
-          string[] pieces = content.TrimEnd('\r', '\n').Split(',');
+          string content = File.ReadAllText( file );
+          string[ ] pieces = content.TrimEnd( '\r', '\n' ).Split( ',' );
 
-          accounts.Add(new Account() { Email = pieces[0], Token = pieces[1], ServerName = pieces[2], RestApi = pieces[3] });
+          accounts.Add( new Account() { Email = pieces[ 0 ], Token = pieces[ 1 ], ServerName = pieces[ 2 ], RestApi = pieces[ 3 ] } );
         }
 
-        var res = Database.InsertAll(accounts);
+        var res = Database.InsertAll( accounts );
 
-        Directory.CreateDirectory(SettingsFolderPath + @"\MigratedAccounts\");
+        Directory.CreateDirectory( SettingsFolderPath + @"\MigratedAccounts\" );
 
-        foreach (string file in Directory.EnumerateFiles(SettingsFolderPath, "*.txt"))
+        foreach ( string file in Directory.EnumerateFiles( SettingsFolderPath, "*.txt" ) )
         {
           try
           {
-            var newName = Path.Combine(SettingsFolderPath, "MigratedAccounts", Path.GetFileName(file));
-            if (File.Exists(newName))
+            var newName = Path.Combine( SettingsFolderPath, "MigratedAccounts", Path.GetFileName( file ) );
+            if ( File.Exists( newName ) )
             {
-              File.Delete(newName);
+              File.Delete( newName );
             }
 
-            File.Move(file, newName);
+            File.Move( file, newName );
           }
-          catch (Exception e)
+          catch ( Exception e )
           {
-            Debug.WriteLine("yolo");
+            Debug.WriteLine( "yolo" );
           }
         }
 
       }
       else
       {
-        Debug.WriteLine("No existing account text files found.");
+        Debug.WriteLine( "No existing account text files found." );
       }
     }
 
@@ -135,18 +135,18 @@ namespace SpeckleCore
     /// Adds a new account.
     /// </summary>
     /// <param name="account"></param>
-    public static void AddAccount(Account account)
+    public static void AddAccount( Account account )
     {
-      var res = Database.Insert(account);
+      var res = Database.Insert( account );
     }
 
     /// <summary>
     /// Gets all accounts present.
     /// </summary>
     /// <returns></returns>
-    public static List<Account> GetAllAccounts()
+    public static List<Account> GetAllAccounts( )
     {
-      return Database.Query<Account>("SELECT * FROM Account");
+      return Database.Query<Account>( "SELECT * FROM Account" );
     }
 
     /// <summary>
@@ -154,9 +154,9 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="RestApi"></param>
     /// <returns></returns>
-    public static List<Account> GetAccountsByRestApi(string RestApi)
+    public static List<Account> GetAccountsByRestApi( string RestApi )
     {
-      return Database.Query<Account>("SELECT * from Account WHERE RestApi = ?", RestApi);
+      return Database.Query<Account>( "SELECT * from Account WHERE RestApi = ?", RestApi );
     }
 
     /// <summary>
@@ -164,9 +164,9 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="email"></param>
     /// <returns></returns>
-    public static List<Account> GetAccountsByEmail(string email)
+    public static List<Account> GetAccountsByEmail( string email )
     {
-      return Database.Query<Account>("SELECT * from Account WHERE Email = ?", email);
+      return Database.Query<Account>( "SELECT * from Account WHERE Email = ?", email );
     }
 
     /// <summary>
@@ -175,12 +175,12 @@ namespace SpeckleCore
     /// <param name="email"></param>
     /// <param name="restApi"></param>
     /// <returns>null if no account is found.</returns>
-    public static Account GetAccountByEmailAndRestApi(string email, string restApi)
+    public static Account GetAccountByEmailAndRestApi( string email, string restApi )
     {
-      var res = Database.Query<Account>(String.Format("SELECT * from Account WHERE RestApi = '{0}' AND Email='{1}'", restApi, email));
-      if (res.Count >= 1)
+      var res = Database.Query<Account>( String.Format( "SELECT * from Account WHERE RestApi = '{0}' AND Email='{1}'", restApi, email ) );
+      if ( res.Count >= 1 )
       {
-        return res[0];
+        return res[ 0 ];
       }
       else
       {
@@ -193,16 +193,16 @@ namespace SpeckleCore
     /// Returns the default account, if any. Otherwise throws an error.
     /// </summary>
     /// <returns></returns>
-    public static Account GetDefaultAccount()
+    public static Account GetDefaultAccount( )
     {
-      var res = Database.Query<Account>("SELECT * FROM Account WHERE IsDefault='true' LIMIT 1");
-      if (res.Count == 1)
+      var res = Database.Query<Account>( "SELECT * FROM Account WHERE IsDefault='true' LIMIT 1" );
+      if ( res.Count == 1 )
       {
-        return res[0];
+        return res[ 0 ];
       }
       else
       {
-        throw new Exception("No default account set.");
+        throw new Exception( "No default account set." );
       }
     }
 
@@ -210,18 +210,18 @@ namespace SpeckleCore
     /// Sets an account as being the default one, and de-sets defaultness on all others. 
     /// </summary>
     /// <param name="account"></param>
-    public static void SetDefaultAccount(Account account)
+    public static void SetDefaultAccount( Account account )
     {
 
-      Database.Execute("UPDATE Account SET IsDefault=0");
+      Database.Execute( "UPDATE Account SET IsDefault=0" );
 
       account.IsDefault = true;
-      Database.Update(account);
+      Database.Update( account );
     }
 
-    public static void RemoveAccount(Account ac)
+    public static void RemoveAccount( Account ac )
     {
-      Database.Delete<Account>(ac.AccountId);
+      Database.Delete<Account>( ac.AccountId );
     }
 
     #endregion
@@ -233,10 +233,10 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="obj">The object to add.</param>
     /// <param name="restApi">The server url of where it has been persisted.</param>
-    public static void AddCachedObject(SpeckleObject obj, string restApi)
+    public static void AddCachedObject( SpeckleObject obj, string restApi )
     {
-      var bytes = SpeckleCore.Converter.getBytes(obj);
-      var combinedHash = Converter.getMd5Hash(obj._id + restApi);
+      var bytes = SpeckleCore.Converter.getBytes( obj );
+      var combinedHash = Converter.getMd5Hash( obj._id + restApi );
       var cached = new CachedObject()
       {
         RestApi = restApi,
@@ -249,7 +249,7 @@ namespace SpeckleCore
 
       try
       {
-        Database.Insert(cached);
+        Database.Insert( cached );
       }
       catch
       {
@@ -263,19 +263,19 @@ namespace SpeckleCore
     /// <param name="objs">Speckle object placeholders to check against the cache.</param>
     /// <param name="restApi">The rest api these objects are expected to come from.</param>
     /// <returns></returns>
-    public static List<SpeckleObject> GetCachedObjects(List<SpeckleObject> objs, string restApi)
+    public static List<SpeckleObject> GetCachedObjects( List<SpeckleObject> objs, string restApi )
     {
-      var combinedHashes = objs.Select(obj => Converter.getMd5Hash(obj._id + restApi)).ToList();
-      var res = Database.Table<CachedObject>().Where(obj => combinedHashes.Contains(obj.CombinedHash)).Select(o => o.ToSpeckle()).ToList();
+      var combinedHashes = objs.Select( obj => Converter.getMd5Hash( obj._id + restApi ) ).ToList();
+      var res = Database.Table<CachedObject>().Where( obj => combinedHashes.Contains( obj.CombinedHash ) ).Select( o => o.ToSpeckle() ).ToList();
 
       // populate the original list with whatever objects we found in the database.
-      for (int i = 0; i < objs.Count; i++)
+      for ( int i = 0; i < objs.Count; i++ )
       {
-        var placeholder = objs[i];
-        var myObject = res.Find(o => o._id == placeholder._id);
-        if (myObject != null)
+        var placeholder = objs[ i ];
+        var myObject = res.Find( o => o._id == placeholder._id );
+        if ( myObject != null )
         {
-          objs[i] = myObject;
+          objs[ i ] = myObject;
         }
       }
 
@@ -293,7 +293,7 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="obj">Object to store as sent ref in the local database.</param>
     /// <param name="restApi">The server's url.</param>
-    public static void AddSentObject(SpeckleObject obj, string restApi)
+    public static void AddSentObject( SpeckleObject obj, string restApi )
     {
       var sentObj = new SentObject()
       {
@@ -305,7 +305,8 @@ namespace SpeckleCore
       try
       {
         Database.Insert( sentObj );
-      } catch
+      }
+      catch
       {
         // object was already there, no panic!
       }
@@ -317,18 +318,35 @@ namespace SpeckleCore
     /// <param name="objs"></param>
     /// <param name="restApi"></param>
     /// <returns>(Optinoal) The modified list.</returns>
-    public static List<SpeckleObject> PruneExistingObjects(List<SpeckleObject> objs, string restApi)
+    public static List<SpeckleObject> PruneExistingObjects( List<SpeckleObject> objs, string restApi )
     {
-      var objHashes = objs.Select(obj => true ? obj.Hash : restApi).ToList();
-      var res = Database.Table<SentObject>().Where(obj => objHashes.Contains(obj.Hash) && obj.RestApi == restApi).ToList();
+      // MAX SQL Vars is 900
+      var MaxSqlVars = 900;
 
-      for (int i = 0; i < objs.Count; i++)
+      var objHashes = objs.Select( obj => true ? obj.Hash : restApi ).ToList();
+
+      var partitionedList = new List<List<string>>();
+
+      for ( int i = 0; i < objHashes.Count; i += MaxSqlVars )
       {
-        var placeholder = objs[i];
-        var myObject = res.Find(o => o.Hash == objs[i].Hash);
-        if (myObject != null)
+        partitionedList.Add( objHashes.GetRange( i, Math.Min( MaxSqlVars, objHashes.Count - i ) ) );
+      }
+
+      var fullRes = new List<SentObject>();
+
+      foreach ( var subList in partitionedList )
+      {
+        var res = Database.Table<SentObject>().Where( obj => subList.Contains( obj.Hash ) && obj.RestApi == restApi ).ToList();
+        fullRes.AddRange( res );
+      }
+
+      for ( int i = 0; i < objs.Count; i++ )
+      {
+        var placeholder = objs[ i ];
+        var myObject = fullRes.Find( o => o.Hash == objs[ i ].Hash );
+        if ( myObject != null )
         {
-          objs[i] = new SpecklePlaceholder() { _id = myObject.DatabaseId };
+          objs[ i ] = new SpecklePlaceholder() { _id = myObject.DatabaseId };
         }
       }
 
@@ -344,19 +362,19 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="stream"></param>
     /// <param name="restApi"></param>
-    public static void AddOrUpdateStream(SpeckleStream stream, string restApi)
+    public static void AddOrUpdateStream( SpeckleStream stream, string restApi )
     {
-      var bytes = SpeckleCore.Converter.getBytes(stream.ToJson());
-      var combinedHash = Converter.getMd5Hash(stream._id + restApi);
+      var bytes = SpeckleCore.Converter.getBytes( stream.ToJson() );
+      var combinedHash = Converter.getMd5Hash( stream._id + restApi );
 
-      var cacheRes = Database.Table<CachedStream>().Where(existing => existing.CombinedHash == combinedHash).ToList();
+      var cacheRes = Database.Table<CachedStream>().Where( existing => existing.CombinedHash == combinedHash ).ToList();
 
-      if (cacheRes.Count >= 1)
+      if ( cacheRes.Count >= 1 )
       {
-        var toUpdate = cacheRes[0];
+        var toUpdate = cacheRes[ 0 ];
         toUpdate.Bytes = bytes;
         toUpdate.UpdatedOn = DateTime.Now;
-        Database.Update(toUpdate);
+        Database.Update( toUpdate );
       }
       else
       {
@@ -369,7 +387,7 @@ namespace SpeckleCore
           AddedOn = DateTime.Now,
           UpdatedOn = DateTime.Now
         };
-        Database.Insert(toCache);
+        Database.Insert( toCache );
       }
       //throw new NotImplementedException();
     }
@@ -380,13 +398,13 @@ namespace SpeckleCore
     /// <param name="streamId"></param>
     /// <param name="restApi"></param>
     /// <returns>Null, if nothing found, or the speckle stream.</returns>
-    public static SpeckleStream GetStream(string streamId, string restApi)
+    public static SpeckleStream GetStream( string streamId, string restApi )
     {
-      var combinedHash = Converter.getMd5Hash(streamId + restApi);
-      var res = Database.Table<CachedStream>().Where(str => str.CombinedHash == combinedHash).ToArray();
-      if (res.Length > 0)
+      var combinedHash = Converter.getMd5Hash( streamId + restApi );
+      var res = Database.Table<CachedStream>().Where( str => str.CombinedHash == combinedHash ).ToArray();
+      if ( res.Length > 0 )
       {
-        return res[0].ToSpeckle();
+        return res[ 0 ].ToSpeckle();
       }
 
       return null;
