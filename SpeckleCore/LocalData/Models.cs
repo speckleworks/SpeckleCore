@@ -42,7 +42,7 @@ namespace SpeckleCore
     [Indexed]
     public string DatabaseId { get; set; }
 
-    [PrimaryKey, Indexed]
+    [Indexed]
     public string Hash { get; set; }
   }
 

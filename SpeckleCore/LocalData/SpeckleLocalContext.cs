@@ -265,14 +265,30 @@ namespace SpeckleCore
     /// <returns></returns>
     public static List<SpeckleObject> GetCachedObjects( List<SpeckleObject> objs, string restApi )
     {
+      var MaxSqlVars = 900;
+
       var combinedHashes = objs.Select( obj => Converter.getMd5Hash( obj._id + restApi ) ).ToList();
-      var res = Database.Table<CachedObject>().Where( obj => combinedHashes.Contains( obj.CombinedHash ) ).Select( o => o.ToSpeckle() ).ToList();
+
+      var partitionedList = new List<List<string>>();
+
+      for ( int i = 0; i < combinedHashes.Count; i += MaxSqlVars )
+      {
+        partitionedList.Add( combinedHashes.GetRange( i, Math.Min( MaxSqlVars, combinedHashes.Count - i ) ) );
+      }
+
+      var fullRes = new List<SpeckleObject>();
+
+      foreach ( var subList in partitionedList )
+      {
+        var res = Database.Table<CachedObject>().Where( obj => subList.Contains( obj.CombinedHash ) ).Select( o => o.ToSpeckle() ).ToList();
+        fullRes.AddRange( res );
+      }
 
       // populate the original list with whatever objects we found in the database.
       for ( int i = 0; i < objs.Count; i++ )
       {
         var placeholder = objs[ i ];
-        var myObject = res.Find( o => o._id == placeholder._id );
+        var myObject = fullRes.Find( o => o._id == placeholder._id );
         if ( myObject != null )
         {
           objs[ i ] = myObject;
@@ -306,8 +322,9 @@ namespace SpeckleCore
       {
         Database.Insert( sentObj );
       }
-      catch
+      catch(Exception e)
       {
+        var dick = e;
         // object was already there, no panic!
       }
     }
