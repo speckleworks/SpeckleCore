@@ -94,7 +94,6 @@ namespace SpeckleCore
     /// </summary>
     private static void MigrateAccounts( )
     {
-      LocalContext.Init();
       List<Account> accounts = new List<Account>();
 
       if ( Directory.Exists( SettingsFolderPath ) && Directory.EnumerateFiles( SettingsFolderPath, "*.txt" ).Count() > 0 )
