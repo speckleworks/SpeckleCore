@@ -72,6 +72,15 @@ namespace SpeckleCore
       SetReadyTimer();
     }
 
+    /// <summary>
+    /// Initialises this client as a receiver for a specific stream. 
+    /// </summary>
+    /// <param name="streamId"></param>
+    /// <param name="documentName"></param>
+    /// <param name="documentType"></param>
+    /// <param name="documentGuid"></param>
+    /// <param name="authToken"></param>
+    /// <returns></returns>
     public async Task IntializeReceiver( string streamId, string documentName, string documentType, string documentGuid, string authToken = null )
     {
       if ( Role != null )
@@ -104,7 +113,14 @@ namespace SpeckleCore
 
 
     }
-
+    /// <summary>
+    /// Initialises this client as a Sender by creating a new stream.
+    /// </summary>
+    /// <param name="authToken"></param>
+    /// <param name="documentName"></param>
+    /// <param name="documentType"></param>
+    /// <param name="documentGuid"></param>
+    /// <returns></returns>
     public async Task<string> IntializeSender( string authToken, string documentName, string documentType, string documentGuid )
     {
       if ( Role != null )
@@ -186,6 +202,9 @@ namespace SpeckleCore
       };
     }
 
+    /// <summary>
+    /// Sets up the websocket client & its events..
+    /// </summary>
     public void SetupWebsocket( )
     {
       SetWsReconnectTimer();
@@ -231,6 +250,11 @@ namespace SpeckleCore
       WebsocketClient.Connect();
     }
 
+    /// <summary>
+    /// Sends a direct message to another websocket client.
+    /// </summary>
+    /// <param name="receipientId">The clientId of the socket you want to send the message to.</param>
+    /// <param name="args">What you want to send. Make it serialisable and small.</param>
     public void SendMessage( string receipientId, dynamic args )
     {
       if ( !WsConnected )
@@ -250,7 +274,12 @@ namespace SpeckleCore
 
       WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
     }
-
+    
+    /// <summary>
+    /// Broadcasts a message to the default streamId room.
+    /// </summary>
+    /// <param name="args">The message. Make it serialisable and small.</param>
+    [Obsolete( "This method will be deprecated in favour of BroadcastMessage( string resourceType, string resourceId, dynamic args )" )]
     public void BroadcastMessage( dynamic args )
     {
       if ( !WsConnected )
@@ -270,6 +299,37 @@ namespace SpeckleCore
       WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
     }
 
+    /// <summary>
+    /// Broadcasts a message in a specific websocket room, as defined by resourceType and resourceId.
+    /// </summary>
+    /// <param name="resourceType">Can be stream, object, project, comment, user.</param>
+    /// <param name="resourceId">The database id of the resource.</param>
+    /// <param name="args">The message. Make it serialisable and small.</param>
+    public void BroadcastMessage( string resourceType, string resourceId, dynamic args )
+    {
+      if ( !WsConnected )
+      {
+        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
+        return;
+      }
+
+      var eventData = new
+      {
+        eventName = "broadcast",
+        senderId = ClientId,
+        resourceType = resourceType,
+        resourceId = resourceId,
+        args = args
+      };
+
+      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
+    }
+
+    /// <summary>
+    /// Joins a websocket room based on a streamId.
+    /// </summary>
+    /// <param name="streamId">The streamId you want to join.</param>
+    [Obsolete("This method will be deprecated in favour of JoinRoom(resourceType, resourceId).")]
     public void JoinRoom( string streamId )
     {
       if ( !WsConnected )
@@ -288,6 +348,35 @@ namespace SpeckleCore
       WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
     }
 
+    /// <summary>
+    /// Joins a websocket room based a resource type and its id. This will subscribe you to any broadcasts in that room.
+    /// </summary>
+    /// <param name="resourceType">Can be stream, object, project, comment, user.</param>
+    /// <param name="resourceId">The database id of the resource.</param>
+    public void JoinRoom( string resourceType, string resourceId )
+    {
+      if ( !WsConnected )
+      {
+        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
+        return;
+      }
+
+      var eventData = new
+      {
+        eventName = "join",
+        senderId = ClientId,
+        resourceType = resourceType,
+        resourceId = resourceId
+      };
+
+      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
+    }
+
+    /// <summary>
+    /// Leaves a room based on its streamId.
+    /// </summary>
+    /// <param name="streamId"></param>
+    [Obsolete( "This method will be deprecated in favour of LeaveRoom(resourceType, resourceId)." )]
     public void LeaveRoom( string streamId )
     {
       if ( !WsConnected )
@@ -301,6 +390,29 @@ namespace SpeckleCore
         eventName = "leave",
         senderId = ClientId,
         streamId = streamId
+      };
+
+      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
+    }
+
+    /// <summary>
+    /// Leaves a websocket room based a resource type and its id. This will stop you from receiving any broadcasts in that room.
+    /// </summary>
+    /// <param name="resourceType">Can be stream, object, project, comment, user.</param>
+    /// <param name="resourceId">The database id of the resource.</param>
+    public void LeaveRoom( string resourceType, string resourceId )
+    {
+      if ( !WsConnected )
+      {
+        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
+        return;
+      }
+
+      var eventData = new
+      {
+        eventName = "leave",
+        resourceType = resourceType,
+        resourceId = resourceId
       };
 
       WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
@@ -344,14 +456,15 @@ namespace SpeckleCore
       catch
       {
         var accs = LocalContext.GetAccountsByRestApi( BaseUrl );
-        if ( accs.Count == 0 )
+        var sorted = accs.OrderByDescending( acc => acc.IsDefault ).ToList();
+        if ( sorted.Count == 0 )
         {
           throw new Exception( "You do not have an account that matches this stream's server." );
         }
         else
         {
           AuthToken = accs[ 0 ].Token;
-          User = new User() { Email = accs[ 0 ].Email };
+          User = new User() { Email = sorted[ 0 ].Email };
         }
       }
 
