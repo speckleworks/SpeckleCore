@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Input;
-using System.Linq;
 using SpeckleCore;
 
 namespace SpecklePopup
@@ -24,37 +24,32 @@ namespace SpecklePopup
       {
         AccountsControl.ButonUseSelected.Visibility = Visibility.Visible;
         AccountsControl.ButonUseSelected.Click += ButtonUseSelected_Click;
-
-        //if autoclose and there is a defaut account
-        if (autoClose && AccountsControl.accounts.Any(x => x.IsDefault))
-        {
-          UseSelected(AccountsControl.accounts.First(x => x.IsDefault));
-          HasDefaultAccount = true;
-          this.Close();
-        }
-      }
-      else
-      {
-       // AccountsControl.ButonUseSelected.Visibility = Visibility.Collapsed;
       }
 
-
-      this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-      this.DragRectangle.MouseDown += (sender, e) =>
+      //if autoclose and there is a defaut account
+      if (autoClose && AccountsControl.accounts.Any(x => x.IsDefault))
       {
-        this.DragMove();
+        UseSelected(AccountsControl.accounts.First(x => x.IsDefault));
+        HasDefaultAccount = true;
+        Close();
+      }
+
+      WindowStartupLocation = WindowStartupLocation.CenterScreen;
+      DragRectangle.MouseDown += (sender, e) =>
+      {
+        DragMove();
       };
 
     }
 
     private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
     {
-      this.DragMove();
+      DragMove();
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-      this.Close();
+      Close();
     }
 
     private void ButtonUseSelected_Click(object sender, RoutedEventArgs e)
@@ -65,7 +60,7 @@ namespace SpecklePopup
         return;
       }
       UseSelected(AccountsControl.accounts[AccountsControl.AccountListBox.SelectedIndex]);
-      this.Close();
+      Close();
     }
 
     private void UseSelected(Account account)
