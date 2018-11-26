@@ -40,11 +40,11 @@
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <StackPanel>
-                  <TextBlock FontSize="14" Text="{Binding restApi}" />
+                  <TextBlock FontSize="14" Text="{Binding RestApi}" />
                   <TextBlock
                     FontSize="10"
                     Foreground="DimGray"
-                    Text="{Binding email}" />
+                    Text="{Binding Email}" />
                   <TextBlock
                     FontSize="10"
                     Foreground="DimGray"
@@ -53,7 +53,7 @@
                     <TextBlock
                       FontSize="10"
                       Foreground="DimGray"
-                      Text="{Binding serverName}" />
+                      Text="{Binding ServerName}" />
                     <RadioButton
                       Margin="5,0"
                       VerticalAlignment="Center"
@@ -62,7 +62,7 @@
                       FontSize="10"
                       Foreground="DimGray"
                       GroupName="IsDefault"
-                      IsChecked="{Binding isDefault}" />
+                      IsChecked="{Binding IsDefault}" />
                   </StackPanel>
                 </StackPanel>
               </DataTemplate>
