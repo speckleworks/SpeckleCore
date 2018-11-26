@@ -7,7 +7,6 @@ namespace SpecklePopup
 {
   public partial class MainWindow : Window
   {
-    string serverName;
     public string restApi;
     public string apitoken;
 
@@ -16,21 +15,22 @@ namespace SpecklePopup
     public bool HasDefaultAccount = false;
 
 
-    public MainWindow(bool isPopup = true)
+    public MainWindow(bool autoClose, bool showButtons)
     {
       InitializeComponent();
 
-      //only visible in popupmode
-      if (isPopup)
+      //make the "use selected" button visible
+      if (showButtons)
       {
         AccountsControl.ButonUseSelected.Visibility = Visibility.Visible;
         AccountsControl.ButonUseSelected.Click += ButtonUseSelected_Click;
 
-        //skip popup if there's a default account!
-        if (AccountsControl.accounts.Any(x => x.IsDefault))
+        //if autoclose and there is a defaut account
+        if (autoClose && AccountsControl.accounts.Any(x => x.IsDefault))
         {
           UseSelected(AccountsControl.accounts.First(x => x.IsDefault));
           HasDefaultAccount = true;
+          this.Close();
         }
       }
       else
@@ -65,6 +65,7 @@ namespace SpecklePopup
         return;
       }
       UseSelected(AccountsControl.accounts[AccountsControl.AccountListBox.SelectedIndex]);
+      this.Close();
     }
 
     private void UseSelected(Account account)
@@ -73,7 +74,6 @@ namespace SpecklePopup
       apitoken = account.Token;
       selectedEmail = account.Email;
       selectedServer = account.ServerName;
-      Close();
     }
 
   }
