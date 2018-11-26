@@ -241,6 +241,14 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty( "name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Name { get; set; }
 
+    /// <summary>The data stream's description</summary>
+    [Newtonsoft.Json.JsonProperty( "description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public string Description { get; set; }
+
+    /// <summary>The data stream's name</summary>
+    [Newtonsoft.Json.JsonProperty( "tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public List<string> Tags { get; set; }
+
     /// <summary>An array of SpeckleObject ids.</summary>
     [Newtonsoft.Json.JsonProperty( "objects", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public List<SpeckleObject> Objects { get; set; }

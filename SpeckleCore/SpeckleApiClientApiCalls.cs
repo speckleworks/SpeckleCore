@@ -2102,21 +2102,21 @@ namespace SpeckleCore
     /// <summary>StreamsGetAll</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
-    public System.Threading.Tasks.Task<ResponseStream> StreamsGetAllAsync( )
+    public System.Threading.Tasks.Task<ResponseStream> StreamsGetAllAsync( string query )
     {
-      return StreamsGetAllAsync( System.Threading.CancellationToken.None );
+      return StreamsGetAllAsync( System.Threading.CancellationToken.None, query );
     }
 
     /// <summary>StreamsGetAll</summary>
     /// <returns>All good!</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseStream> StreamsGetAllAsync( System.Threading.CancellationToken cancellationToken )
+    public async System.Threading.Tasks.Task<ResponseStream> StreamsGetAllAsync( System.Threading.CancellationToken cancellationToken, string query )
     {
       var urlBuilder_ = new System.Text.StringBuilder();
-      urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/streams" );
+      urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/streams?" );
+      if ( query != null ) urlBuilder_.Append( query );
 
-      //var client_ = GetHttpClient();
       var client_ = GetHttpClient();
       try
       {
@@ -2149,6 +2149,7 @@ namespace SpeckleCore
               var result_ = default( ResponseStream );
               try
               {
+                var test = ResponseStream.FromJson( responseData_ );
                 result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStream>( responseData_, _settings.Value );
                 return result_;
               }
