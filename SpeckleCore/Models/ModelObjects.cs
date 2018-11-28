@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -115,7 +116,7 @@ namespace SpeckleCore
   [JsonInheritanceAttribute( "SpeckleBlock", typeof( SpeckleBlock ) )]
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
-  public partial class SpeckleObject : ResourceBase
+  public partial class SpeckleObject : ResourceBase, IEqualityComparer<SpeckleObject>
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
@@ -164,7 +165,16 @@ namespace SpeckleCore
       return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleObject>( data );
     }
 
-  }
+        public bool Equals( SpeckleObject x, SpeckleObject y )
+        {
+            return x.Hash == y.Hash;
+        }
+
+        public int GetHashCode( SpeckleObject obj )
+        {
+            return obj.Hash.GetHashCode();
+        }
+    }
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
