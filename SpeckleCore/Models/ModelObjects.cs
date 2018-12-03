@@ -137,6 +137,10 @@ namespace SpeckleCore
     /// <summary>The id/guid that the origin application identifies this object by.</summary>
     [Newtonsoft.Json.JsonProperty( "applicationId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     public string ApplicationId { get; set; }
+    
+    /// <summary>The name of this object in the origin application GUI.</summary>
+    [Newtonsoft.Json.JsonProperty( "name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public string Name { get; set; }
 
     /// <summary>The extra properties field of a speckle object.</summary>
     [Newtonsoft.Json.JsonProperty( "properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
