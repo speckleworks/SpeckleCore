@@ -480,7 +480,7 @@ namespace SpeckleCore
 
     public void GetObjectData( SerializationInfo info, StreamingContext context )
     {
-      info.AddValue( "UserEmail", User.Email );
+      info.AddValue( "UserEmail", User?.Email );
       info.AddValue( "BaseUrl", BaseUrl );
       info.AddValue( "StreamId", StreamId );
       info.AddValue( "Role", Role );
