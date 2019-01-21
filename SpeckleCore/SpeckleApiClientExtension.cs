@@ -452,6 +452,10 @@ namespace SpeckleCore
           AuthToken = acc.Token;
           User = new User() { Email = acc.Email };
         }
+        else
+        {
+          throw new Exception( "You do not have an account that matches this stream's server." );
+        }
       }
       catch
       {
