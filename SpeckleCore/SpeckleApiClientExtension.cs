@@ -27,8 +27,8 @@ namespace SpeckleCore
   [Serializable]
   public partial class SpeckleApiClient : ISerializable
   {
-    public string StreamId { get; private set; }
-    public string ClientId { get; private set; }
+    public string StreamId { get; set; }
+    public string ClientId { get; set; }
 
     public User User { get; private set; }
     public SpeckleStream Stream { get; set; }
