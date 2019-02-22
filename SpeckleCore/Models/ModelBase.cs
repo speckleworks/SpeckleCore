@@ -387,7 +387,6 @@ namespace SpeckleCore
 
   }
 
-
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
   public partial class SpeckleObject : ResourceBase, IEqualityComparer<SpeckleObject>
@@ -453,4 +452,71 @@ namespace SpeckleCore
       return obj.Hash.GetHashCode();
     }
   }
+
+  [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
+  public partial class SpeckleAbstract : SpeckleObject
+  {
+    [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Abstract;
+
+    /// <summary>the original type of the object</summary>
+    [Newtonsoft.Json.JsonProperty( "_type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public string _type { get; set; }
+
+    /// <summary>the original type of the object</summary>
+    [Newtonsoft.Json.JsonProperty( "_ref", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public string _ref { get; set; }
+
+    /// <summary>the original assembly of this object</summary>
+    [Newtonsoft.Json.JsonProperty( "_assembly", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    public string _assembly { get; set; }
+
+    public string ToJson( )
+    {
+      return Newtonsoft.Json.JsonConvert.SerializeObject( this );
+    }
+
+    public static SpeckleAbstract FromJson( string data )
+    {
+      return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleAbstract>( data );
+    }
+
+  }
+
+  [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
+  public partial class SpeckleNull : SpeckleObject
+  {
+    [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Null;
+
+    public SpeckleNull( )
+    {
+      this.GeometryHash = "Null.0"; this.Hash = "Null.0";
+    }
+  }
+
+  [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+  [Serializable]
+  public partial class SpecklePlaceholder : SpeckleObject
+  {
+    [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
+    public override SpeckleObjectType Type { get; set; } = SpeckleObjectType.Placeholder;
+
+    public string ToJson( )
+    {
+      return Newtonsoft.Json.JsonConvert.SerializeObject( this );
+    }
+
+    public static SpecklePlaceholder FromJson( string data )
+    {
+      return Newtonsoft.Json.JsonConvert.DeserializeObject<SpecklePlaceholder>( data );
+    }
+
+  }
+
 }
