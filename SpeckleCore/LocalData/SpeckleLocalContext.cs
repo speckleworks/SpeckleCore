@@ -124,7 +124,7 @@ namespace SpeckleCore
           }
           catch ( Exception e )
           {
-            Debug.WriteLine( "yolo" );
+            Debug.WriteLine( e.Message );
           }
         }
 

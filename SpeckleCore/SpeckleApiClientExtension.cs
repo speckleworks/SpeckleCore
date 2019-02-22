@@ -27,6 +27,10 @@ namespace SpeckleCore
   [Serializable]
   public partial class SpeckleApiClient : ISerializable
   {
+    public bool UseGzip { get; set; } = true;
+    public string BaseUrl { get; set; }
+    public string AuthToken { get; set; }
+
     public string StreamId { get; set; }
     public string ClientId { get; set; }
 
@@ -48,28 +52,40 @@ namespace SpeckleCore
     public event SpeckleEvent OnWsMessage;
     public event SpeckleEvent OnLogData;
 
-    public Converter Converter { get; set; }
-
     Timer IsReady, WsReconnecter;
 
     private Dictionary<string, SpeckleObject> ObjectCache = new Dictionary<string, SpeckleObject>();
 
 
-    public SpeckleApiClient( string baseUrl, bool isPersistent = false ) : base()
+    public SpeckleApiClient( string baseUrl, bool isPersistent = false )
     {
-      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( ( ) =>
-       {
-         var settings = new Newtonsoft.Json.JsonSerializerSettings();
-         UpdateJsonSerializerSettings( settings );
-         return settings;
-       } );
-
-      UseGzip = true;
-
+      SetSerialisationSettings();
+      
       BaseUrl = baseUrl;
       IsPersistent = isPersistent;
 
       SetReadyTimer();
+    }
+
+    public SpeckleApiClient( bool useGzip = true )
+    {
+      SetSerialisationSettings();
+      UseGzip = useGzip;
+    }
+
+    public SpeckleApiClient()
+    {
+      SetSerialisationSettings();
+    }
+
+    private void SetSerialisationSettings()
+    {
+      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( ( ) =>
+      {
+        var settings = new Newtonsoft.Json.JsonSerializerSettings();
+        UpdateJsonSerializerSettings( settings );
+        return settings;
+      } );
     }
 
     /// <summary>
@@ -274,30 +290,6 @@ namespace SpeckleCore
 
       WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
     }
-    
-    /// <summary>
-    /// Broadcasts a message to the default streamId room.
-    /// </summary>
-    /// <param name="args">The message. Make it serialisable and small.</param>
-    [Obsolete( "This method will be deprecated in favour of BroadcastMessage( string resourceType, string resourceId, dynamic args )" )]
-    public void BroadcastMessage( dynamic args )
-    {
-      if ( !WsConnected )
-      {
-        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
-        return;
-      }
-
-      var eventData = new
-      {
-        eventName = "broadcast",
-        senderId = ClientId,
-        streamId = StreamId,
-        args = args
-      };
-
-      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
-    }
 
     /// <summary>
     /// Broadcasts a message in a specific websocket room, as defined by resourceType and resourceId.
@@ -326,29 +318,6 @@ namespace SpeckleCore
     }
 
     /// <summary>
-    /// Joins a websocket room based on a streamId.
-    /// </summary>
-    /// <param name="streamId">The streamId you want to join.</param>
-    [Obsolete("This method will be deprecated in favour of JoinRoom(resourceType, resourceId).")]
-    public void JoinRoom( string streamId )
-    {
-      if ( !WsConnected )
-      {
-        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
-        return;
-      }
-
-      var eventData = new
-      {
-        eventName = "join",
-        senderId = ClientId,
-        streamId = streamId
-      };
-
-      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
-    }
-
-    /// <summary>
     /// Joins a websocket room based a resource type and its id. This will subscribe you to any broadcasts in that room.
     /// </summary>
     /// <param name="resourceType">Can be stream, object, project, comment, user.</param>
@@ -367,29 +336,6 @@ namespace SpeckleCore
         senderId = ClientId,
         resourceType = resourceType,
         resourceId = resourceId
-      };
-
-      WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );
-    }
-
-    /// <summary>
-    /// Leaves a room based on its streamId.
-    /// </summary>
-    /// <param name="streamId"></param>
-    [Obsolete( "This method will be deprecated in favour of LeaveRoom(resourceType, resourceId)." )]
-    public void LeaveRoom( string streamId )
-    {
-      if ( !WsConnected )
-      {
-        OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
-        return;
-      }
-
-      var eventData = new
-      {
-        eventName = "leave",
-        senderId = ClientId,
-        streamId = streamId
       };
 
       WebsocketClient.Send( JsonConvert.SerializeObject( eventData ) );

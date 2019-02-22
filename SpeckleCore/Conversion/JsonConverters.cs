@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 {
     /// <summary>
-    /// Base Speckle Object Converter.
+    /// Base serialiser/deserialiser for newtonsoft.json. It helps the json to/from c# classes.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.4.2.0")]
     public class SpeckleObjectConverter : Newtonsoft.Json.JsonConverter
@@ -39,12 +39,7 @@ namespace SpeckleCore
             try
             {
                 _isWriting = true;
-
                 var jObject = Newtonsoft.Json.Linq.JObject.FromObject(value, serializer);
-
-                // HACK
-                //jObject.AddFirst(new Newtonsoft.Json.Linq.JProperty(_discriminator, value.GetType().Name));
-
                 writer.WriteToken(jObject.CreateReader());
             }
             finally
@@ -109,10 +104,7 @@ namespace SpeckleCore
 
         private System.Type GetObjectSubtypeBetter(Newtonsoft.Json.Linq.JObject jObject, System.Type objectType, string discriminator)
         {
-            // HACK
-            //if (objectType.Name == "SpeckleObject")
             discriminator = "Speckle" + discriminator;
-            // ENDHACK
 
             var objectTypeInfo = System.Reflection.IntrospectionExtensions.GetTypeInfo(objectType);
             var customAttributes = System.Reflection.CustomAttributeExtensions.GetCustomAttributes(objectTypeInfo);

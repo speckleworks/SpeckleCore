@@ -13,26 +13,13 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 {
 
-  public class SpeckleObjectComparer : IEqualityComparer<SpeckleObject>
-  {
-    public bool Equals( SpeckleObject x, SpeckleObject y )
-    {
-      return x.Hash == y.Hash;
-    }
-
-    public int GetHashCode( SpeckleObject obj )
-    {
-      return obj.Hash.GetHashCode();
-    }
-  }
-
   public partial class SpeckleObject
   {
     /// <summary>
-    /// Generates a truncated (to 12) md5 hash of an object.
+    /// Generates a truncated (to 12) md5 hash of an object. Set length to zero to get the full hash.
     /// </summary>
     /// <param name="fromWhat"></param>
-    public string GetMd5FromObject( object fromWhat, int length = 0 )
+    public string GetMd5FromObject( object fromWhat, int length = 12 )
     {
       if ( fromWhat == null )
       {
@@ -147,8 +134,6 @@ namespace SpeckleCore
       }
       return dict;
     }
-
-
   }
 
   public partial class SpeckleBoolean
@@ -844,7 +829,6 @@ namespace SpeckleCore
 
 
   // These two classes are used for the stream controller functionality.
-
   // Input parameter (ie, width, height)
   public partial class SpeckleInput : SpeckleObject
   {

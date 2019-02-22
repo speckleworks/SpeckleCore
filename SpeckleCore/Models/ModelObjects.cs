@@ -85,100 +85,41 @@ namespace SpeckleCore
     Extrusion = 23,
 
     [System.Runtime.Serialization.EnumMember( Value = "Block" )]
-    Block = 24
+    Block = 24,
+
+    [System.Runtime.Serialization.EnumMember( Value = "Object" )]
+    Object = 25
 
   }
 
   /// <summary>Base class that is inherited by all other Speckle objects.</summary>
-  [Newtonsoft.Json.JsonConverter( typeof( SpeckleObjectConverter ), "type" )]
-  [JsonInheritanceAttribute( "SpeckleAbstract", typeof( SpeckleAbstract ) )]
-  [JsonInheritanceAttribute( "SpecklePlaceholder", typeof( SpecklePlaceholder ) )]
-  [JsonInheritanceAttribute( "SpeckleNull", typeof( SpeckleNull ) )]
-  [JsonInheritanceAttribute( "SpeckleBoolean", typeof( SpeckleBoolean ) )]
-  [JsonInheritanceAttribute( "SpeckleNumber", typeof( SpeckleNumber ) )]
-  [JsonInheritanceAttribute( "SpeckleString", typeof( SpeckleString ) )]
-  [JsonInheritanceAttribute( "SpeckleInterval", typeof( SpeckleInterval ) )]
-  [JsonInheritanceAttribute( "SpeckleInterval2d", typeof( SpeckleInterval2d ) )]
-  [JsonInheritanceAttribute( "SpecklePoint", typeof( SpecklePoint ) )]
-  [JsonInheritanceAttribute( "SpeckleVector", typeof( SpeckleVector ) )]
-  [JsonInheritanceAttribute( "SpecklePlane", typeof( SpecklePlane ) )]
-  [JsonInheritanceAttribute( "SpeckleCircle", typeof( SpeckleCircle ) )]
-  [JsonInheritanceAttribute( "SpeckleArc", typeof( SpeckleArc ) )]
-  [JsonInheritanceAttribute( "SpeckleEllipse", typeof( SpeckleEllipse ) )]
-  [JsonInheritanceAttribute( "SpecklePolycurve", typeof( SpecklePolycurve ) )]
-  [JsonInheritanceAttribute( "SpeckleBox", typeof( SpeckleBox ) )]
-  [JsonInheritanceAttribute( "SpecklePolyline", typeof( SpecklePolyline ) )]
-  [JsonInheritanceAttribute( "SpeckleCurve", typeof( SpeckleCurve ) )]
-  [JsonInheritanceAttribute( "SpeckleMesh", typeof( SpeckleMesh ) )]
-  [JsonInheritanceAttribute( "SpeckleBrep", typeof( SpeckleBrep ) )]
-  [JsonInheritanceAttribute( "SpeckleExtrusion", typeof( SpeckleExtrusion ) )]
-  [JsonInheritanceAttribute( "SpeckleAnnotation", typeof( SpeckleAnnotation ) )]
-  [JsonInheritanceAttribute( "SpeckleBlock", typeof( SpeckleBlock ) )]
-  [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
-  [Serializable]
-  public partial class SpeckleObject : ResourceBase, IEqualityComparer<SpeckleObject>
-  {
-    [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    [Newtonsoft.Json.JsonConverter( typeof( Newtonsoft.Json.Converters.StringEnumConverter ) )]
-    public virtual SpeckleObjectType Type { get; set; } = SpeckleObjectType.Abstract;
+  //[Newtonsoft.Json.JsonConverter( typeof( SpeckleObjectConverter ), "type" )]
+  //[JsonInheritanceAttribute( "SpeckleObject", typeof( SpeckleObject ) )]
+  //[JsonInheritanceAttribute( "SpeckleAbstract", typeof( SpeckleAbstract ) )]
+  //[JsonInheritanceAttribute( "SpecklePlaceholder", typeof( SpecklePlaceholder ) )]
+  //[JsonInheritanceAttribute( "SpeckleNull", typeof( SpeckleNull ) )]
+  //[JsonInheritanceAttribute( "SpeckleBoolean", typeof( SpeckleBoolean ) )]
+  //[JsonInheritanceAttribute( "SpeckleNumber", typeof( SpeckleNumber ) )]
+  //[JsonInheritanceAttribute( "SpeckleString", typeof( SpeckleString ) )]
+  //[JsonInheritanceAttribute( "SpeckleInterval", typeof( SpeckleInterval ) )]
+  //[JsonInheritanceAttribute( "SpeckleInterval2d", typeof( SpeckleInterval2d ) )]
+  //[JsonInheritanceAttribute( "SpecklePoint", typeof( SpecklePoint ) )]
+  //[JsonInheritanceAttribute( "SpeckleVector", typeof( SpeckleVector ) )]
+  //[JsonInheritanceAttribute( "SpecklePlane", typeof( SpecklePlane ) )]
+  //[JsonInheritanceAttribute( "SpeckleCircle", typeof( SpeckleCircle ) )]
+  //[JsonInheritanceAttribute( "SpeckleArc", typeof( SpeckleArc ) )]
+  //[JsonInheritanceAttribute( "SpeckleEllipse", typeof( SpeckleEllipse ) )]
+  //[JsonInheritanceAttribute( "SpecklePolycurve", typeof( SpecklePolycurve ) )]
+  //[JsonInheritanceAttribute( "SpeckleBox", typeof( SpeckleBox ) )]
+  //[JsonInheritanceAttribute( "SpecklePolyline", typeof( SpecklePolyline ) )]
+  //[JsonInheritanceAttribute( "SpeckleCurve", typeof( SpeckleCurve ) )]
+  //[JsonInheritanceAttribute( "SpeckleMesh", typeof( SpeckleMesh ) )]
+  //[JsonInheritanceAttribute( "SpeckleBrep", typeof( SpeckleBrep ) )]
+  //[JsonInheritanceAttribute( "SpeckleExtrusion", typeof( SpeckleExtrusion ) )]
+  //[JsonInheritanceAttribute( "SpeckleAnnotation", typeof( SpeckleAnnotation ) )]
+  //[JsonInheritanceAttribute( "SpeckleBlock", typeof( SpeckleBlock ) )]
 
-    /// <summary>Object's unique hash.</summary>
-    [Newtonsoft.Json.JsonProperty( "hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public string Hash { get; set; }
-
-    /// <summary>Object's transform.</summary>
-    [Newtonsoft.Json.JsonProperty( "transform", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public List<double> Transform { get; set; }
-
-    /// <summary>Object's geometry hash</summary>
-    [ Newtonsoft.Json.JsonProperty( "geometryHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public string GeometryHash { get; set; }
-
-    /// <summary>The id/guid that the origin application identifies this object by.</summary>
-    [Newtonsoft.Json.JsonProperty( "applicationId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public string ApplicationId { get; set; }
-    
-    /// <summary>The name of this object in the origin application GUI.</summary>
-    [Newtonsoft.Json.JsonProperty( "name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public string Name { get; set; }
-
-    /// <summary>The extra properties field of a speckle object.</summary>
-    [Newtonsoft.Json.JsonProperty( "properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    [Newtonsoft.Json.JsonConverter( typeof( SpecklePropertiesConverter ) )]
-    public Dictionary<string, object> Properties { get; set; }
-
-    /// <summary>If this object is a child, the parent's objectid.</summary>
-    [Newtonsoft.Json.JsonProperty( "parent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public string Parent { get; set; }
-
-    /// <summary>An array of the ids of any children of this object.</summary>
-    [Newtonsoft.Json.JsonProperty( "children", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public List<string> Children { get; set; }
-
-    /// <summary>If resulting from a merge, the objects that this one was born out of.</summary>
-    [Newtonsoft.Json.JsonProperty( "ancestors", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public List<string> Ancestors { get; set; }
-
-    public string ToJson( )
-    {
-      return Newtonsoft.Json.JsonConvert.SerializeObject( this );
-    }
-
-    public static SpeckleObject FromJson( string data )
-    {
-      return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleObject>( data );
-    }
-
-        public bool Equals( SpeckleObject x, SpeckleObject y )
-        {
-            return x.Hash == y.Hash;
-        }
-
-        public int GetHashCode( SpeckleObject obj )
-        {
-            return obj.Hash.GetHashCode();
-        }
-    }
+  
 
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
