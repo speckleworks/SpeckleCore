@@ -71,7 +71,7 @@ namespace SpeckleCore
     /// <param name="dict"></param>
     /// <param name="factor"></param>
     /// <returns></returns>
-    internal Dictionary<string, object> ScaleProperties( Dictionary<string, object> dict, double factor )
+    public Dictionary<string, object> ScaleProperties( Dictionary<string, object> dict, double factor )
     {
       if ( dict == null ) return null;
       foreach ( var kvp in dict )
