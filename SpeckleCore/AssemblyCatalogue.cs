@@ -10,20 +10,18 @@ using System.Diagnostics;
 namespace SpeckleCore
 {
   /// <summary>
-  /// Thanks to @radugidei for the idea. 
-  /// Here we're attempting to rip off Speckle's guerilla assembly loading.
-  /// Original src: https://raw.githubusercontent.com/NancyFx/Nancy/de458a9b42db6478e0c2bb8adef0f9fa342a2674/src/Nancy/AppDomainAssemblyCatalog.cs
+  /// Thanks to @radugidei for the idea: we're attempting to rip off NancyFX's guerilla assembly loading.
+  /// See original src (MIT): 
+  /// https://raw.githubusercontent.com/NancyFx/Nancy/de458a9b42db6478e0c2bb8adef0f9fa342a2674/src/Nancy/AppDomainAssemblyCatalog.cs
   /// </summary>
-  public class ConverterLoader
+  public class SpeckleKitLoader
   {
     private static readonly AssemblyName SpeckleAssemblyName = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
     private static readonly string SpeckleAssemblyLocation = Path.GetDirectoryName( typeof( SpeckleApiClient ).GetTypeInfo().Assembly.Location );
     private readonly Lazy<IReadOnlyCollection<Assembly>> assemblies = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );
 
-    /// <summary>
-    /// Gets all <see cref="Assembly"/> instances in the catalog.
-    /// </summary>
-    /// <returns>An <see cref="IReadOnlyCollection{T}"/> of <see cref="Assembly"/> instances.</returns>
+    public static string SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
+
     public virtual IReadOnlyCollection<Assembly> GetAssemblies( )
     {
       return this.assemblies.Value;
@@ -56,82 +54,43 @@ namespace SpeckleCore
     private static IEnumerable<Assembly> LoadSpeckleReferencingAssemblies( IEnumerable<Assembly> loadedAssemblies )
     {
       var assemblies = new HashSet<Assembly>();
-      //var inspectionAppDomain = CreateInspectionAppDomain();
-      //var inspectionProber = CreateRemoteReferenceProber( inspectionAppDomain );
       var loadedSpeckleReferencingAssemblyNames = loadedAssemblies.Select( assembly => assembly.GetName() ).ToArray();
-      var directory = new Uri( SpeckleAssemblyLocation ).LocalPath;
+      var directories = Directory.GetDirectories( SpeckleKitsDirectory );
+      var currDomain = AppDomain.CurrentDomain;
 
-      foreach ( var assemblyPath in System.IO.Directory.EnumerateFiles( directory, "*.dll" ) )
+
+      foreach ( var directory in directories )
       {
-        var unloadedAssemblyName = SafeGetAssemblyName( assemblyPath );
-
-        if ( unloadedAssemblyName == null )
+        foreach ( var assemblyPath in System.IO.Directory.EnumerateFiles( directory, "*.dll" ) )
         {
-          continue;
-        }
+          var unloadedAssemblyName = SafeGetAssemblyName( assemblyPath );
 
-        if ( !loadedSpeckleReferencingAssemblyNames.Any( loadedSpeckleReferencingAssemblyName => AssemblyName.ReferenceMatchesDefinition( loadedSpeckleReferencingAssemblyName, unloadedAssemblyName ) ) )
-        {
-          var test = unloadedAssemblyName;
-          var relfectionLoadAssembly = Assembly.ReflectionOnlyLoadFrom( assemblyPath );
-          var isReferencing = relfectionLoadAssembly.IsReferencing( SpeckleAssemblyName );
-
-          var boo = isReferencing;
-          if(isReferencing)
+          if ( unloadedAssemblyName == null )
           {
-            Debug.WriteLine( "Load converter: " + unloadedAssemblyName );
-            //var assembly = SafeLoadAssembly( AppDomain.CurrentDomain, unloadedAssemblyName );
-
+            continue;
           }
 
-          //if ( inspectionProber.HasReference( unloadedAssemblyName, SpeckleAssemblyName ) )
-          //{
-          //  var assembly = SafeLoadAssembly( AppDomain.CurrentDomain, unloadedAssemblyName );
+          if ( !loadedSpeckleReferencingAssemblyNames.Any( loadedSpeckleReferencingAssemblyName => AssemblyName.ReferenceMatchesDefinition( loadedSpeckleReferencingAssemblyName, unloadedAssemblyName ) ) )
+          {
+            var relfectionLoadAssembly = Assembly.ReflectionOnlyLoadFrom( assemblyPath );
+            var isReferencingCore = relfectionLoadAssembly.IsReferencing( SpeckleAssemblyName );
 
-          //  if ( assembly != null )
-          //  {
-          //    assemblies.Add( assembly );
-          //  }
-          //}
+            if ( isReferencingCore )
+            {
+              Debug.WriteLine( "Load converter: " + unloadedAssemblyName );
+              var assembly = SafeLoadAssembly( AppDomain.CurrentDomain, unloadedAssemblyName );
+              if ( assembly != null )
+              {
+                var res = assembly.GetTypes();
+                var copy = res;
+
+                assemblies.Add( assembly );
+              }
+            }
+          }
         }
       }
-      //}
-
-      //AppDomain.Unload( inspectionAppDomain );
-
       return assemblies.ToArray();
-    }
-
-    private static AppDomain CreateInspectionAppDomain( )
-    {
-      var currentAppDomain = AppDomain.CurrentDomain;
-
-      return AppDomain.CreateDomain( "AppDomainAssemblyCatalog", currentAppDomain.Evidence,
-          currentAppDomain.SetupInformation );
-    }
-
-    private static ProxySpeckleReferenceProber CreateRemoteReferenceProber( AppDomain appDomain )
-    {
-      return ( ProxySpeckleReferenceProber ) appDomain.CreateInstanceAndUnwrap(
-          typeof( ProxySpeckleReferenceProber ).Assembly.FullName,
-          typeof( ProxySpeckleReferenceProber ).FullName );
-    }
-
-    private static IEnumerable<string> GetAssemblyDirectories( )
-    {
-      var directories = AppDomain.CurrentDomain.SetupInformation.PrivateBinPath != null
-          ? AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split( new[ ] { ';' }, StringSplitOptions.RemoveEmptyEntries )
-          : new string[ ] { };
-
-      foreach ( var directory in directories.Where( directory => !string.IsNullOrWhiteSpace( directory ) ) )
-      {
-        yield return directory;
-      }
-
-      if ( AppDomain.CurrentDomain.SetupInformation.PrivateBinPathProbe == null )
-      {
-        yield return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-      }
     }
 
     private static AssemblyName SafeGetAssemblyName( string assemblyPath )
@@ -186,28 +145,4 @@ namespace SpeckleCore
     }
 
   }
-
-  /// <summary>
-  /// Utility class used to probe assembly references.
-  /// </summary>
-  /// <remarks>
-  /// Because this class inherits from <see cref="T:System.MarshalByRefObject"/> it can be used across different <see cref="T:System.AppDomain"/>.
-  /// </remarks>
-  internal class ProxySpeckleReferenceProber : MarshalByRefObject
-  {
-    /// <summary>
-    /// Determines if the assembly has a reference (dependency) upon another one.
-    /// </summary>
-    /// <param name="assemblyNameForProbing">The name of the assembly that will be tested.</param>
-    /// <param name="referenceAssemblyName">The reference assembly name.</param>
-    /// <returns>A boolean value indicating if there is a reference.</returns>
-    public bool HasReference( AssemblyName assemblyNameForProbing, AssemblyName referenceAssemblyName )
-    {
-      var assemblyForInspection = Assembly.ReflectionOnlyLoad( assemblyNameForProbing.Name );
-
-      return assemblyForInspection.IsReferencing( referenceAssemblyName );
-    }
-  }
-
-
 }

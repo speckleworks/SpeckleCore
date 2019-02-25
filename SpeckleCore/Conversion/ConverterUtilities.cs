@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 { 
   /// <summary>
-  /// utility functions.
+  /// Utility functions.
   /// </summary>
   public partial class Converter
   {
