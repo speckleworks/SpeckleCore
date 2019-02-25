@@ -48,7 +48,7 @@ namespace SpeckleCore
     /// <summary>
     /// Recomputes the object's current hash; takes into account all values besides the hash itself, which is set to null before the calculation.
     /// </summary>
-    public void SetHash()
+    public virtual void GenerateHash()
     {
       this.Hash = null;
       this.Hash = this.GetMd5FromObject( this );
