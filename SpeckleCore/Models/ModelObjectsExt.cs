@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,10 +49,44 @@ namespace SpeckleCore
     /// <summary>
     /// Recomputes the object's current hash; takes into account all values besides the hash itself, which is set to null before the calculation.
     /// </summary>
-    public virtual void GenerateHash()
+    public virtual void GenerateHash( )
     {
       this.Hash = null;
       this.Hash = this.GetMd5FromObject( this );
+    }
+
+    /// <summary>
+    /// Use only for unit conversions. This will not affect the object hashes, thus potentially causing 
+    /// inconsistencies if used to save objects on a server.
+    /// </summary>
+    /// <param name="factor">Scaling factor</param>
+    public virtual void Scale( double factor )
+    {
+      // Implemented object type by object type, if it makes sense. 
+    }
+
+    /// <summary>
+    /// Scales any speckle objects that can be found in an Dictionary.
+    /// </summary>
+    /// <param name="dict"></param>
+    /// <param name="factor"></param>
+    /// <returns></returns>
+    internal Dictionary<string, object> ScaleProperties( Dictionary<string, object> dict, double factor )
+    {
+      if ( dict == null ) return null;
+      foreach ( var kvp in dict )
+      {
+        try
+        {
+          var scaleMethod = kvp.Value.GetType().GetMethod( "Scale" );
+          scaleMethod.Invoke( kvp.Value, new object[ ] { factor } );
+        }
+        catch ( Exception e )
+        {
+          Debug.WriteLine( "Error while scaling object." );
+        }
+      }
+      return dict;
     }
   }
 
