@@ -16,14 +16,20 @@ namespace SpeckleCore
   /// </summary>
   public class SpeckleKitLoader
   {
-    private readonly AssemblyName SpeckleAssemblyName;// = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
-    private readonly Lazy<IReadOnlyCollection<Assembly>> assemblies;// = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );
+    private readonly AssemblyName SpeckleAssemblyName;
+    private readonly Lazy<IReadOnlyCollection<Assembly>> assemblies;
 
-    public string SpeckleKitsDirectory;// = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
+    public string SpeckleKitsDirectory;
 
     public SpeckleKitLoader( )
     {
+
+#if !DEBUG
+      SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKitsDebug\";
+#else
       SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
+#endif
+
       SpeckleAssemblyName = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
       assemblies = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );
     }
