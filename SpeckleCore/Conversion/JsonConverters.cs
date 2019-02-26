@@ -19,7 +19,7 @@ namespace SpeckleCore
 
     private readonly string _discriminator;
 
-    private Dictionary<string, Type> CachedTypes = new Dictionary<string, Type>(); 
+    private Dictionary<string, Type> CachedTypes = new Dictionary<string, Type>();
 
     [System.ThreadStatic]
     private static bool _isReading;
@@ -112,7 +112,7 @@ namespace SpeckleCore
       if ( CachedTypes.ContainsKey( discriminator ) )
         return CachedTypes[ discriminator ];
 
-      var type = SpeckleCore.SpeckleInitializer.GetTypes().FirstOrDefault( t => t.Name == discriminator);
+      var type = SpeckleCore.SpeckleInitializer.GetTypes().FirstOrDefault( t => t.Name == discriminator );
 
       if ( type == null )
       {
@@ -122,10 +122,11 @@ namespace SpeckleCore
 
       if ( type != null )
       {
-        CachedTypes.Add( discriminator, type );
+        if ( !CachedTypes.ContainsKey( discriminator ) )
+          CachedTypes.Add( discriminator, type );
         return type;
       }
-        
+
 
       throw new System.InvalidOperationException( "Could not find subtype of '" + objectType.Name + "' with discriminator '" + discriminator + "'." );
     }
