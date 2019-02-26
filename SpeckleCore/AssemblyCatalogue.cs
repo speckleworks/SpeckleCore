@@ -16,18 +16,24 @@ namespace SpeckleCore
   /// </summary>
   public class SpeckleKitLoader
   {
-    private static readonly AssemblyName SpeckleAssemblyName = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
-    private static readonly string SpeckleAssemblyLocation = Path.GetDirectoryName( typeof( SpeckleApiClient ).GetTypeInfo().Assembly.Location );
-    private readonly Lazy<IReadOnlyCollection<Assembly>> assemblies = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );
+    private readonly AssemblyName SpeckleAssemblyName;// = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
+    private readonly Lazy<IReadOnlyCollection<Assembly>> assemblies;// = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );
 
-    public static string SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
+    public string SpeckleKitsDirectory;// = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
+
+    public SpeckleKitLoader( )
+    {
+      SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
+      SpeckleAssemblyName = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
+      assemblies = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );
+    }
 
     public virtual IReadOnlyCollection<Assembly> GetAssemblies( )
     {
       return this.assemblies.Value;
     }
 
-    private static IReadOnlyCollection<Assembly> GetAvailableAssemblies( )
+    private IReadOnlyCollection<Assembly> GetAvailableAssemblies( )
     {
       var assemblies = GetLoadedSpeckleReferencingAssemblies();
 
@@ -36,7 +42,7 @@ namespace SpeckleCore
       return assemblies.Union( loaded ).ToArray();
     }
 
-    private static List<Assembly> GetLoadedSpeckleReferencingAssemblies( )
+    private List<Assembly> GetLoadedSpeckleReferencingAssemblies( )
     {
       var assemblies = new List<Assembly>();
 
@@ -51,7 +57,7 @@ namespace SpeckleCore
       return assemblies;
     }
 
-    private static IEnumerable<Assembly> LoadSpeckleReferencingAssemblies( IEnumerable<Assembly> loadedAssemblies )
+    private IEnumerable<Assembly> LoadSpeckleReferencingAssemblies( IEnumerable<Assembly> loadedAssemblies )
     {
       var assemblies = new HashSet<Assembly>();
       var loadedSpeckleReferencingAssemblyNames = loadedAssemblies.Select( assembly => assembly.GetName() ).ToArray();
