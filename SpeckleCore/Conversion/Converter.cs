@@ -617,7 +617,7 @@ namespace SpeckleCore
       }
 
       result.Properties = dict;
-      result.Hash = result.GeometryHash = result.GetMd5FromObject( result.Properties );
+      result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
 
       return result;
     }
