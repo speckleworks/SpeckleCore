@@ -24,7 +24,7 @@ namespace SpeckleCore
     public SpeckleKitLoader( )
     {
 
-#if !DEBUG
+#if DEBUG
       SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKitsDebug\";
 #else
       SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
