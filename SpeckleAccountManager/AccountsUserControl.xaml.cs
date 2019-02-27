@@ -40,7 +40,9 @@ namespace SpecklePopup
       //only show in popupmode
       ButonUseSelected.Visibility = Visibility.Collapsed;
 
-      LocalContext.Init();
+      SpeckleCore.SpeckleInitializer.Initialize();
+      SpeckleCore.LocalContext.Init();
+
       LoadAccounts();
     }
 
