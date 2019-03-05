@@ -24,13 +24,13 @@ namespace SpeckleCore
 
     partial void ProcessResponse( HttpClient client, HttpResponseMessage response )
     {
-    
+
     }
 
     partial void PrepareRequest( HttpClient client, HttpRequestMessage request, string url )
     {
       // Try and attach the auth token if present
-      if ( AuthToken != "" )
+      if ( AuthToken != "" && AuthToken != null )
         request.Headers.Add( "Authorization", AuthToken );
 
       // Let the server know about our aspiration to accept gzipped content.
