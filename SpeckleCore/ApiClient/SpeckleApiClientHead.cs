@@ -9,43 +9,10 @@ using System.Text;
 
 namespace SpeckleCore
 {
-
   [System.CodeDom.Compiler.GeneratedCode( "NSwag", "11.3.3.0" )]
   public partial class SpeckleApiClient
   {
     private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-    private string _baseUrl = "http://localhost:8080/api";
-    private string _authToken = "";
-    private bool _UseGzip = true;
-
-    public SpeckleApiClient( bool useGzip = true )
-    {
-      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( ( ) =>
-       {
-         var settings = new Newtonsoft.Json.JsonSerializerSettings();
-         UpdateJsonSerializerSettings( settings );
-         return settings;
-       } );
-      UseGzip = useGzip;
-    }
-
-    public bool UseGzip
-    {
-      get { return _UseGzip; }
-      set { _UseGzip = value; }
-    }
-
-    public string BaseUrl
-    {
-      get { return _baseUrl; }
-      set { _baseUrl = value; }
-    }
-
-    public string AuthToken
-    {
-      get { return _authToken; }
-      set { _authToken = value; }
-    }
 
     partial void UpdateJsonSerializerSettings( Newtonsoft.Json.JsonSerializerSettings settings );
 

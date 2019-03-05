@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -43,24 +45,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyCatalogue.cs" />
+    <Compile Include="Conversion\ConverterUtilities.cs" />
+    <Compile Include="Conversion\ConverterDeserialisation.cs" />
+    <Compile Include="Conversion\ConverterSerialisation.cs" />
     <Compile Include="LocalData\Models.cs" />
     <Compile Include="LocalData\SpeckleLocalContext.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\ModelObjects.cs" />
     <Compile Include="Models\ModelObjectsExt.cs" />
-    <Compile Include="Generic Utils\ClassesForAbstractTests.cs" />
     <Compile Include="Conversion\Converter.cs" />
     <Compile Include="Generic Utils\GzipContent.cs" />
     <Compile Include="Conversion\JsonConverters.cs" />
+    <Compile Include="ModuleInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\ModelResponses.cs" />
-    <Compile Include="SpeckleApiClientApiCalls.cs" />
-    <Compile Include="SpeckleApiClientHead.cs" />
-    <Compile Include="SpeckleApiClientExtension.cs" />
+    <Compile Include="ApiClient\SpeckleApiClientApiCalls.cs" />
+    <Compile Include="ApiClient\SpeckleApiClientHead.cs" />
+    <Compile Include="ApiClient\SpeckleApiClientExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.1</Version>
+      <Version>9.0.1</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.5.231</Version>
@@ -74,4 +80,10 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <SqlLiteRefHack Include="$(ProjectDir)bin\$(ConfigurationName)\**\x64\*.*" ></SqlLiteRefHack>
+    </ItemGroup>
+    <Copy SourceFiles="@(SqlLiteRefHack)" DestinationFolder="$(ProjectDir)bin\$(ConfigurationName)\"></Copy>
+  </Target>
 </Project>

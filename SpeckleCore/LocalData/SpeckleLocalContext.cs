@@ -124,7 +124,7 @@ namespace SpeckleCore
           }
           catch ( Exception e )
           {
-            Debug.WriteLine( "yolo" );
+            Debug.WriteLine( e.Message );
           }
         }
 
@@ -291,18 +291,31 @@ namespace SpeckleCore
       }
 
       var fullRes = new List<SpeckleObject>();
+      var speckleObjs = new List<SpeckleObject>();
 
       foreach ( var subList in partitionedList )
       {
-        var res = Database.Table<CachedObject>().Where( obj => subList.Contains( obj.CombinedHash ) ).Select( o => o.ToSpeckle() ).ToList();
-        fullRes.AddRange( res );
+        //var res = Database.Table<CachedObject>().Where( obj => subList.Contains( obj.CombinedHash ) ).Select( o => o.ToSpeckle() ).ToList();
+        var res = Database.Table<CachedObject>().Where( obj => subList.Contains( obj.CombinedHash ) );
+
+        foreach(var cachedObj in res )
+        {
+          // compatibility layer for old cache objects
+          try {
+            var spk = cachedObj.ToSpeckle();
+            speckleObjs.Add( spk );
+          } catch {
+            
+          }
+        }
+        //fullRes.AddRange( res );
       }
 
       // populate the original list with whatever objects we found in the database.
       for ( int i = 0; i < objs.Count; i++ )
       {
         var placeholder = objs[ i ];
-        var myObject = fullRes.Find( o => o._id == placeholder._id );
+        var myObject = speckleObjs.Find( o => o._id == placeholder._id );
         if ( myObject != null )
         {
           objs[ i ] = myObject;
