@@ -306,7 +306,7 @@ namespace SpeckleCore
         }
         if ( s.Contains( "[" ) ) // special handler for lists
         {
-          propSource = ( ( IEnumerable<object> ) propSource ).ToList()[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
+          propSource = ( ( IEnumerable ) propSource ).Cast<object>().ToList()[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
           continue;
         }
         var propertySource = TryGetProperty( propSource, s );
