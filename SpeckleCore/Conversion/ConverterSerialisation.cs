@@ -33,6 +33,8 @@ namespace SpeckleCore
     {
       if ( source == null ) return new SpeckleNull();
 
+      //if ( source is IEnumerable ) return Converter.Serialise( source as IEnumerable<object> );
+
       if ( traversed == null ) traversed = new Dictionary<int, string>();
 
       if ( path == "" ) path = "root";
