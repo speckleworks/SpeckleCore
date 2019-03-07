@@ -199,7 +199,8 @@ namespace SpeckleCore
     private void WriteArray( JsonWriter writer, object value )
     {
       writer.WriteStartArray();
-      var array = value as IEnumerable<object>;
+
+      var array = value as System.Collections.IEnumerable;
       foreach ( var o in array )
         this.WriteValue( writer, o );
       writer.WriteEndArray();
