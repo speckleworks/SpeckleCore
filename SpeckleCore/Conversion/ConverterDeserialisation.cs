@@ -59,7 +59,7 @@ namespace SpeckleCore
               return result;
           }
           // otherwise return null
-          return null;
+          return obj;
         }
         else
         {
@@ -103,7 +103,7 @@ namespace SpeckleCore
           }
 
           if ( myObject == null )
-            return null;
+            return absObj;
 
           if ( root == null )
             root = myObject;
@@ -220,7 +220,7 @@ namespace SpeckleCore
       }
       catch
       {
-        return null;
+        return obj;
       }
     }
 
