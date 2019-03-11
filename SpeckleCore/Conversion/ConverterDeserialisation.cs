@@ -134,7 +134,7 @@ namespace SpeckleCore
                 {
                   var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
                   foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
-                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { myObj } );
+                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { Convert.ChangeType(myObj, mySubList.GetType().GetGenericArguments().Single()) } );
 
                   value = mySubList;
                 }
