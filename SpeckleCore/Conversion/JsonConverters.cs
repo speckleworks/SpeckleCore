@@ -109,31 +109,35 @@ namespace SpeckleCore
       // TODO: Cleanup in 2.0.0, we should not have special cases where we need to prefix "Speckle" to things. 
       // For now, we're going to stick to the following.
 
-      if ( CachedTypes.ContainsKey( discriminator ) )
-        return CachedTypes[ discriminator ];
-
-      var type = SpeckleCore.SpeckleInitializer.GetTypes().FirstOrDefault( t => t.Name == discriminator );
-
-      if ( type == null )
+      // TODO: not elegant at all, should be broken up and recursified if needed.
+      // This part makes sure that we deserialise to what we can - in case we get an object from a speckle kit that we do not posses, that nevertheless inherits from
+      // an object that we do posses, we degrade to that (ie, GridLine -> Line).
+      var pieces = discriminator.Split( '/' ).ToList();
+      pieces.Reverse();
+      foreach ( var piece in pieces )
       {
-        discriminator = "Speckle" + discriminator;
-        type = SpeckleCore.SpeckleInitializer.GetTypes().FirstOrDefault( t => t.Name == discriminator );
-      }
+        var subtypePiece = piece;
 
-      if ( type != null )
-      {
-        if ( !CachedTypes.ContainsKey( discriminator ) )
-          CachedTypes.Add( discriminator, type );
-        return type;
-      }
+        if ( CachedTypes.ContainsKey( subtypePiece ) )
+          return CachedTypes[ subtypePiece ];
 
+        var secondaryType = SpeckleCore.SpeckleInitializer.GetTypes().FirstOrDefault( t => t.Name == subtypePiece );
+
+        if ( secondaryType == null )
+        {
+          subtypePiece = "Speckle" + subtypePiece;
+          secondaryType = SpeckleCore.SpeckleInitializer.GetTypes().FirstOrDefault( t => t.Name == subtypePiece );
+        }
+
+        if ( secondaryType != null )
+        {
+          if ( !CachedTypes.ContainsKey( subtypePiece ) )
+            CachedTypes.Add( subtypePiece, secondaryType );
+          return secondaryType;
+        }
+      }
 
       throw new System.InvalidOperationException( "Could not find subtype of '" + objectType.Name + "' with discriminator '" + discriminator + "'." );
-    }
-
-    private bool IsKnwonTypeTargetType( dynamic attribute, string discriminator )
-    {
-      return attribute?.Type.Name == discriminator;
     }
 
 
