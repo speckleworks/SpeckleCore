@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 {
   /// <summary>
-  /// Use this interface to make sure static extension methods are loaded from SpeckleKits.
+  /// Use this interface to make sure static extension methods/object defintions are loaded from SpeckleKits AND/OR that you force a reference to SpeckleCore (thus making sure the assembly is loaded.
   /// </summary>
   public interface ISpeckleInitializer { }
 
