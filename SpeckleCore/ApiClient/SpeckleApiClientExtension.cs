@@ -60,7 +60,7 @@ namespace SpeckleCore
     public SpeckleApiClient( string baseUrl, bool isPersistent = false )
     {
       SetSerialisationSettings();
-      
+
       BaseUrl = baseUrl;
       IsPersistent = isPersistent;
 
@@ -73,16 +73,19 @@ namespace SpeckleCore
       UseGzip = useGzip;
     }
 
-    public SpeckleApiClient()
+    public SpeckleApiClient( )
     {
       SetSerialisationSettings();
     }
 
-    private void SetSerialisationSettings()
+    private void SetSerialisationSettings( )
     {
       _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( ( ) =>
       {
-        var settings = new Newtonsoft.Json.JsonSerializerSettings();
+        var settings = new Newtonsoft.Json.JsonSerializerSettings()
+        {
+          ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() }
+        };
         UpdateJsonSerializerSettings( settings );
         return settings;
       } );
