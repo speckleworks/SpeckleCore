@@ -376,7 +376,10 @@ namespace SpeckleCore
     {
       _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( ( ) =>
        {
-         var settings = new Newtonsoft.Json.JsonSerializerSettings();
+         var settings = new Newtonsoft.Json.JsonSerializerSettings()
+         {
+           ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() }
+         };
          UpdateJsonSerializerSettings( settings );
          return settings;
        } );
