@@ -53,12 +53,30 @@ namespace SpeckleCore
           // if we have some ToNative method
           if ( methods.Count > 0 )
           {
+            foreach(var method in methods)
+            {
+              try
+              {
+                var convRes = method.Invoke( obj, new object[ ] { obj } );
+                if(convRes != null)
+                {
+                  toNativeMethods.Add( type, method );
+                  return convRes;
+                }
+              }
+              catch(Exception e)
+              {
+                // to native method failed, try another one if present!
+              }
+            }
+
+
             toNativeMethods.Add( type, methods[ 0 ] );
             var result = methods[ 0 ].Invoke( obj, new object[ ] { obj } );
             if ( result != null )
               return result;
           }
-          // otherwise return null
+          // otherwise return the original object
           return obj;
         }
         else
