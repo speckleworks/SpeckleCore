@@ -41,30 +41,33 @@ namespace SpeckleCore
           var type = obj.GetType().ToString();
 
           if ( toNativeMethods.ContainsKey( type ) )
+          {
             return toNativeMethods[ obj.GetType().ToString() ].Invoke( obj, new object[ ] { obj } );
+          }
 
           List<MethodInfo> methods = new List<MethodInfo>();
 
           foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
           {
-            try { methods.AddRange( Converter.GetExtensionMethods( ass, obj.GetType(), "ToNative" ) ); } catch { }
+            try { methods.AddRange( Converter.GetExtensionMethods( ass, obj.GetType(), "ToNative" ) ); }
+            catch ( Exception e ) { }
           }
 
           // if we have some ToNative method
           if ( methods.Count > 0 )
           {
-            foreach(var method in methods)
+            foreach ( var method in methods )
             {
               try
               {
                 var convRes = method.Invoke( obj, new object[ ] { obj } );
-                if(convRes != null)
+                if ( convRes != null )
                 {
                   toNativeMethods.Add( type, method );
                   return convRes;
                 }
               }
-              catch(Exception e)
+              catch ( Exception e )
               {
                 // to native method failed, try another one if present!
               }
@@ -82,7 +85,7 @@ namespace SpeckleCore
         else
         {
           // we have a speckle abstract object
-          SpeckleAbstract absObj = obj as SpeckleAbstract;
+          var absObj = obj as SpeckleAbstract;
 
           if ( absObj._type == "ref" )
             return null;
@@ -152,7 +155,7 @@ namespace SpeckleCore
                 {
                   var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
                   foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
-                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { Convert.ChangeType(myObj, mySubList.GetType().GetGenericArguments().Single()) } );
+                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { Convert.ChangeType( myObj, mySubList.GetType().GetGenericArguments().Single() ) } );
 
                   value = mySubList;
                 }
