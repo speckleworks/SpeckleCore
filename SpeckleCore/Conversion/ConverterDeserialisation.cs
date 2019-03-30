@@ -48,7 +48,7 @@ namespace SpeckleCore
 
             List<MethodInfo> methods = new List<MethodInfo>();
 
-            foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
+            foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true ) ) )
             {
               try { methods.AddRange( Converter.GetExtensionMethods( ass, castObject.GetType(), "ToNative" ) ); } catch { }
             }
