@@ -47,7 +47,7 @@ namespace SpeckleCore
 
           List<MethodInfo> methods = new List<MethodInfo>();
 
-          foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
+          foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true ) ) )
           {
             try { methods.AddRange( Converter.GetExtensionMethods( ass, obj.GetType(), "ToNative" ) ); }
             catch ( Exception e ) { }
@@ -72,7 +72,6 @@ namespace SpeckleCore
                 // to native method failed, try another one if present!
               }
             }
-
 
             toNativeMethods.Add( type, methods[ 0 ] );
             var result = methods[ 0 ].Invoke( obj, new object[ ] { obj } );
