@@ -37,27 +37,51 @@ namespace SpeckleCore
         // if it's not a speckle abstract object
         if ( !( obj is SpeckleAbstract ) )
         {
-          // assembly check 
-          var type = obj.GetType().ToString();
+          SpeckleObject castObject = obj;
+          while (obj.GetType() != typeof(SpeckleObject))
+          { 
+            // assembly check 
+            var type = castObject.GetType().ToString();
 
-          if ( toNativeMethods.ContainsKey( type ) )
-            return toNativeMethods[ obj.GetType().ToString() ].Invoke( obj, new object[ ] { obj } );
+            if ( toNativeMethods.ContainsKey( type ) )
+              return toNativeMethods[castObject.GetType().ToString() ].Invoke(castObject, new object[ ] { castObject } );
 
-          List<MethodInfo> methods = new List<MethodInfo>();
+            List<MethodInfo> methods = new List<MethodInfo>();
 
-          foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
-          {
-            try { methods.AddRange( Converter.GetExtensionMethods( ass, obj.GetType(), "ToNative" ) ); } catch { }
+            foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true ) ) )
+            {
+              try { methods.AddRange( Converter.GetExtensionMethods( ass, castObject.GetType(), "ToNative" ) ); } catch { }
+            }
+
+            // if we have some ToNative method
+            if ( methods.Count > 0 )
+            {
+              foreach (var method in methods)
+              {
+                try
+                {
+                  var convRes = method.Invoke(castObject, new object[] { castObject });
+                  if (convRes != null)
+                  {
+                    toNativeMethods.Add(type, method);
+                    return convRes;
+                  }
+                }
+                catch (Exception e)
+                {
+                  // to native method failed, try another one if present!
+                }
+              }
+
+              //toNativeMethods.Add( type, methods[ 0 ] );
+              //var result = methods[ 0 ].Invoke(castObject, new object[ ] { castObject } );
+              //if ( result != null )
+              //  return result;
+            }
+
+            castObject = GetBase(castObject);
           }
 
-          // if we have some ToNative method
-          if ( methods.Count > 0 )
-          {
-            toNativeMethods.Add( type, methods[ 0 ] );
-            var result = methods[ 0 ].Invoke( obj, new object[ ] { obj } );
-            if ( result != null )
-              return result;
-          }
           // otherwise return null
           return obj;
         }
