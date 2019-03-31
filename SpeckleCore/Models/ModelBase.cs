@@ -418,7 +418,7 @@ namespace SpeckleCore
     /// <summary>The extra properties field of a speckle object.</summary>
     [Newtonsoft.Json.JsonProperty( "properties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
     [Newtonsoft.Json.JsonConverter( typeof( SpecklePropertiesConverter ) )]
-    public Dictionary<string, object> Properties { get; set; }
+    public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
     /// <summary>If this object is a child, the parent's objectid.</summary>
     [Newtonsoft.Json.JsonProperty( "parent", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
