@@ -393,7 +393,7 @@ namespace SpeckleCore
   public partial class SpeckleObject : ResourceBase
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public virtual string Type { get; set; } = "Object";
+    public virtual string Type { get; } = "Object";
 
     /// <summary>Object's unique hash.</summary>
     [Newtonsoft.Json.JsonProperty( "hash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -458,7 +458,7 @@ namespace SpeckleCore
   public partial class SpeckleAbstract : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public override string Type { get; set; } = "Abstract";
+    public override string Type { get; } = "Abstract";
 
     /// <summary>the original type of the object</summary>
     [Newtonsoft.Json.JsonProperty( "_type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
@@ -489,7 +489,7 @@ namespace SpeckleCore
   public partial class SpeckleNull : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public override string Type { get; set; } = "Null";
+    public override string Type { get; } = "Null";
 
     public SpeckleNull( )
     {
@@ -502,7 +502,7 @@ namespace SpeckleCore
   public partial class SpecklePlaceholder : SpeckleObject
   {
     [Newtonsoft.Json.JsonProperty( "type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public override string Type { get; set; } = "Placeholder";
+    public override string Type { get; } = "Placeholder";
 
     public string ToJson( )
     {
