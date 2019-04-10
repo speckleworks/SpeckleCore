@@ -84,7 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>9.0.1</Version>
+      <Version>12.0.1</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.5.231</Version>
@@ -98,6 +98,13 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="ChangeAliasesOfNugetRefs" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+    <ItemGroup>
+      <ReferencePath Condition="'%(FileName)' == 'Newtonsoft.Json'">
+        <Aliases>SpeckleNewtonsoft</Aliases>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
       <SqlLiteRefHack Include="$(ProjectDir)bin\$(ConfigurationName)\**\x64\*.*">

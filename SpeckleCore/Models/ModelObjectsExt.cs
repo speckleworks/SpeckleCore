@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿extern alias SpeckleNewtonsoft;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -94,25 +94,25 @@ namespace SpeckleCore
   {
     public SpeckleInput( ) { }
 
-    [Newtonsoft.Json.JsonProperty( "name", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [SpeckleNewtonsoft.Newtonsoft.Json.JsonProperty( "name", Required = SpeckleNewtonsoft.Newtonsoft.Json.Required.Default, NullValueHandling = SpeckleNewtonsoft.Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Name { get; set; }
 
-    [Newtonsoft.Json.JsonProperty( "guid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [SpeckleNewtonsoft.Newtonsoft.Json.JsonProperty( "guid", Required = SpeckleNewtonsoft.Newtonsoft.Json.Required.Default, NullValueHandling = SpeckleNewtonsoft.Newtonsoft.Json.NullValueHandling.Ignore )]
     public string Guid { get; set; }
 
-    [Newtonsoft.Json.JsonProperty( "value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [SpeckleNewtonsoft.Newtonsoft.Json.JsonProperty( "value", Required = SpeckleNewtonsoft.Newtonsoft.Json.Required.Default, NullValueHandling = SpeckleNewtonsoft.Newtonsoft.Json.NullValueHandling.Ignore )]
     public double Value { get; set; }
 
-    [Newtonsoft.Json.JsonProperty( "inputType", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [SpeckleNewtonsoft.Newtonsoft.Json.JsonProperty( "inputType", Required = SpeckleNewtonsoft.Newtonsoft.Json.Required.Default, NullValueHandling = SpeckleNewtonsoft.Newtonsoft.Json.NullValueHandling.Ignore )]
     public string InputType { get; set; }
 
-    [Newtonsoft.Json.JsonProperty( "max", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [SpeckleNewtonsoft.Newtonsoft.Json.JsonProperty( "max", Required = SpeckleNewtonsoft.Newtonsoft.Json.Required.Default, NullValueHandling = SpeckleNewtonsoft.Newtonsoft.Json.NullValueHandling.Ignore )]
     public double Max { get; set; }
 
-    [Newtonsoft.Json.JsonProperty( "min", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [SpeckleNewtonsoft.Newtonsoft.Json.JsonProperty( "min", Required = SpeckleNewtonsoft.Newtonsoft.Json.Required.Default, NullValueHandling = SpeckleNewtonsoft.Newtonsoft.Json.NullValueHandling.Ignore )]
     public double Min { get; set; }
 
-    [Newtonsoft.Json.JsonProperty( "step", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
+    [SpeckleNewtonsoft.Newtonsoft.Json.JsonProperty( "step", Required = SpeckleNewtonsoft.Newtonsoft.Json.Required.Default, NullValueHandling = SpeckleNewtonsoft.Newtonsoft.Json.NullValueHandling.Ignore )]
     public double Step { get; set; }
 
     public SpeckleInput( string name, float min, float max, float value, string inputType, string guid )

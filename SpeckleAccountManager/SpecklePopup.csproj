@@ -173,7 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>11.0.1</Version>
+      <Version>12.0.1</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.5.231</Version>
@@ -190,6 +190,13 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="ChangeAliasesOfNugetRefs" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+    <ItemGroup>
+      <ReferencePath Condition="'%(FileName)' == 'Newtonsoft.Json'">
+        <Aliases>SpeckleNewtonsoft</Aliases>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
