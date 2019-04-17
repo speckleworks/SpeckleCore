@@ -38,15 +38,15 @@ namespace SpeckleCore
         if ( !( obj is SpeckleAbstract ) )
         {
           SpeckleObject castObject = obj;
-          while (obj.GetType() != typeof(SpeckleObject))
+          while (castObject.GetType() != typeof(SpeckleObject))
           { 
             // assembly check 
             var type = castObject.GetType().ToString();
 
-          if ( toNativeMethods.ContainsKey( type ) )
-          {
-            return toNativeMethods[ obj.GetType().ToString() ].Invoke( obj, new object[ ] { obj } );
-          }
+            if ( toNativeMethods.ContainsKey( type ) )
+            {
+              return toNativeMethods[ type ].Invoke( castObject, new object[ ] { castObject } );
+            }
 
             List<MethodInfo> methods = new List<MethodInfo>();
 
