@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SpeckleCore
-{ 
+{
   /// <summary>
   /// Utility functions.
   /// </summary>
@@ -97,22 +97,5 @@ namespace SpeckleCore
                   select method;
       return query;
     }
-
-
-    public static SpeckleObject GetBase(SpeckleObject obj)
-    {
-      SpeckleObject baseClass = (SpeckleObject)Activator.CreateInstance(obj.GetType().BaseType);
-
-      foreach (FieldInfo f in baseClass.GetType().GetFields())
-        f.SetValue(baseClass, f.GetValue(obj));
-
-      foreach (PropertyInfo p in baseClass.GetType().GetProperties())
-        if (p.CanWrite)
-          p.SetValue(baseClass, p.GetValue(obj));
-
-      //(baseClass as SpeckleObject).GenerateHash();
-      
-      return baseClass;
-    }
-    }
+  }
 }
