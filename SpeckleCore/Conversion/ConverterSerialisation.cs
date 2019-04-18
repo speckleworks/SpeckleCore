@@ -54,33 +54,30 @@ namespace SpeckleCore
         return toSpeckleMethods[ source.GetType().ToString() ].Invoke( source, new object[ ] { source } ) as SpeckleObject;
 
       var methods = new List<MethodInfo>();
+      var currentType = source.GetType();
+      var baseTypes = new List<Type>();
+
+      // create a list of base types
+      while ( currentType != null )
+      {
+        baseTypes.Add( currentType );
+        currentType = currentType.BaseType;
+      }
+
+      // populate the ToSpeckle method array
       foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
       {
-        try
+        foreach ( var type in baseTypes )
         {
-          methods.AddRange( Converter.GetExtensionMethods( ass, source.GetType(), "ToSpeckle" ) );
-
-          var baseType = source.GetType().BaseType;
-          var baseTypes = new List<Type>();
-
-          while ( baseType != null )
-          {
-            baseTypes.Add( baseType );
-            baseType = baseType.BaseType;
-          }
-
-          foreach(var type in baseTypes)
+          try
           {
             methods.AddRange( Converter.GetExtensionMethods( ass, type, "ToSpeckle" ) );
           }
-
-          if ( source.GetType().BaseType != null )
-            methods.AddRange( Converter.GetExtensionMethods( ass, source.GetType().BaseType, "ToSpeckle" ) );
+          catch { }
         }
-        catch { } // handling errors thrown when we're attempting to load something with missing references (ie, dynamo stuff in rhino, or vice-versa).
       }
 
-      // if we have a "ToSpeckle" extension method, then invoke that and return its result
+      // iterate through the ToSpeckle method array
       if ( methods.Count > 0 )
       {
         foreach ( var method in methods )
@@ -101,7 +98,7 @@ namespace SpeckleCore
         }
       }
 
-      // else just continue with the to abstract part
+      // if we haven't returned anything by this point, we should go abstract
       SpeckleAbstract result = new SpeckleAbstract();
       result._type = source.GetType().Name;
       result._assembly = source.GetType().Assembly.FullName;
