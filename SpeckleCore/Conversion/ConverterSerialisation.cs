@@ -54,38 +54,51 @@ namespace SpeckleCore
         return toSpeckleMethods[ source.GetType().ToString() ].Invoke( source, new object[ ] { source } ) as SpeckleObject;
 
       var methods = new List<MethodInfo>();
-      foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
+      var currentType = source.GetType();
+      var baseTypes = new List<Type>();
+
+      // create a list of base types
+      while ( currentType != null )
       {
-        try
-        {
-          methods.AddRange( Converter.GetExtensionMethods( ass, source.GetType(), "ToSpeckle" ) );
-        }
-        catch { } // handling errors thrown when we're attempting to load something with missing references (ie, dynamo stuff in rhino, or vice-versa).
+        baseTypes.Add( currentType );
+        currentType = currentType.BaseType;
       }
 
-      // if we have a "ToSpeckle" extension method, then invoke that and return its result
+      // populate the ToSpeckle method array
+      foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
+      {
+        foreach ( var type in baseTypes )
+        {
+          try
+          {
+            methods.AddRange( Converter.GetExtensionMethods( ass, type, "ToSpeckle" ) );
+          }
+          catch { }
+        }
+      }
+
+      // iterate through the ToSpeckle method array
       if ( methods.Count > 0 )
       {
-        try
+        foreach ( var method in methods )
         {
-          var obj = methods[ 0 ].Invoke( source, new object[ ] { source } );
-          if ( obj != null )
+          try
           {
-            toSpeckleMethods.Add( source.GetType().ToString(), methods[ 0 ] );
-            return obj as SpeckleObject;
+            var obj = method.Invoke( source, new object[ ] { source } );
+            if ( obj != null )
+            {
+              toSpeckleMethods.Add( source.GetType().ToString(), method );
+              return obj as SpeckleObject;
+            }
           }
-          else
+          catch
           {
             return new SpeckleNull();
           }
         }
-        catch
-        {
-          return new SpeckleNull();
-        }
       }
 
-      // else just continue with the to abstract part
+      // if we haven't returned anything by this point, we should go abstract
       SpeckleAbstract result = new SpeckleAbstract();
       result._type = source.GetType().Name;
       result._assembly = source.GetType().Assembly.FullName;
@@ -127,7 +140,7 @@ namespace SpeckleCore
       }
 
       result.Properties = dict;
-      result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
+      result.Hash = result.GeometryHash = result.GetMd5FromObject( result.GetMd5FromObject( result._assembly ) + result.GetMd5FromObject( result._type ) + result.GetMd5FromObject( result.Properties ) );
 
       return result;
     }
