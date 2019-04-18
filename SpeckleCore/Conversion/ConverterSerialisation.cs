@@ -59,6 +59,23 @@ namespace SpeckleCore
         try
         {
           methods.AddRange( Converter.GetExtensionMethods( ass, source.GetType(), "ToSpeckle" ) );
+
+          var baseType = source.GetType().BaseType;
+          var baseTypes = new List<Type>();
+
+          while ( baseType != null )
+          {
+            baseTypes.Add( baseType );
+            baseType = baseType.BaseType;
+          }
+
+          foreach(var type in baseTypes)
+          {
+            methods.AddRange( Converter.GetExtensionMethods( ass, type, "ToSpeckle" ) );
+          }
+
+          if ( source.GetType().BaseType != null )
+            methods.AddRange( Converter.GetExtensionMethods( ass, source.GetType().BaseType, "ToSpeckle" ) );
         }
         catch { } // handling errors thrown when we're attempting to load something with missing references (ie, dynamo stuff in rhino, or vice-versa).
       }
@@ -66,22 +83,21 @@ namespace SpeckleCore
       // if we have a "ToSpeckle" extension method, then invoke that and return its result
       if ( methods.Count > 0 )
       {
-        try
+        foreach ( var method in methods )
         {
-          var obj = methods[ 0 ].Invoke( source, new object[ ] { source } );
-          if ( obj != null )
+          try
           {
-            toSpeckleMethods.Add( source.GetType().ToString(), methods[ 0 ] );
-            return obj as SpeckleObject;
+            var obj = method.Invoke( source, new object[ ] { source } );
+            if ( obj != null )
+            {
+              toSpeckleMethods.Add( source.GetType().ToString(), method );
+              return obj as SpeckleObject;
+            }
           }
-          else
+          catch
           {
             return new SpeckleNull();
           }
-        }
-        catch
-        {
-          return new SpeckleNull();
         }
       }
 
@@ -127,7 +143,7 @@ namespace SpeckleCore
       }
 
       result.Properties = dict;
-      result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
+      result.Hash = result.GeometryHash = result.GetMd5FromObject( result.GetMd5FromObject( result._assembly ) + result.GetMd5FromObject( result._type ) + result.GetMd5FromObject( result.Properties ) );
 
       return result;
     }
