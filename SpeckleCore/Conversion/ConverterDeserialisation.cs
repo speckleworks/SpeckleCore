@@ -37,34 +37,64 @@ namespace SpeckleCore
         // if it's not a speckle abstract object
         if ( !( obj is SpeckleAbstract ) )
         {
-          // assembly check 
-          var type = obj.GetType().ToString();
-
-          if ( toNativeMethods.ContainsKey( type ) )
-            return toNativeMethods[ obj.GetType().ToString() ].Invoke( obj, new object[ ] { obj } );
-
-          List<MethodInfo> methods = new List<MethodInfo>();
-
-          foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
+          var typeString = obj.GetType().ToString();
+          if ( toNativeMethods.ContainsKey( typeString ) )
           {
-            try { methods.AddRange( Converter.GetExtensionMethods( ass, obj.GetType(), "ToNative" ) ); } catch { }
+            return toNativeMethods[ typeString ].Invoke( obj, new object[ ] { obj } );
           }
 
-          // if we have some ToNative method
+          var methods = new List<MethodInfo>();
+          var currentType = obj.GetType();
+          var baseTypes = new List<Type>();
+
+          // create a list of base types for this object
+          while ( currentType != null )
+          {
+            baseTypes.Add( currentType );
+            currentType = currentType.BaseType;
+          }
+
+          // populate the ToNative method array
+          foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true ) ) )
+          {
+            foreach ( var type in baseTypes )
+            {
+              try
+              {
+                methods.AddRange( Converter.GetExtensionMethods( ass, type, "ToNative" ) );
+              }
+              catch { }
+            }
+          }
+
+          // iterate through the ToNative method array
           if ( methods.Count > 0 )
           {
-            toNativeMethods.Add( type, methods[ 0 ] );
-            var result = methods[ 0 ].Invoke( obj, new object[ ] { obj } );
-            if ( result != null )
-              return result;
+            foreach ( var method in methods )
+            {
+              try
+              {
+                var convRes = method.Invoke( obj, new object[ ] { obj } );
+                if ( convRes != null )
+                {
+                  toNativeMethods.Add( obj.GetType().ToString(), method );
+                  return convRes;
+                }
+              }
+              catch ( Exception e )
+              {
+                // to native method failed, try another one if present!
+              }
+            }
           }
-          // otherwise return null
+
+          // last, but not least, try and return the original object (?)
           return obj;
         }
         else
         {
           // we have a speckle abstract object
-          SpeckleAbstract absObj = obj as SpeckleAbstract;
+          var absObj = obj as SpeckleAbstract;
 
           if ( absObj._type == "ref" )
             return null;
@@ -134,7 +164,7 @@ namespace SpeckleCore
                 {
                   var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
                   foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
-                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { Convert.ChangeType(myObj, mySubList.GetType().GetGenericArguments().Single()) } );
+                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { Convert.ChangeType( myObj, mySubList.GetType().GetGenericArguments().Single() ) } );
 
                   value = mySubList;
                 }
