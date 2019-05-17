@@ -85,7 +85,8 @@ namespace SpeckleCore
       {
         var settings = new SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings()
         {
-          ContractResolver = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() }
+          ContractResolver = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() },
+          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
         };
         UpdateJsonSerializerSettings( settings );
         return settings;
@@ -379,7 +380,8 @@ namespace SpeckleCore
        {
          var settings = new SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings()
          {
-           ContractResolver = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() }
+           ContractResolver = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() },
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
          };
          UpdateJsonSerializerSettings( settings );
          return settings;
