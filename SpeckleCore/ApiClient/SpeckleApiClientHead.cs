@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿extern alias SpeckleNewtonsoft;
+using SpeckleNewtonsoft.Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using Newtonsoft.Json;
 using System.IO.Compression;
 using System.IO;
 using System.Text;
@@ -12,9 +12,9 @@ namespace SpeckleCore
   [System.CodeDom.Compiler.GeneratedCode( "NSwag", "11.3.3.0" )]
   public partial class SpeckleApiClient
   {
-    private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
+    private System.Lazy<SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-    partial void UpdateJsonSerializerSettings( Newtonsoft.Json.JsonSerializerSettings settings );
+    partial void UpdateJsonSerializerSettings(SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings settings );
 
     partial void PrepareRequest( System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, string url );
 

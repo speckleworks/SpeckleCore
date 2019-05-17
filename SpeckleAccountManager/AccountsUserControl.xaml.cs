@@ -1,4 +1,5 @@
-﻿using System;
+﻿extern alias SpeckleNewtonsoft;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -8,7 +9,7 @@ using System.Net.Mail;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Newtonsoft.Json;
+using SpeckleNewtonsoft.Newtonsoft.Json;
 using SpeckleCore;
 
 namespace SpecklePopup

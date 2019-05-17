@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SpeckleCore
-{ 
+{
   /// <summary>
   /// Utility functions.
   /// </summary>
@@ -97,22 +97,20 @@ namespace SpeckleCore
                   select method;
       return query;
     }
+  }
 
-
-    public static SpeckleObject GetBase(SpeckleObject obj)
+  /// <summary>
+  /// ref: https://stackoverflow.com/a/24087164
+  /// </summary>
+  public static class ListExtensions
+  {
+    public static List<List<T>> ChunkBy<T>( this List<T> source, int chunkSize )
     {
-      SpeckleObject baseClass = (SpeckleObject)Activator.CreateInstance(obj.GetType().BaseType);
-
-      foreach (FieldInfo f in baseClass.GetType().GetFields())
-        f.SetValue(baseClass, f.GetValue(obj));
-
-      foreach (PropertyInfo p in baseClass.GetType().GetProperties())
-        if (p.CanWrite)
-          p.SetValue(baseClass, p.GetValue(obj));
-
-      //(baseClass as SpeckleObject).GenerateHash();
-      
-      return baseClass;
+      return source
+          .Select( ( x, i ) => new { Index = i, Value = x } )
+          .GroupBy( x => x.Index / chunkSize )
+          .Select( x => x.Select( v => v.Value ).ToList() )
+          .ToList();
     }
-    }
+  }
 }

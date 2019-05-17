@@ -1,4 +1,6 @@
-﻿using System;
+﻿extern alias SpeckleNewtonsoft;
+using snj = SpeckleNewtonsoft::Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +32,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( body, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( body, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -60,7 +62,7 @@ namespace SpeckleCore
               var result_ = default( ResponseUser );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -75,7 +77,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -130,7 +132,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( body, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( body, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -160,7 +162,7 @@ namespace SpeckleCore
               var result_ = default( ResponseUser );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -175,7 +177,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -228,7 +230,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( user, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( user, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -258,7 +260,7 @@ namespace SpeckleCore
               var result_ = default( ResponseUser );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -273,7 +275,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -353,7 +355,7 @@ namespace SpeckleCore
               var result_ = default( ResponseUser );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -368,7 +370,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -421,7 +423,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( user, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( user, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "PUT" );
@@ -451,7 +453,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -466,7 +468,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -550,7 +552,7 @@ namespace SpeckleCore
               var result_ = default( ResponseUser );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseUser>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -565,7 +567,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -645,7 +647,7 @@ namespace SpeckleCore
               var result_ = default( ResponseClient );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -660,7 +662,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -713,7 +715,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( client, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( client, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -743,7 +745,7 @@ namespace SpeckleCore
               var result_ = default( ResponseClient );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -758,7 +760,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -815,7 +817,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( client, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( client, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "PUT" );
@@ -845,7 +847,7 @@ namespace SpeckleCore
               var result_ = default( ResponseClient );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -860,7 +862,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -944,7 +946,7 @@ namespace SpeckleCore
               var result_ = default( ResponseClient );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseClient>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -959,7 +961,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1043,7 +1045,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1058,7 +1060,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1138,7 +1140,7 @@ namespace SpeckleCore
               var result_ = default( ResponseProject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1153,7 +1155,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1206,7 +1208,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( project, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( project, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -1236,7 +1238,7 @@ namespace SpeckleCore
               var result_ = default( ResponseProject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1251,7 +1253,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1308,7 +1310,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( project, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( project, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "PUT" );
@@ -1338,7 +1340,7 @@ namespace SpeckleCore
               var result_ = default( ResponseProject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1353,7 +1355,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1437,7 +1439,7 @@ namespace SpeckleCore
               var result_ = default( ResponseProject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseProject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1452,7 +1454,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1536,7 +1538,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1551,7 +1553,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1616,7 +1618,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( comment, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( comment, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -1646,7 +1648,7 @@ namespace SpeckleCore
               var result_ = default( ResponseComment );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseComment>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseComment>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1661,7 +1663,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1753,7 +1755,7 @@ namespace SpeckleCore
               var result_ = default( ResponseComment );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseComment>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseComment>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1768,7 +1770,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1852,7 +1854,7 @@ namespace SpeckleCore
               var result_ = default( ResponseComment );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseComment>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseComment>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1867,7 +1869,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -1924,7 +1926,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( comment, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( comment, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "PUT" );
@@ -1954,7 +1956,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -1969,7 +1971,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2053,7 +2055,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2068,7 +2070,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2150,7 +2152,7 @@ namespace SpeckleCore
               try
               {
                 var test = ResponseStream.FromJson( responseData_ );
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStream>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseStream>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2165,7 +2167,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2218,7 +2220,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( stream, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( stream, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -2248,7 +2250,7 @@ namespace SpeckleCore
               var result_ = default( ResponseStream );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStream>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseStream>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2263,7 +2265,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2350,7 +2352,7 @@ namespace SpeckleCore
               var result_ = default( ResponseStream );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStream>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseStream>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2365,7 +2367,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2422,7 +2424,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( stream, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( stream, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "PUT" );
@@ -2452,7 +2454,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2467,7 +2469,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2551,7 +2553,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2566,7 +2568,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2654,7 +2656,7 @@ namespace SpeckleCore
               var result_ = default( ResponseObject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2669,7 +2671,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2753,7 +2755,7 @@ namespace SpeckleCore
               var result_ = default( ResponseStreamClone );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamClone>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseStreamClone>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2768,7 +2770,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2856,7 +2858,7 @@ namespace SpeckleCore
               var result_ = default( ResponseStreamDiff );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamDiff>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseStreamDiff>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2871,7 +2873,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -2924,7 +2926,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( objects, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( objects, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -2954,7 +2956,7 @@ namespace SpeckleCore
               var result_ = default( ResponseObject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -2969,7 +2971,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -3026,7 +3028,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( @object, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( @object, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "PUT" );
@@ -3056,7 +3058,7 @@ namespace SpeckleCore
               var result_ = default( ResponseObject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -3071,7 +3073,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -3155,7 +3157,7 @@ namespace SpeckleCore
               var result_ = default( ResponseObject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -3170,7 +3172,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -3254,7 +3256,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -3269,7 +3271,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
@@ -3328,7 +3330,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( @object, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( @object, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "PUT" );
@@ -3358,7 +3360,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -3415,7 +3417,7 @@ namespace SpeckleCore
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-          var content_ = new System.Net.Http.StringContent( Newtonsoft.Json.JsonConvert.SerializeObject( ObjectIds, _settings.Value ) );
+          var content_ = new System.Net.Http.StringContent( snj.JsonConvert.SerializeObject( ObjectIds, _settings.Value ) );
           content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse( "application/json" );
           request_.Content = content_;
           request_.Method = new System.Net.Http.HttpMethod( "POST" );
@@ -3445,7 +3447,7 @@ namespace SpeckleCore
               var result_ = default( ResponseObject );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseObject>( responseData_, _settings.Value );
                 return result_;
               }
               catch ( System.Exception exception_ )
@@ -3460,7 +3462,7 @@ namespace SpeckleCore
               var result_ = default( ResponseBase );
               try
               {
-                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
+                result_ = snj.JsonConvert.DeserializeObject<ResponseBase>( responseData_, _settings.Value );
               }
               catch ( System.Exception exception_ )
               {
