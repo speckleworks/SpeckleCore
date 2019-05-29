@@ -15,9 +15,16 @@ namespace SpeckleCore
     /// </summary>
     /// <param name="o">The object.</param>
     /// <returns>Null or a speckle object (SpeckleAbstract if no explicit conversion method is found).</returns>
-    public static List<SpeckleObject> Serialise( IEnumerable<object> objectList, IEnumerable<string> excludeAssebmlies = null )
+    public static List<SpeckleObject> Serialise(IEnumerable<object> objectList, IEnumerable<string> excludeAssebmlies = null)
     {
-      return objectList.Select( obj => Serialise( obj, excludeAssebmlies: excludeAssebmlies ) ).ToList();
+      return objectList.SelectMany(obj =>
+      {
+        var result = Serialise(obj, excludeAssebmlies: excludeAssebmlies);
+        if (result is IEnumerable && !(result is string))
+          return result as IEnumerable<SpeckleObject>;
+        else
+          return new List<SpeckleObject>() { (SpeckleObject)result };
+      }).ToList();
     }
 
     /// <summary>
@@ -29,66 +36,66 @@ namespace SpeckleCore
     /// <param name="path">Leave this blank, unless you really know what you're doing.</param>
     /// <param name="excludeAssebmlies">List of speckle kits assembly names to exclude from the search.</param>
     /// <returns></returns>
-    public static SpeckleObject Serialise( object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "", IEnumerable<string> excludeAssebmlies = null )
+    public static object Serialise(object source, int recursionDepth = 0, Dictionary<int, string> traversed = null, string path = "", IEnumerable<string> excludeAssebmlies = null)
     {
-      if ( source == null ) return new SpeckleNull();
+      if (source == null) return new SpeckleNull();
 
       //if ( source is IEnumerable ) return Converter.Serialise( source as IEnumerable<object> );
 
-      if ( traversed == null ) traversed = new Dictionary<int, string>();
+      if (traversed == null) traversed = new Dictionary<int, string>();
 
-      if ( path == "" ) path = "root";
+      if (path == "") path = "root";
 
       // check references
-      if ( traversed.ContainsKey( source.GetHashCode() ) )
-        return new SpeckleAbstract() { _type = "ref", _ref = traversed[ source.GetHashCode() ] };
+      if (traversed.ContainsKey(source.GetHashCode()))
+        return new SpeckleAbstract() { _type = "ref", _ref = traversed[source.GetHashCode()] };
       else
-        traversed.Add( source.GetHashCode(), path );
+        traversed.Add(source.GetHashCode(), path);
 
       // check if it already is a speckle object
-      if ( source is SpeckleObject )
+      if (source is SpeckleObject)
         return source as SpeckleObject;
 
       // check assemblies
-      if ( toSpeckleMethods.ContainsKey( source.GetType().ToString() ) )
-        return toSpeckleMethods[ source.GetType().ToString() ].Invoke( source, new object[ ] { source } ) as SpeckleObject;
+      if (toSpeckleMethods.ContainsKey(source.GetType().ToString()))
+        return toSpeckleMethods[source.GetType().ToString()].Invoke(source, new object[] { source });
 
       var methods = new List<MethodInfo>();
       var currentType = source.GetType();
       var baseTypes = new List<Type>();
 
       // create a list of base types
-      while ( currentType != null )
+      while (currentType != null)
       {
-        baseTypes.Add( currentType );
+        baseTypes.Add(currentType);
         currentType = currentType.BaseType;
       }
 
       // populate the ToSpeckle method array
-      foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName ) : true ) ) )
+      foreach (var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where(ass => (excludeAssebmlies != null ? !excludeAssebmlies.Contains(ass.FullName) : true)))
       {
-        foreach ( var type in baseTypes )
+        foreach (var type in baseTypes)
         {
           try
           {
-            methods.AddRange( Converter.GetExtensionMethods( ass, type, "ToSpeckle" ) );
+            methods.AddRange(Converter.GetExtensionMethods(ass, type, "ToSpeckle"));
           }
           catch { }
         }
       }
 
       // iterate through the ToSpeckle method array
-      if ( methods.Count > 0 )
+      if (methods.Count > 0)
       {
-        foreach ( var method in methods )
+        foreach (var method in methods)
         {
           try
           {
-            var obj = method.Invoke( source, new object[ ] { source } );
-            if ( obj != null )
+            var obj = method.Invoke(source, new object[] { source });
+            if (obj != null)
             {
-              toSpeckleMethods.Add( source.GetType().ToString(), method );
-              return obj as SpeckleObject;
+              toSpeckleMethods.Add(source.GetType().ToString(), method);
+              return obj;
             }
           }
           catch
@@ -105,85 +112,85 @@ namespace SpeckleCore
 
       Dictionary<string, object> dict = new Dictionary<string, object>();
 
-      var properties = source.GetType().GetProperties( BindingFlags.Instance | BindingFlags.Public );
+      var properties = source.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
-      foreach ( var prop in properties )
+      foreach (var prop in properties)
       {
-        if ( !prop.CanWrite )
+        if (!prop.CanWrite)
           continue;
 
         try
         {
-          var value = prop.GetValue( source );
+          var value = prop.GetValue(source);
 
-          if ( value == null )
+          if (value == null)
             continue;
 
-          dict[ prop.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + prop.Name );
+          dict[prop.Name] = WriteValue(value, recursionDepth, traversed, path + "/" + prop.Name);
         }
         catch { }
       }
 
-      var fields = source.GetType().GetFields( BindingFlags.Instance | BindingFlags.Public );
-      foreach ( var field in fields )
+      var fields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+      foreach (var field in fields)
       {
-        if ( field.IsNotSerialized )
+        if (field.IsNotSerialized)
           continue;
         try
         {
-          var value = field.GetValue( source );
-          if ( value == null )
+          var value = field.GetValue(source);
+          if (value == null)
             continue;
-          dict[ field.Name ] = WriteValue( value, recursionDepth, traversed, path + "/" + field.Name );
+          dict[field.Name] = WriteValue(value, recursionDepth, traversed, path + "/" + field.Name);
         }
         catch { }
       }
 
       result.Properties = dict;
-      result.Hash = result.GeometryHash = result.GetMd5FromObject( result.GetMd5FromObject( result._assembly ) + result.GetMd5FromObject( result._type ) + result.GetMd5FromObject( result.Properties ) );
+      result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
 
       return result;
     }
 
-    private static object WriteValue( object myObject, int recursionDepth, Dictionary<int, string> traversed = null, string path = "" )
+    private static object WriteValue(object myObject, int recursionDepth, Dictionary<int, string> traversed = null, string path = "")
     {
-      if ( myObject == null || recursionDepth > 8 ) return null;
+      if (myObject == null || recursionDepth > 8) return null;
 
-      if ( myObject is Enum ) return Convert.ChangeType( ( Enum ) myObject, ( ( Enum ) myObject ).GetTypeCode() );
+      if (myObject is Enum) return Convert.ChangeType((Enum)myObject, ((Enum)myObject).GetTypeCode());
 
-      if ( myObject.GetType().IsPrimitive || myObject is string )
+      if (myObject.GetType().IsPrimitive || myObject is string)
         return myObject;
 
-      if ( myObject is Guid )
+      if (myObject is Guid)
         return myObject.ToString();
 
-      if ( myObject is IEnumerable && !( myObject is IDictionary ) )
+      if (myObject is IEnumerable && !(myObject is IDictionary))
       {
         var rlist = new List<object>(); int index = 0;
 
-        foreach ( var x in ( IEnumerable ) myObject )
+        foreach (var x in (IEnumerable)myObject)
         {
-          var obj = WriteValue( x, recursionDepth + 1, traversed, path + "/[" + index++ + "]" );
-          if ( obj != null )
-            rlist.Add( obj );
+          var obj = WriteValue(x, recursionDepth + 1, traversed, path + "/[" + index++ + "]");
+          if (obj != null)
+            rlist.Add(obj);
         }
         return rlist;
       }
 
-      if ( myObject is IDictionary )
+      if (myObject is IDictionary)
       {
         var myDict = myObject as IDictionary;
         var returnDict = new Dictionary<string, object>();
-        foreach ( DictionaryEntry x in myDict )
+        foreach (DictionaryEntry x in myDict)
         {
           var y = x.Key;
-          returnDict.Add( x.Key.ToString(), WriteValue( x.Value, recursionDepth, traversed, path + "/{" + x.Key.ToString() + "}" ) );
+          returnDict.Add(x.Key.ToString(), WriteValue(x.Value, recursionDepth, traversed, path + "/{" + x.Key.ToString() + "}"));
         }
         return returnDict;
       }
 
-      if ( !myObject.GetType().AssemblyQualifiedName.Contains( "System" ) )
-        return Converter.Serialise( myObject, recursionDepth + 1, traversed, path );
+      if (!myObject.GetType().AssemblyQualifiedName.Contains("System"))
+        return Converter.Serialise(myObject, recursionDepth + 1, traversed, path);
 
       return null;
     }
