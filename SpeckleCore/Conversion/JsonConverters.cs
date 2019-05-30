@@ -185,6 +185,7 @@ namespace SpeckleCore
         writer.WriteStartObject();
         foreach ( var kvp in obj )
         {
+          if( kvp.Value == null ) continue;
           writer.WritePropertyName( kvp.Key );
           this.WriteValue( writer, kvp.Value );
         }
