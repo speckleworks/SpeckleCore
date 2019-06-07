@@ -55,7 +55,8 @@ namespace SpeckleCore
           }
 
           var assembliesToSearch = SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => (excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true) );
-
+          
+          // Type first search
           foreach( var type in baseTypes)
           {
             foreach( var assembly in assembliesToSearch)
@@ -67,19 +68,6 @@ namespace SpeckleCore
               catch { }
             }
           }
-
-          //// populate the ToNative method array
-          //foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true ) ) )
-          //{
-          //  foreach ( var type in baseTypes )
-          //  {
-          //    try
-          //    {
-          //      methods.AddRange( Converter.GetExtensionMethods( ass, type, "ToNative" ) );
-          //    }
-          //    catch { }
-          //  }
-          //}
 
           // iterate through the ToNative method array
           if ( methods.Count > 0 )
