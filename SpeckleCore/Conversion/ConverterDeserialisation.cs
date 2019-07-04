@@ -336,7 +336,12 @@ namespace SpeckleCore
         }
         if ( s.Contains( "[" ) ) // special handler for lists
         {
-          propSource = ( ( IEnumerable ) propSource ).Cast<object>().ToList()[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
+          var propSourceList = ((IEnumerable)propSource).Cast<object>().ToList();
+          var index = int.Parse(s.Substring(1, s.Length - 2));
+          if (index < propSourceList.Count) // make sure we don't try to access index out of bounds
+          {
+            propSource = propSourceList[index];
+          }
           continue;
         }
         var propertySource = TryGetProperty( propSource, s );
@@ -366,7 +371,12 @@ namespace SpeckleCore
 
         if ( s.Contains( "[" ) ) // special handler for lists
         {
-          propTarget = ( ( IList ) propTarget )[ int.Parse( s.Substring( 1, s.Length - 2 ) ) ];
+          var propTargetList = ((IList)propTarget);
+          var index = int.Parse(s.Substring(1, s.Length - 2));
+          if (propTargetList.Count > index) // make sure we don't try to access index out of bounds
+                    {
+            propSource = propTargetList[index];
+          }
           continue;
         }
 
@@ -392,7 +402,12 @@ namespace SpeckleCore
       }
       if ( last.Contains( '[' ) )
       {
-        ( ( IList ) propTarget )[ int.Parse( last.Substring( 1, last.Length - 2 ) ) ] = propSource;
+        var propTargetList = ((IList)propTarget);
+        var index = int.Parse(last.Substring(1, last.Length - 2));
+        if (propTargetList.Count > index) // make sure we don't try to access index out of bounds
+        {
+          propTargetList[index] = propSource;
+        }
         return;
       }
       PropertyInfo toSet = TryGetProperty( propTarget.GetType(), last );
