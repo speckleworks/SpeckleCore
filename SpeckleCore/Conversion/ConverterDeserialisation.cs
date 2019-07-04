@@ -54,14 +54,16 @@ namespace SpeckleCore
             currentType = currentType.BaseType;
           }
 
-          // populate the ToNative method array
-          foreach ( var ass in SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => ( excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true ) ) )
+          var assembliesToSearch = SpeckleCore.SpeckleInitializer.GetAssemblies().Where( ass => (excludeAssebmlies != null ? !excludeAssebmlies.Contains( ass.FullName.Split( ',' )[ 0 ] ) : true) );
+          
+          // Type first search
+          foreach( var type in baseTypes)
           {
-            foreach ( var type in baseTypes )
+            foreach( var assembly in assembliesToSearch)
             {
               try
               {
-                methods.AddRange( Converter.GetExtensionMethods( ass, type, "ToNative" ) );
+                methods.AddRange( Converter.GetExtensionMethods( assembly, type, "ToNative" ) );
               }
               catch { }
             }
