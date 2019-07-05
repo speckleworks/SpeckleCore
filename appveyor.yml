@@ -6,8 +6,19 @@ before_build:
 
     mkdir %appdata%\Grasshopper\Libraries\SpeckleSendReceive
 build:
+  publish_nuget: true
   project: SpeckleCore/SpeckleCore.sln
   verbosity: minimal
+deploy:
+  provider: NuGet
+  server:                  # remove to push to NuGet.org
+  api_key:
+    secure: e4zVxpBLpMD3cSEN9siowRHilcH6ePN40rlpKCthmEgRDXNV9ZohZzpqlgCiJT3v
+  skip_symbols: false
+  symbol_server:           # remove to push symbols to SymbolSource.org
+  artifact: /.*\.nupkg/
+  on:
+    branch: master nuget
 notifications:
 - provider: Slack
   incoming_webhook:
