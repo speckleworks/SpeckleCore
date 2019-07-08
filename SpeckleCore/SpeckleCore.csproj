@@ -89,8 +89,8 @@
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.5.231</Version>
     </PackageReference>
-    <PackageReference Include="WebSocketSharp">
-      <Version>1.0.3-rc11</Version>
+    <PackageReference Include="WebSocketSharp-NonPreRelease">
+      <Version>1.0.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@
     <copyright>$copyright$</copyright>
     <tags>speckle core</tags>
     <dependencies>
-      <dependency id="WebSocketSharp" version="1.0.3-rc11" />
+      <dependency id="WebSocketSharp-NonPreRelease" version="1.0.0" />
       <dependency id="sqlite-net-pcl" version="1.5.231" />
       <dependency id="Newtonsoft.Json" version="12.0.2" />
     </dependencies>
