@@ -1,5 +1,5 @@
-﻿extern alias SpeckleNewtonsoft;
-using SpeckleNewtonsoft.Newtonsoft.Json;
+﻿
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -81,11 +81,11 @@ namespace SpeckleCore
 
     private void SetSerialisationSettings()
     {
-      _settings = new System.Lazy<SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings>( () =>
+      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( () =>
       {
-        var settings = new SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings()
+        var settings = new Newtonsoft.Json.JsonSerializerSettings()
         {
-          ContractResolver = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() },
+          ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() },
           ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
           NullValueHandling = NullValueHandling.Ignore
         };
@@ -377,11 +377,11 @@ namespace SpeckleCore
 
     protected SpeckleApiClient( SerializationInfo info, StreamingContext context )
     {
-      _settings = new System.Lazy<SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings>( () =>
+      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( () =>
        {
-         var settings = new SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializerSettings()
+         var settings = new Newtonsoft.Json.JsonSerializerSettings()
          {
-           ContractResolver = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new SpeckleNewtonsoft.Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() },
+           ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver() { NamingStrategy = new Newtonsoft.Json.Serialization.CamelCaseNamingStrategy() },
            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
          };
          UpdateJsonSerializerSettings( settings );

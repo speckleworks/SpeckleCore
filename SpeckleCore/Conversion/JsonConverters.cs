@@ -1,6 +1,6 @@
-﻿extern alias SpeckleNewtonsoft;
-using SpeckleNewtonsoft.Newtonsoft.Json;
-using SpeckleNewtonsoft.Newtonsoft.Json.Linq;
+﻿
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace SpeckleCore
 {
   /// <summary>
-  /// Base custom serialiser/deserialiser for SpeckleNewtonsoft.Newtonsoft.Json. It implements a custom discrimantor field as well as helps 
+  /// Base custom serialiser/deserialiser for Newtonsoft.Json. It implements a custom discrimantor field as well as helps 
   /// with the properties field of the base speckle object.
   /// </summary>
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.4.2.0" )]
-  public class SpeckleObjectConverter : SpeckleNewtonsoft.Newtonsoft.Json.JsonConverter
+  public class SpeckleObjectConverter : Newtonsoft.Json.JsonConverter
   {
     internal static readonly string DefaultDiscriminatorName = "discriminator";
 
@@ -38,12 +38,12 @@ namespace SpeckleCore
       _discriminator = discriminator;
     }
 
-    public override void WriteJson( SpeckleNewtonsoft.Newtonsoft.Json.JsonWriter writer, object value, SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializer serializer )
+    public override void WriteJson( Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer )
     {
       try
       {
         _isWriting = true;
-        var jObject = SpeckleNewtonsoft.Newtonsoft.Json.Linq.JObject.FromObject( value, serializer );
+        var jObject = Newtonsoft.Json.Linq.JObject.FromObject( value, serializer );
         writer.WriteToken( jObject.CreateReader() );
       }
       finally
@@ -83,16 +83,16 @@ namespace SpeckleCore
       return true;
     }
 
-    public override object ReadJson( SpeckleNewtonsoft.Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, SpeckleNewtonsoft.Newtonsoft.Json.JsonSerializer serializer )
+    public override object ReadJson( Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer )
     {
 
       JObject jObject = null;
-      jObject = serializer.Deserialize<SpeckleNewtonsoft.Newtonsoft.Json.Linq.JObject>( reader );
+      jObject = serializer.Deserialize<Newtonsoft.Json.Linq.JObject>( reader );
 
       if ( jObject == null )
         return null;
 
-      var discriminator = SpeckleNewtonsoft.Newtonsoft.Json.Linq.Extensions.Value<string>( jObject.GetValue( _discriminator ) );
+      var discriminator = Newtonsoft.Json.Linq.Extensions.Value<string>( jObject.GetValue( _discriminator ) );
       var subtype = GetObjectSubtypeBetter( jObject, objectType, discriminator );
       try
       {
@@ -105,7 +105,7 @@ namespace SpeckleCore
       }
     }
 
-    private System.Type GetObjectSubtypeBetter( SpeckleNewtonsoft.Newtonsoft.Json.Linq.JObject jObject, System.Type objectType, string discriminator )
+    private System.Type GetObjectSubtypeBetter( Newtonsoft.Json.Linq.JObject jObject, System.Type objectType, string discriminator )
     {
       // TODO: Cleanup in 2.0.0, we should not have special cases where we need to prefix "Speckle" to things. 
       // For now, we're going to stick to the following.

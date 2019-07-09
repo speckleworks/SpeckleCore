@@ -1,4 +1,4 @@
-﻿extern alias SpeckleNewtonsoft;
+﻿
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -101,13 +101,13 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Target Name="ChangeAliasesOfNugetRefs" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+  <!--<Target Name="ChangeAliasesOfNugetRefs" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
     <ItemGroup>
       <ReferencePath Condition="'%(FileName)' == 'Newtonsoft.Json'">
         <Aliases>SpeckleNewtonsoft</Aliases>
       </ReferencePath>
     </ItemGroup>
-  </Target>
+  </Target>-->
   <Target Name="AfterBuild">
     <ItemGroup>
       <SqlLiteRefHack Include="$(ProjectDir)bin\$(ConfigurationName)\**\x64\*.*">
