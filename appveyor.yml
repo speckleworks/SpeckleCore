@@ -1,8 +1,8 @@
-version: 1.5.0.{build}
+version: 1.5.1.{build}
 image: Visual Studio 2017
 before_build:
 - cmd: >-
-    nuget restore SpeckleCore/SpeckleCore.sln
+    nuget restore
 
     mkdir %appdata%\Grasshopper\Libraries\SpeckleSendReceive
  # version
@@ -13,7 +13,7 @@ assembly_info:
   assembly_file_version: '{version}'
 build:
   publish_nuget: true
-  project: SpeckleCore/SpeckleCore.sln
+  project: SpeckleCore.sln
   verbosity: minimal
 deploy:
   provider: NuGet

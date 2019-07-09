@@ -94,6 +94,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="appveyor.yml" />
     <None Include="SpeckleCore.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
