@@ -13,6 +13,7 @@ assembly_info:
   assembly_file_version: '{version}'
 build:
   publish_nuget: true
+  publish_nuget_symbols: true
   project: SpeckleCore.sln
   verbosity: minimal
 deploy:
