@@ -23,7 +23,7 @@ deploy:
   api_key:
     secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
   skip_symbols: false
-  symbol_server:           # remove to push symbols to SymbolSource.org
+  symbol_server: nuget.org
   artifact: /.*\.nupkg/
   on:
     branch: nuget
@@ -36,3 +36,5 @@ notifications:
   on_build_success: false
   on_build_failure: true
   on_build_status_changed: true
+configuration:
+  - Release
