@@ -23,7 +23,7 @@ deploy:
   api_key:
     secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
   skip_symbols: false
-  symbol_server: nuget.org
+  symbol_server: https://www.nuget.org/api/v2/symbolpackage
   artifact: /.*\.nupkg/
   on:
     branch: nuget
