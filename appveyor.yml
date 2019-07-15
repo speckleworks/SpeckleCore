@@ -1,5 +1,5 @@
 version: 1.5.1.{build}
-image: Visual Studio 2017
+image: Visual Studio 2019
 before_build:
 - cmd: >-
     nuget restore
@@ -23,7 +23,7 @@ deploy:
   api_key:
     secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
   skip_symbols: false
-  symbol_server: https://www.nuget.org/api/v2/symbolpackage
+  symbol_server:           # remove to push symbols to SymbolSource.org
   artifact: /.*\.nupkg/
   on:
     branch: nuget
