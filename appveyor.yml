@@ -14,6 +14,7 @@ assembly_info:
 build:
   publish_nuget: true
   publish_nuget_symbols: true
+  use_snupkg_format: true
   project: SpeckleCore.sln
   verbosity: minimal
 deploy:
@@ -22,7 +23,7 @@ deploy:
   api_key:
     secure: n4EiHDLVSLjOzqT7OOOg3US3PWs6fNsOaGpyT/EFBKrTKl/1wMmmKt73MNuTngD+
   skip_symbols: false
-  symbol_server: NuGet
+  symbol_server:           # remove to push symbols to SymbolSource.org
   artifact: /.*\.nupkg/
   on:
     branch: nuget
