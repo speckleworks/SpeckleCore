@@ -24,11 +24,7 @@ namespace SpeckleCore
     public SpeckleKitLoader( )
     {
 
-#if DEBUG
-      SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKitsDebug\";
-#else
       SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
-#endif
 
       SpeckleAssemblyName = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
       assemblies = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );

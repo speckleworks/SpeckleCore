@@ -1,4 +1,4 @@
-version: 1.5.1.{build}
+version: 1.6.0.{build}-wip
 image: Visual Studio 2019
 before_build:
 - cmd: >-
@@ -6,11 +6,14 @@ before_build:
 
     mkdir %appdata%\Grasshopper\Libraries\SpeckleSendReceive
  # version
-assembly_info:
+dotnet_csproj:
   patch: true
-  file: AssemblyInfo.*
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
   assembly_version: '{version}'
-  assembly_file_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 build:
   publish_nuget: true
   publish_nuget_symbols: true
