@@ -10,6 +10,10 @@
     <Authors>https://speckle.works</Authors>
     <PackageProjectUrl>https://speckle.works</PackageProjectUrl>
     <RepositoryUrl>https://github.com/speckleworks/SpeckleCore</RepositoryUrl>
+    <Version>1.0.0</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
