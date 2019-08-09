@@ -205,7 +205,7 @@ namespace SpeckleCore
     public static Account GetDefaultAccount()
     {
       LocalContext.Init();
-      var res = Database.Query<Account>("SELECT * FROM Account WHERE IsDefault='true' LIMIT 1");
+      var res = Database.Query<Account>("SELECT * FROM Account WHERE IsDefault=1 LIMIT 1");
       if (res.Count == 1)
       {
         return res[0];
