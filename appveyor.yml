@@ -1,11 +1,28 @@
-version: 1.5.2.{build}
-image: Visual Studio 2019
+version: '{build}'
+image: Visual Studio 2017
+init:
+  - ps: |
+      If($Env:APPVEYOR_REPO_TAG -eq "true")
+      {
+        Write-Host "We now have a tagged release. Proper."
+        Write-Host "Tag is $Env:APPVEYOR_REPO_TAG_NAME"
+        $env:APPVEYOR_BUILD_VERSION=$env:APPVEYOR_REPO_TAG_NAME
+        Update-AppveyorBuild -Version "$Env:APPVEYOR_REPO_TAG_NAME"
+      } 
+      else 
+      {
+        $releases = "https://api.github.com/repos/$env:APPVEYOR_REPO_NAME/releases"
+        $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+        $spl = $tag.Split("-")[0]
+        Update-AppveyorBuild -Version "$spl.$Env:APPVEYOR_BUILD_VERSION-wip"
+      }
+      Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION"
+
 before_build:
 - cmd: >-
     nuget restore
 
-    mkdir %appdata%\Grasshopper\Libraries\SpeckleSendReceive
- # version
+# version
 assembly_info:
   patch: true
   file: AssemblyInfo.*
@@ -25,7 +42,7 @@ deploy:
   skip_symbols: false
   symbol_server:           # remove to push symbols to SymbolSource.org
   on:
-    branch: nuget
+    appveyor_repo_tag: true
 notifications:
 - provider: Slack
   incoming_webhook:
