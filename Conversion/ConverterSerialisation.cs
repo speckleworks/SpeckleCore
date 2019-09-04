@@ -134,7 +134,7 @@ namespace SpeckleCore
       var fields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
       foreach (var field in fields)
       {
-        if (field.IsNotSerialized)
+        if (field.IsNotSerialized )
           continue;
         try
         {

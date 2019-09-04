@@ -57,9 +57,13 @@ namespace SpeckleCore
 
     private Dictionary<string, SpeckleObject> ObjectCache = new Dictionary<string, SpeckleObject>();
 
+    // stores the client type: Grasshopper, Revit, etc. 
+    public string ClientType { get; set; }
 
     public SpeckleApiClient( string baseUrl, bool isPersistent = false )
     {
+      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+
       SetSerialisationSettings();
 
       BaseUrl = baseUrl;
@@ -70,6 +74,7 @@ namespace SpeckleCore
 
     public SpeckleApiClient( bool useGzip = true )
     {
+      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
       SetSerialisationSettings();
       UseGzip = useGzip;
     }
@@ -105,7 +110,9 @@ namespace SpeckleCore
     /// <returns></returns>
     public async Task IntializeReceiver( string streamId, string documentName, string documentType, string documentGuid, string authToken = null )
     {
-      if( Role != null )
+      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+
+      if ( Role != null )
         throw new Exception( "Role changes are not permitted. Maybe create a new client?" );
 
       Role = ClientRole.Receiver;
@@ -133,7 +140,6 @@ namespace SpeckleCore
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = e.StatusCode.ToString(), EventData = e.Message } );
       }
 
-
     }
     /// <summary>
     /// Initialises this client as a Sender by creating a new stream.
@@ -145,7 +151,9 @@ namespace SpeckleCore
     /// <returns></returns>
     public async Task<string> IntializeSender( string authToken, string documentName, string documentType, string documentGuid )
     {
-      if( Role != null )
+      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+
+      if ( Role != null )
         throw new Exception( "Role changes are not permitted. Maybe create a new client?" );
 
       Role = ClientRole.Sender;
@@ -395,8 +403,13 @@ namespace SpeckleCore
       Role = (ClientRole) info.GetInt32( "Role" );
       ClientId = info.GetString( "ClientId" );
 
-      //AuthToken = info.GetString( "ApiToken" );
-      //string userEmail = null;
+      try
+      {
+        ClientType = info.GetString( "ClientType" );
+      } catch(Exception e)
+      {
+        // Meep, no client type present. old client.
+      }
 
       // old clients will not have a user email field :/
       try
@@ -445,6 +458,7 @@ namespace SpeckleCore
       info.AddValue( "StreamId", StreamId );
       info.AddValue( "Role", Role );
       info.AddValue( "ClientId", ClientId );
+      info.AddValue( "ClientType", ClientType );
 
       //info.AddValue( "ApiToken", AuthToken );
     }
