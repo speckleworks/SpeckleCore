@@ -2213,7 +2213,7 @@ namespace SpeckleCore
     public async System.Threading.Tasks.Task<ResponseStream> StreamCreateAsync( SpeckleStream stream, System.Threading.CancellationToken cancellationToken )
     {
       if ( ClientType != null )
-        SpeckleTelemetry.RecordStreamReceived( ClientType );
+        SpeckleTelemetry.RecordStreamCreated( ClientType );
 
       var urlBuilder_ = new System.Text.StringBuilder();
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/streams" );
