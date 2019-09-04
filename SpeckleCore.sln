@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleCore", "SpeckleCore.csproj", "{CFE27D3D-8A1A-43F9-9387-8FD9E119E174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleTester", "..\SpeckleTester\SpeckleTester.csproj", "{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleTester", "SpeckleTester\SpeckleTester.csproj", "{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
