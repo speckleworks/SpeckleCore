@@ -60,9 +60,9 @@ namespace SpeckleCore
     // stores the client type: Grasshopper, Revit, etc. 
     public string ClientType { get; set; }
 
-    public SpeckleApiClient( string baseUrl, bool isPersistent = false )
+    public SpeckleApiClient( string baseUrl, bool isPersistent = false, string documentType = "unknown" )
     {
-      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+      ClientType = documentType;
 
       SetSerialisationSettings();
 
@@ -72,9 +72,9 @@ namespace SpeckleCore
       SetReadyTimer();
     }
 
-    public SpeckleApiClient( bool useGzip = true )
+    public SpeckleApiClient( bool useGzip = true, string documentType = "unknown" )
     {
-      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+      ClientType = documentType;
       SetSerialisationSettings();
       UseGzip = useGzip;
     }
@@ -110,7 +110,7 @@ namespace SpeckleCore
     /// <returns></returns>
     public async Task IntializeReceiver( string streamId, string documentName, string documentType, string documentGuid, string authToken = null )
     {
-      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+      ClientType = documentType;
 
       if ( Role != null )
         throw new Exception( "Role changes are not permitted. Maybe create a new client?" );
@@ -151,7 +151,7 @@ namespace SpeckleCore
     /// <returns></returns>
     public async Task<string> IntializeSender( string authToken, string documentName, string documentType, string documentGuid )
     {
-      ClientType = System.Reflection.Assembly.GetCallingAssembly().GetName().Name;
+      ClientType = documentType;
 
       if ( Role != null )
         throw new Exception( "Role changes are not permitted. Maybe create a new client?" );
@@ -182,7 +182,6 @@ namespace SpeckleCore
       catch( SpeckleException e )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = e.StatusCode.ToString(), EventData = e.Message } );
-
         return null;
       }
 
