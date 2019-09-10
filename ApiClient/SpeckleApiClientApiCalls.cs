@@ -325,7 +325,7 @@ namespace SpeckleCore
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/accounts" );
 
       var client_ = GetHttpClient();
-			try
+      try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
@@ -2326,11 +2326,11 @@ namespace SpeckleCore
       if ( query != null ) urlBuilder_.Append( query );
 
       var client_ = GetHttpClient();
-			try
+      try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
         {
-					request_.Method = new System.Net.Http.HttpMethod( "GET" );
+          request_.Method = new System.Net.Http.HttpMethod( "GET" );
           request_.Headers.Accept.Add( new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue( "application/json" ) );
 
           PrepareRequest( client_, request_, urlBuilder_ );
