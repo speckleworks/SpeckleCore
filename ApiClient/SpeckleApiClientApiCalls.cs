@@ -395,10 +395,10 @@ namespace SpeckleCore
           }
         }
       }
-			catch (TaskCanceledException)
-			{
-				throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
-			}
+      catch (TaskCanceledException)
+      {
+        throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
+      }
 			finally
       {
         if ( client_ != null )
@@ -2396,10 +2396,10 @@ namespace SpeckleCore
           }
         }
       }
-			catch (TaskCanceledException)
-			{
-				throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
-			}
+      catch (TaskCanceledException)
+      {
+        throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
+      }
 			finally
       {
         if ( client_ != null )
@@ -2697,10 +2697,10 @@ namespace SpeckleCore
 
             return default( ResponseObject );
           }
-					catch(TaskCanceledException)
-					{
-						throw new SpeckleException("Connection timeout with Speckle server", (int) HttpStatusCode.RequestTimeout, null, null, null);
-					}
+          catch (TaskCanceledException)
+          {
+            throw new SpeckleException("Connection timeout with Speckle server", (int) HttpStatusCode.RequestTimeout, null, null, null);
+          }
           finally
           {
             if ( response_ != null )

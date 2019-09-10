@@ -55,9 +55,9 @@ namespace SpeckleCore
 
     Timer IsReady, WsReconnecter;
 
-		//Default timeouts, pending further discussion
-		private double defaultTimeoutMilliseconds = 3000;
-		private double defaultBulkTimeoutMilliseconds = 60000;
+    //Default timeouts, pending further discussion
+    private double defaultTimeoutMilliseconds = 3000;
+    private double defaultBulkTimeoutMilliseconds = 60000;
 
     private Dictionary<string, SpeckleObject> ObjectCache = new Dictionary<string, SpeckleObject>();
 

@@ -41,16 +41,16 @@ namespace SpeckleCore
         request.Content = new GzipContent( request.Content );
     }
 
-		private HttpClient GetHttpClient(double timeoutMillisecondsOverride = 0)
+    private HttpClient GetHttpClient(double timeoutMillisecondsOverride = 0)
     {
-			var handler = new HttpClientHandler
-			{
-				AutomaticDecompression = System.Net.DecompressionMethods.GZip
-			};
-			return new HttpClient(handler, true)
-			{
-				Timeout = TimeSpan.FromMilliseconds(timeoutMillisecondsOverride == 0 ? defaultTimeoutMilliseconds : timeoutMillisecondsOverride)
-			};
+      var handler = new HttpClientHandler
+      {
+        AutomaticDecompression = System.Net.DecompressionMethods.GZip
+      };
+      return new HttpClient(handler, true)
+      {
+        Timeout = TimeSpan.FromMilliseconds(timeoutMillisecondsOverride == 0 ? defaultTimeoutMilliseconds : timeoutMillisecondsOverride)
+      };
     }
   }
 }
