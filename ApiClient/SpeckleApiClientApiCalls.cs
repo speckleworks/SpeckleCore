@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -394,7 +395,11 @@ namespace SpeckleCore
           }
         }
       }
-      finally
+      catch (TaskCanceledException)
+      {
+        throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
+      }
+			finally
       {
         if ( client_ != null )
           client_.Dispose();
@@ -2391,7 +2396,11 @@ namespace SpeckleCore
           }
         }
       }
-      finally
+      catch (TaskCanceledException)
+      {
+        throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
+      }
+			finally
       {
         if ( client_ != null )
           client_.Dispose();
@@ -2687,6 +2696,10 @@ namespace SpeckleCore
             }
 
             return default( ResponseObject );
+          }
+          catch (TaskCanceledException)
+          {
+            throw new SpeckleException("Connection timeout with Speckle server", (int) HttpStatusCode.RequestTimeout, null, null, null);
           }
           finally
           {
@@ -3412,7 +3425,7 @@ namespace SpeckleCore
       if ( query != null ) urlBuilder_.Append( query );
 
 
-      var client_ = GetHttpClient();
+      var client_ = GetHttpClient(defaultBulkTimeoutMilliseconds);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
