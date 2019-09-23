@@ -7,6 +7,15 @@ using SQLite;
 
 namespace SpeckleCore
 {
+
+  /// <summary>
+  /// Simple class to keep track of telemetry settings.
+  /// </summary>
+  public class TelemetrySettings
+  {
+    public bool Enabled { get; set; } = true;
+  }
+
   /// <summary>
   /// A class for a generic speckle account, composed of all the identification props for a user & server combination. 
   /// </summary>
