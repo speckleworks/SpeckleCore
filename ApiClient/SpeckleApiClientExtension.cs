@@ -412,6 +412,8 @@ namespace SpeckleCore
       } catch(Exception e)
       {
         // Meep, no client type present. old client.
+        // NOTE: the end clients (rhino, grasshopper, dynamo, etc) should attempt to set this value again on their re-initialisation.
+        // This is so that we can actually get types out for pre-existing clients that didn't save the ClientType property.
       }
 
       // old clients will not have a user email field :/
@@ -462,8 +464,6 @@ namespace SpeckleCore
       info.AddValue( "Role", Role );
       info.AddValue( "ClientId", ClientId );
       info.AddValue( "ClientType", ClientType );
-
-      //info.AddValue( "ApiToken", AuthToken );
     }
 
     public void Dispose( bool delete = false )

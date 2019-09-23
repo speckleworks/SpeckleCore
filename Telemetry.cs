@@ -40,8 +40,6 @@ namespace SpeckleCore
         developerProvidedDeviceId = DeviceId
       };
 
-     
-
       Countly.IsLoggingEnabled = true;
       Countly.Instance.Init( config );
       Countly.Instance.RecordView( "speckle-init" );
