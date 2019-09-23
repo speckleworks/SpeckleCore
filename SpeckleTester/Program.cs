@@ -15,7 +15,7 @@ namespace SpeckleTester
 
       var test = LocalContext.GetTelemetrySettings();
 
-      LocalContext.SetTelemetrySettings( false );
+      LocalContext.SetTelemetrySettings( true );
 
       var secondTest = LocalContext.GetTelemetrySettings();
 
@@ -42,6 +42,15 @@ namespace SpeckleTester
       SpeckleTelemetry.RecordTestEvent( "grino" );
       SpeckleTelemetry.RecordTestEvent( "grino" );
       SpeckleTelemetry.RecordTestEvent( "prrrft" );
+
+      SpeckleTelemetry.RecordStreamCreated( "console" );
+      SpeckleTelemetry.RecordStreamCreated( "console" );
+      SpeckleTelemetry.RecordStreamCreated( "console" );
+      SpeckleTelemetry.RecordStreamCreated( "fhoppper" );
+      SpeckleTelemetry.RecordStreamCreated( "fhino" );
+      SpeckleTelemetry.RecordStreamCreated( "fhino" );
+      SpeckleTelemetry.RecordStreamCreated( "fhino" );
+
 
       Console.ReadLine();
     }
