@@ -86,6 +86,7 @@
     <Compile Include="ApiClient\SpeckleApiClientApiCalls.cs" />
     <Compile Include="ApiClient\SpeckleApiClientHead.cs" />
     <Compile Include="ApiClient\SpeckleApiClientExtension.cs" />
+    <Compile Include="Telemetry.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Countly">
