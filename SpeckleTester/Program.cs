@@ -13,6 +13,12 @@ namespace SpeckleTester
     {
       Console.WriteLine( "Hello Speckle Tester." );
 
+      var test = LocalContext.GetTelemetrySettings();
+
+      LocalContext.SetTelemetrySettings( false );
+
+      var secondTest = LocalContext.GetTelemetrySettings();
+
       SpeckleTelemetry.Initialize();
 
       Console.WriteLine( "Your device id is: " );

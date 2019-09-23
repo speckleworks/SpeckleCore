@@ -13,6 +13,9 @@ namespace SpeckleCore
   /// </summary>
   public class TelemetrySettings
   {
+    [PrimaryKey, AutoIncrement]
+    public int SettingsId { get; set; }
+
     public bool Enabled { get; set; } = true;
   }
 
