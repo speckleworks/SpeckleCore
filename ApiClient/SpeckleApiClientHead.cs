@@ -1,11 +1,11 @@
-﻿
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.IO.Compression;
 using System.IO;
 using System.Text;
+
 
 namespace SpeckleCore
 {

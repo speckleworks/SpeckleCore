@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleCore", "SpeckleCore.csproj", "{CFE27D3D-8A1A-43F9-9387-8FD9E119E174}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeckleTester", "SpeckleTester\SpeckleTester.csproj", "{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +23,19 @@ Global
 		{CFE27D3D-8A1A-43F9-9387-8FD9E119E174}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CFE27D3D-8A1A-43F9-9387-8FD9E119E174}.Release|x64.ActiveCfg = Release|Any CPU
 		{CFE27D3D-8A1A-43F9-9387-8FD9E119E174}.Release|x64.Build.0 = Release|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Debug|x64.Build.0 = Debug|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Release|x64.ActiveCfg = Release|Any CPU
+		{49DC5167-FED4-4E2F-BDDB-5AF38AF59848}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEEDF1D2-D412-4371-9358-4984335CA658}
 	EndGlobalSection
 EndGlobal

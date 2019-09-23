@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "SpeckleCore" )]
-[assembly: AssemblyDescription( "The core library of speckle .net clients." )]
+[assembly: AssemblyTitle( "SpeckleTester" )]
+[assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "https://speckle.works" )]
-[assembly: AssemblyProduct( "SpeckleCore" )]
-[assembly: AssemblyCopyright( "Copyright © 2019 Project Contributors. Licensed under the MIT license." )]
+[assembly: AssemblyCompany( "" )]
+[assembly: AssemblyProduct( "SpeckleTester" )]
+[assembly: AssemblyCopyright( "Copyright ©  2019" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible( false )]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid( "cfe27d3d-8a1a-43f9-9387-8fd9e119e174" )]
+[assembly: Guid( "49dc5167-fed4-4e2f-bddb-5af38af59848" )]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,7 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-
 [assembly: AssemblyVersion( "1.0.0.0" )]
 [assembly: AssemblyFileVersion( "1.0.0.0" )]
-[assembly: AssemblyInformationalVersion( "1.0.0.0" )]

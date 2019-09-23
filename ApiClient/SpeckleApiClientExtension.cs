@@ -61,9 +61,13 @@ namespace SpeckleCore
 
     private Dictionary<string, SpeckleObject> ObjectCache = new Dictionary<string, SpeckleObject>();
 
+    // stores the client type: Grasshopper, Revit, etc. 
+    public string ClientType { get; set; }
 
-    public SpeckleApiClient( string baseUrl, bool isPersistent = false )
+    public SpeckleApiClient( string baseUrl, bool isPersistent = false, string documentType = "unknown" )
     {
+      ClientType = documentType;
+
       SetSerialisationSettings();
 
       BaseUrl = baseUrl;
@@ -72,20 +76,21 @@ namespace SpeckleCore
       SetReadyTimer();
     }
 
-    public SpeckleApiClient( bool useGzip = true )
+    public SpeckleApiClient( bool useGzip = true, string documentType = "unknown" )
     {
+      ClientType = documentType;
       SetSerialisationSettings();
       UseGzip = useGzip;
     }
 
-    public SpeckleApiClient()
+    public SpeckleApiClient( )
     {
       SetSerialisationSettings();
     }
 
-    private void SetSerialisationSettings()
+    private void SetSerialisationSettings( )
     {
-      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( () =>
+      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( ( ) =>
       {
         var settings = new Newtonsoft.Json.JsonSerializerSettings()
         {
@@ -109,7 +114,9 @@ namespace SpeckleCore
     /// <returns></returns>
     public async Task IntializeReceiver( string streamId, string documentName, string documentType, string documentGuid, string authToken = null )
     {
-      if( Role != null )
+      ClientType = documentType;
+
+      if ( Role != null )
         throw new Exception( "Role changes are not permitted. Maybe create a new client?" );
 
       Role = ClientRole.Receiver;
@@ -118,25 +125,24 @@ namespace SpeckleCore
       try
       {
         AuthToken = authToken;
-        User = (await this.UserGetAsync()).Resource;
+        User = ( await this.UserGetAsync() ).Resource;
 
       }
-      catch( SpeckleException e )
+      catch ( SpeckleException e )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = e.StatusCode.ToString(), EventData = e.Message } );
       }
 
       try
       {
-        Stream = (await this.StreamGetAsync( streamId, null )).Resource;
+        Stream = ( await this.StreamGetAsync( streamId, null ) ).Resource;
         await SetupClient( documentName, documentType, documentGuid );
         SetupWebsocket();
       }
-      catch( SpeckleException e )
+      catch ( SpeckleException e )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = e.StatusCode.ToString(), EventData = e.Message } );
       }
-
 
     }
     /// <summary>
@@ -149,7 +155,9 @@ namespace SpeckleCore
     /// <returns></returns>
     public async Task<string> IntializeSender( string authToken, string documentName, string documentType, string documentGuid )
     {
-      if( Role != null )
+      ClientType = documentType;
+
+      if ( Role != null )
         throw new Exception( "Role changes are not permitted. Maybe create a new client?" );
 
       Role = ClientRole.Sender;
@@ -157,9 +165,9 @@ namespace SpeckleCore
       try
       {
         AuthToken = authToken;
-        User = (await this.UserGetAsync()).Resource;
+        User = ( await this.UserGetAsync() ).Resource;
       }
-      catch( SpeckleException e )
+      catch ( SpeckleException e )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "error", EventData = "Could not log in: " + e.Message } );
         return null;
@@ -167,7 +175,7 @@ namespace SpeckleCore
 
       try
       {
-        Stream = (await this.StreamCreateAsync( new SpeckleStream() )).Resource;
+        Stream = ( await this.StreamCreateAsync( new SpeckleStream() ) ).Resource;
         StreamId = Stream.StreamId;
 
         await SetupClient( documentName, documentType, documentGuid );
@@ -175,10 +183,9 @@ namespace SpeckleCore
 
         return Stream.StreamId;
       }
-      catch( SpeckleException e )
+      catch ( SpeckleException e )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = e.StatusCode.ToString(), EventData = e.Message } );
-
         return null;
       }
 
@@ -186,12 +193,12 @@ namespace SpeckleCore
 
     private async Task SetupClient( string documentName = null, string documentType = null, string documentGuid = null )
     {
-      if( ClientId == null )
+      if ( ClientId == null )
       {
         LogEvent( "Creating a new client." );
         var myClient = new AppClient() { StreamId = StreamId, Role = Role.ToString(), Online = true, DocumentGuid = documentGuid, DocumentName = documentName, DocumentType = documentType };
 
-        ClientId = (await this.ClientCreateAsync( myClient )).Resource._id;
+        ClientId = ( await this.ClientCreateAsync( myClient ) ).Resource._id;
       }
       else
       {
@@ -205,25 +212,25 @@ namespace SpeckleCore
       OnLogData?.Invoke( this, new SpeckleEventArgs() { EventData = what } );
     }
 
-    private void SetReadyTimer()
+    private void SetReadyTimer( )
     {
       IsReady = new Timer( 200 ) { AutoReset = false, Enabled = true };
       IsReady.Elapsed += ( sender, e ) =>
       {
         LogEvent( "Checking readiness..." );
-        if( StreamId == null || ClientId == null || WsConnected == false ) { IsReady.Start(); return; }
+        if ( StreamId == null || ClientId == null || WsConnected == false ) { IsReady.Start(); return; }
         OnReady?.Invoke( this, new SpeckleEventArgs() { EventName = "client-ready" } );
         IsConnected = true;
         LogEvent( "Client is ready!" );
       };
     }
 
-    private void SetWsReconnectTimer()
+    private void SetWsReconnectTimer( )
     {
       WsReconnecter = new Timer( 1000 ) { AutoReset = false, Enabled = false };
       WsReconnecter.Elapsed += ( sender, e ) =>
       {
-        if( IsDisposed ) return;
+        if ( IsDisposed ) return;
         WebsocketClient.Connect();
       };
     }
@@ -231,12 +238,12 @@ namespace SpeckleCore
     /// <summary>
     /// Sets up the websocket client & its events..
     /// </summary>
-    public void SetupWebsocket()
+    public void SetupWebsocket( )
     {
       SetWsReconnectTimer();
 
       //generates a random guid
-      if( ClientId == null )
+      if ( ClientId == null )
         ClientId = Guid.NewGuid().ToString();
 
       WebsocketClient = new WebSocket( BaseUrl.Replace( "http", "ws" ) + "?access_token=" + AuthToken + "&stream_id=" + StreamId + "&client_id=" + ClientId );
@@ -256,7 +263,7 @@ namespace SpeckleCore
 
       WebsocketClient.OnMessage += ( sender, e ) =>
       {
-        if( e.Data == "ping" ) { WebsocketClient.Send( "alive" ); LogEvent( "Got a ws ping." ); return; }
+        if ( e.Data == "ping" ) { WebsocketClient.Send( "alive" ); LogEvent( "Got a ws ping." ); return; }
 
         LogEvent( "Got a ws message." );
         try
@@ -283,7 +290,7 @@ namespace SpeckleCore
     /// <param name="args">What you want to send. Make it serialisable and small.</param>
     public void SendMessage( string receipientId, dynamic args )
     {
-      if( !WsConnected )
+      if ( !WsConnected )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
         return;
@@ -309,7 +316,7 @@ namespace SpeckleCore
     /// <param name="args">The message. Make it serialisable and small.</param>
     public void BroadcastMessage( string resourceType, string resourceId, dynamic args )
     {
-      if( !WsConnected )
+      if ( !WsConnected )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
         return;
@@ -334,7 +341,7 @@ namespace SpeckleCore
     /// <param name="resourceId">The database id of the resource.</param>
     public void JoinRoom( string resourceType, string resourceId )
     {
-      if( !WsConnected )
+      if ( !WsConnected )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
         return;
@@ -358,7 +365,7 @@ namespace SpeckleCore
     /// <param name="resourceId">The database id of the resource.</param>
     public void LeaveRoom( string resourceType, string resourceId )
     {
-      if( !WsConnected )
+      if ( !WsConnected )
       {
         OnError?.Invoke( this, new SpeckleEventArgs() { EventName = "Websocket client not connected.", EventData = "Websocket client not connected." } );
         return;
@@ -381,7 +388,7 @@ namespace SpeckleCore
 
     protected SpeckleApiClient( SerializationInfo info, StreamingContext context )
     {
-      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( () =>
+      _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>( ( ) =>
        {
          var settings = new Newtonsoft.Json.JsonSerializerSettings()
          {
@@ -396,18 +403,27 @@ namespace SpeckleCore
 
       BaseUrl = info.GetString( "BaseUrl" );
       StreamId = info.GetString( "StreamId" );
-      Role = (ClientRole) info.GetInt32( "Role" );
+      Role = ( ClientRole ) info.GetInt32( "Role" );
       ClientId = info.GetString( "ClientId" );
 
-      //AuthToken = info.GetString( "ApiToken" );
-      //string userEmail = null;
+      try
+      {
+        ClientType = info.GetString( "ClientType" );
+      }
+      catch ( Exception e )
+      {
+        // Meep, no client type present. old client.
+        // NOTE: the end clients (rhino, grasshopper, dynamo, etc) should attempt to set this value again on their re-initialisation.
+        // This is so that we can actually get types out for pre-existing clients that didn't save the ClientType property.
+        ClientType = "undefined";
+      }
 
       // old clients will not have a user email field :/
       try
       {
         var userEmail = info.GetString( "UserEmail" );
         var acc = LocalContext.GetAccountByEmailAndRestApi( userEmail, BaseUrl );
-        if( acc != null )
+        if ( acc != null )
         {
           AuthToken = acc.Token;
           User = new User() { Email = acc.Email };
@@ -421,7 +437,7 @@ namespace SpeckleCore
       {
         var accs = LocalContext.GetAccountsByRestApi( BaseUrl );
         var sorted = accs.OrderByDescending( acc => acc.IsDefault ).ToList();
-        if( sorted.Count == 0 )
+        if ( sorted.Count == 0 )
         {
           throw new Exception( "You do not have an account that matches this stream's server." );
         }
@@ -449,15 +465,14 @@ namespace SpeckleCore
       info.AddValue( "StreamId", StreamId );
       info.AddValue( "Role", Role );
       info.AddValue( "ClientId", ClientId );
-
-      //info.AddValue( "ApiToken", AuthToken );
+      info.AddValue( "ClientType", ClientType );
     }
 
     public void Dispose( bool delete = false )
     {
       IsDisposed = true;
 
-      if( !delete )
+      if ( !delete )
       {
         ClientUpdateAsync( ClientId, new AppClient() { Online = false } );
         WebsocketClient?.Close();

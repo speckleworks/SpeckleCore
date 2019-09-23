@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using CountlySDK;
+using CountlySDK.Entities;
+using DeviceId;
+using DeviceId.Encoders;
+using DeviceId.Formatters;
 
 namespace SpeckleCore
 {
@@ -39,6 +43,23 @@ namespace SpeckleCore
       }
       types.Add( typeof( SpeckleObject ) );
       Types = types;
+
+      ////////////////////////////////////////////////////////////////////////////////////////////////////
+      ///                                                                                              ///
+      ///                                                                                              ///
+      /// Hello devs! Uncomment the line below to disable telemetry.                                   ///
+      /// This will make speckle sad, but it's your call.                                              ///
+      /// See community discussions here:                                                              ///
+      /// https://speckle-works.slack.com/archives/C4TE17LGH/p1567520201017900                         ///
+      /// https://discourse.speckle.works/t/community-consultation-time-telemetry/410                  ///
+      ///                                                                                              ///
+      ///                                                                                              ///
+      ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      // LocalContext.SetTelemetrySettings( false );
+
+      // Note: if telemetry settings is set to false, then this will do nothing.
+      SpeckleTelemetry.Initialize();
     }
 
     /// <summary>
@@ -65,4 +86,5 @@ namespace SpeckleCore
       return assembly.GetTypes().Where( t => t.IsSubclassOf( baseType ) );
     }
   }
+
 }

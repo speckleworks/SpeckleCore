@@ -395,11 +395,11 @@ namespace SpeckleCore
           }
         }
       }
-      catch (TaskCanceledException)
+      catch ( TaskCanceledException )
       {
-        throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
+        throw new SpeckleException( "Connection timeout with Speckle Server", ( int ) HttpStatusCode.RequestTimeout, null, null, null );
       }
-			finally
+      finally
       {
         if ( client_ != null )
           client_.Dispose();
@@ -2217,6 +2217,9 @@ namespace SpeckleCore
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseStream> StreamCreateAsync( SpeckleStream stream, System.Threading.CancellationToken cancellationToken )
     {
+
+      SpeckleTelemetry.RecordStreamCreated( ClientType );
+
       var urlBuilder_ = new System.Text.StringBuilder();
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/streams" );
 
@@ -2317,6 +2320,9 @@ namespace SpeckleCore
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseStream> StreamGetAsync( string streamId, string query, System.Threading.CancellationToken cancellationToken )
     {
+
+      SpeckleTelemetry.RecordStreamReceived( ClientType );
+
       if ( streamId == null )
         throw new System.ArgumentNullException( "streamId" );
 
@@ -2396,11 +2402,11 @@ namespace SpeckleCore
           }
         }
       }
-      catch (TaskCanceledException)
+      catch ( TaskCanceledException )
       {
-        throw new SpeckleException("Connection timeout with Speckle Server", (int)HttpStatusCode.RequestTimeout, null, null, null);
+        throw new SpeckleException( "Connection timeout with Speckle Server", ( int ) HttpStatusCode.RequestTimeout, null, null, null );
       }
-			finally
+      finally
       {
         if ( client_ != null )
           client_.Dispose();
@@ -2421,6 +2427,9 @@ namespace SpeckleCore
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
     public async System.Threading.Tasks.Task<ResponseBase> StreamUpdateAsync( string streamId, SpeckleStream stream, System.Threading.CancellationToken cancellationToken )
     {
+
+      SpeckleTelemetry.RecordStreamUpdated( ClientType );
+
       if ( streamId == null )
         throw new System.ArgumentNullException( "streamId" );
 
@@ -2697,9 +2706,9 @@ namespace SpeckleCore
 
             return default( ResponseObject );
           }
-          catch (TaskCanceledException)
+          catch ( TaskCanceledException )
           {
-            throw new SpeckleException("Connection timeout with Speckle server", (int) HttpStatusCode.RequestTimeout, null, null, null);
+            throw new SpeckleException( "Connection timeout with Speckle server", ( int ) HttpStatusCode.RequestTimeout, null, null, null );
           }
           finally
           {
@@ -3425,7 +3434,7 @@ namespace SpeckleCore
       if ( query != null ) urlBuilder_.Append( query );
 
 
-      var client_ = GetHttpClient(defaultBulkTimeoutMilliseconds);
+      var client_ = GetHttpClient( defaultBulkTimeoutMilliseconds );
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
