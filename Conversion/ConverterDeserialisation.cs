@@ -30,9 +30,7 @@ namespace SpeckleCore
     /// <returns>an object, a SpeckleAbstract or null.</returns>
     public static object Deserialise( SpeckleObject obj, object root = null, IEnumerable<string> excludeAssebmlies = null )
     {
-
-      var currentType = obj.GetType();
-
+      var t = obj.GetType();
       try
       {
         // null check
@@ -47,6 +45,7 @@ namespace SpeckleCore
             return toNativeMethods[ typeString ].Invoke( obj, new object[ ] { obj } );
           }
 
+          var currentType = obj.GetType();
           var methods = new List<MethodInfo>();
           var baseTypes = new List<Type>();
 
@@ -75,6 +74,7 @@ namespace SpeckleCore
           // iterate through the ToNative method array
           if ( methods.Count > 0 )
           {
+            Exception ex = null;
             foreach ( var method in methods )
             {
               try
@@ -89,14 +89,25 @@ namespace SpeckleCore
               catch ( Exception e )
               {
                 // to native method failed, try another one if present!
+                ex = e;
               }
+            }
+
+            if(ex!=null && ex is SpeckleException)
+            {
+              return new SpeckleConversionError
+              {
+                Message = $"Could not convert object of type '{t}'",
+                Details = ex.Message,
+                SourceObject = obj
+              };
             }
           }
 
           return new SpeckleConversionError
           {
-            Message = $"Could not convert object of type '{currentType}'",
-            Details = $"No Speckle kit capable of converting objects of type '{currentType}' was found, this either means we haven't developed it yet or that you're missing the required kit ¯\\_(ツ)_/¯",
+            Message = $"Could not convert object of type '{t}'",
+            Details = $"No Speckle kit capable of converting objects of type '{t}' was found, this either means we haven't developed it yet or that you're missing the required kit ¯\\_(ツ)_/¯",
             SourceObject = obj
           };
         }
@@ -110,7 +121,7 @@ namespace SpeckleCore
       {
         return new SpeckleConversionError
         {
-          Message = $"Failed to convert object of type '{currentType}'",
+          Message = $"Failed to convert object of type '{t}'",
           Details = e.Message,
           SourceObject = obj
         };
