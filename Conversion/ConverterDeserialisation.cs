@@ -74,7 +74,7 @@ namespace SpeckleCore
           // iterate through the ToNative method array
           if ( methods.Count > 0 )
           {
-            Exception ex = null;
+            Data.SpeckleException ex = null;
             foreach ( var method in methods )
             {
               try
@@ -89,11 +89,12 @@ namespace SpeckleCore
               catch ( Exception e )
               {
                 // to native method failed, try another one if present!
-                ex = e;
+                if(e is Data.SpeckleException)
+                  ex = e as Data.SpeckleException;
               }
             }
 
-            if(ex!=null && ex is Data.SpeckleException)
+            if(ex!=null)
             {
               return new SpeckleConversionError
               {
