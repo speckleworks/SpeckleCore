@@ -73,6 +73,7 @@
     <Compile Include="Conversion\ConverterDeserialisation.cs" />
     <Compile Include="Conversion\ConverterSerialisation.cs" />
     <Compile Include="Data\SpeckleError.cs" />
+    <Compile Include="Data\SpeckleException.cs" />
     <Compile Include="LocalData\Models.cs" />
     <Compile Include="LocalData\SpeckleLocalContext.cs" />
     <Compile Include="Models\ModelBase.cs" />

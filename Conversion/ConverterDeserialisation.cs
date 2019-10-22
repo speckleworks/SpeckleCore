@@ -93,7 +93,7 @@ namespace SpeckleCore
               }
             }
 
-            if(ex!=null && ex is SpeckleException)
+            if(ex!=null && ex is Data.SpeckleException)
             {
               return new SpeckleConversionError
               {
