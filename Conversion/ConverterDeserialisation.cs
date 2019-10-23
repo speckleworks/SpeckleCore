@@ -89,8 +89,8 @@ namespace SpeckleCore
               catch ( Exception e )
               {
                 // to native method failed, try another one if present!
-                if(e is Data.SpeckleException)
-                  ex = e as Data.SpeckleException;
+                if(e.InnerException!=null && e.InnerException is Data.SpeckleException)
+                  ex = e.InnerException as Data.SpeckleException;
               }
             }
 
