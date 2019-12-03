@@ -24,7 +24,7 @@ init:
         Update-AppveyorBuild -Version "$major.$minor.$build.$Env:APPVEYOR_BUILD_VERSION"
         $env:CLEANTAG=$spl
       }
-      Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CLEANTAG."
+      Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CLEANTAG"
 
 before_build:
 - cmd: >-
@@ -38,7 +38,7 @@ dotnet_csproj:
   assembly_version: '{CLEANTAG}'
   file_version: '{CLEANTAG}'
   informational_version: '{CLEANTAG}'
-  package_version: '{version}'
+  package_version: '{CLEANTAG}'
 
 
 build:
