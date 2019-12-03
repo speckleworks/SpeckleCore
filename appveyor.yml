@@ -20,7 +20,7 @@ init:
 
 before_build:
 - cmd: >-
-    nuget restore
+    nuget restore SpeckleCore\SpeckleCore.sln
 
 # version
 dotnet_csproj:
@@ -38,6 +38,7 @@ build:
   use_snupkg_format: true
   project: SpeckleCore\SpeckleCore.sln
   verbosity: minimal
+
 deploy:
   provider: NuGet
   server:                  # remove to push to NuGet.org
