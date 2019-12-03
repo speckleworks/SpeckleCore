@@ -21,7 +21,7 @@ init:
         $major = $arr[0]
         $minor = $arr[1]
         $build = $arr[2]
-        Update-AppveyorBuild -Version "$major.$minor.$build.$Env:APPVEYOR_BUILD_VERSION"
+        Update-AppveyorBuild -Version "$major.$minor.$build.$Env:APPVEYOR_BUILD_VERSION-wip"
         $env:CLEANTAG=$spl
       }
       Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CLEANTAG"
@@ -34,10 +34,10 @@ before_build:
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '${CLEANTAG}'
-  assembly_version: '${CLEANTAG}'
-  file_version: '${CLEANTAG}'
-  informational_version: '${CLEANTAG}'
+  version: $(CLEANTAG)
+  assembly_version: $(CLEANTAG)
+  file_version: $(CLEANTAG)
+  informational_version: $(CLEANTAG)
   package_version: '{version}'
 
 
