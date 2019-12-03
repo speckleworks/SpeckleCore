@@ -8,6 +8,7 @@ namespace SpeckleTests
     [SetUp]
     public void Setup()
     {
+      System.IO.Directory.CreateDirectory(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData) + @"\SpeckleKits\");
       SpeckleCore.SpeckleInitializer.Initialize();
     }
 
