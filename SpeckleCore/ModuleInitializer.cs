@@ -27,14 +27,14 @@ namespace SpeckleCore
     private static IReadOnlyCollection<Assembly> Assembiles;
     private static IReadOnlyCollection<Type> Types;
 
-    public static void Initialize( )
+    public static void Initialize( string pathToKits = null)
     {
       if ( IsInit ) return;
 
       IsInit = true;
 
       LocalContext.Init();
-      Assembiles = new SpeckleKitLoader().GetAssemblies();
+      Assembiles = new SpeckleKitLoader(pathToKits).GetAssemblies();
 
       var types = new List<Type>();
       foreach ( var assembly in Assembiles )

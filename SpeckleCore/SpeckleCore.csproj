@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Countly" Version="19.8.0">
+    </PackageReference>
+    <PackageReference Include="DeviceId" Version="4.3.0">
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2">
+    </PackageReference>
+    <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
+    <PackageReference Include="WebSocketSharp-NonPreRelease" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

@@ -21,15 +21,9 @@ namespace SpeckleCore
 
     public string SpeckleKitsDirectory;
 
-    public SpeckleKitLoader( )
+    public SpeckleKitLoader( string pathToKits = null)
     {
-
-#if DEBUG
-      SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKitsDebug\";
-#else
-      SpeckleKitsDirectory = System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
-#endif
-
+      SpeckleKitsDirectory = pathToKits != null ? pathToKits : System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
       SpeckleAssemblyName = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
       assemblies = new Lazy<IReadOnlyCollection<Assembly>>( GetAvailableAssemblies );
     }
@@ -84,7 +78,8 @@ namespace SpeckleCore
 
           if ( !loadedSpeckleReferencingAssemblyNames.Any( loadedSpeckleReferencingAssemblyName => AssemblyName.ReferenceMatchesDefinition( loadedSpeckleReferencingAssemblyName, unloadedAssemblyName ) ) )
           {
-            var relfectionLoadAssembly = Assembly.ReflectionOnlyLoadFrom( assemblyPath );
+            //var relfectionLoadAssembly = Assembly.ReflectionOnlyLoadFrom( assemblyPath );
+            var relfectionLoadAssembly = Assembly.LoadFrom( assemblyPath );
             var isReferencingCore = relfectionLoadAssembly.IsReferencing( SpeckleAssemblyName );
 
             if ( isReferencingCore )

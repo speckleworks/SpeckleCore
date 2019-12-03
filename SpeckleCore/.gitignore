@@ -1,0 +1,6 @@
+.vs/
+obj/
+packages/
+bin/
+*.nupkg
+*.snupkg

@@ -25,27 +25,33 @@ namespace SpeckleCore
 
       if ( LocalContext.GetTelemetrySettings() == false )
         return;
-
-      DeviceId = new DeviceIdBuilder()
-        .AddMachineName()
-        .AddProcessorId()
-        .UseFormatter( new HashDeviceIdFormatter( ( ) => SHA256.Create(), new Base64UrlByteArrayEncoder() ) )
-        .ToString();
-
-      var config = new CountlyConfig()
+      try
       {
-        serverUrl = "https://telemetry.speckle.works",
-        appKey = "cd6db5058036aafb6a3a82681d434ad74ee50ad9",
-        deviceIdMethod = Countly.DeviceIdMethod.developerSupplied,
-        developerProvidedDeviceId = DeviceId
-      };
+        DeviceId = new DeviceIdBuilder()
+          .AddMachineName()
+          .AddProcessorId()
+          .UseFormatter(new HashDeviceIdFormatter(() => SHA256.Create(), new Base64UrlByteArrayEncoder()))
+          .ToString();
 
-      Countly.IsLoggingEnabled = true;
-      Countly.Instance.Init( config );
-      Countly.Instance.RecordView( "speckle-init" );
-      Countly.Instance.RecordView( "speckle-init/version/" + typeof( SpeckleTelemetry ).Assembly.GetName().Version );
+        var config = new CountlyConfig()
+        {
+          serverUrl = "https://telemetry.speckle.works",
+          appKey = "cd6db5058036aafb6a3a82681d434ad74ee50ad9",
+          deviceIdMethod = Countly.DeviceIdMethod.developerSupplied,
+          developerProvidedDeviceId = DeviceId
+        };
 
-      isInitialized = true;
+        Countly.IsLoggingEnabled = true;
+        Countly.Instance.Init(config);
+        Countly.Instance.RecordView("speckle-init");
+        Countly.Instance.RecordView("speckle-init/version/" + typeof(SpeckleTelemetry).Assembly.GetName().Version);
+
+        isInitialized = true;
+      }catch(Exception e)
+      {
+        // POKEMON
+        isInitialized = false;
+      }
     }
 
     public static void RecordTestEvent( string clientType )
