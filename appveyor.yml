@@ -18,7 +18,9 @@ init:
         
         $spl = $tag.Split("-")[0]
         $arr = $spl.split(".")
-        Update-AppveyorBuild -Version "$arr[0].$arr[1].$Env:APPVEYOR_BUILD_VERSION"
+        $major = $arr[0]
+        $minor = $arr[1]
+        Update-AppveyorBuild -Version "$major.$minor.$Env:APPVEYOR_BUILD_VERSION"
         $env:CLEANTAG=$spl
       }
       Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CLEANTAG."
