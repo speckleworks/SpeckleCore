@@ -15,8 +15,10 @@ init:
       {
         $releases = "https://api.github.com/repos/$env:APPVEYOR_REPO_NAME/releases"
         $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
+        
         $spl = $tag.Split("-")[0]
-        Update-AppveyorBuild -Version "$spl.$Env:APPVEYOR_BUILD_VERSION-wip"
+        $arr = $spl.split(".")
+        Update-AppveyorBuild -Version "$arr[0].$arr[1].$Env:APPVEYOR_BUILD_VERSION"
         $env:CLEANTAG=$spl
       }
       Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CLEANTAG."
