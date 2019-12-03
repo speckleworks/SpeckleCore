@@ -6,6 +6,10 @@ init:
       {
         Write-Host "We now have a tagged release. Proper."
         Write-Host "Tag is $Env:APPVEYOR_REPO_TAG_NAME"
+        $cleanTag = $env:APPVEYOR_REPO_TAG_NAME.split('-')[0]
+        
+        [Environment]::SetEnvironmentVariable("CleanTag", $cleanTag, "Machine")
+        
         $env:APPVEYOR_BUILD_VERSION=$env:APPVEYOR_REPO_TAG_NAME
         Update-AppveyorBuild -Version "$Env:APPVEYOR_REPO_TAG_NAME"
       } 
@@ -14,9 +18,10 @@ init:
         $releases = "https://api.github.com/repos/$env:APPVEYOR_REPO_NAME/releases"
         $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
         $spl = $tag.Split("-")[0]
-        Update-AppveyorBuild -Version "$spl.$Env:APPVEYOR_BUILD_VERSION"
+        Update-AppveyorBuild -Version "$spl.$Env:APPVEYOR_BUILD_VERSION-wip"
+        [Environment]::SetEnvironmentVariable("CleanTag", $spl, "Machine")
       }
-      Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION"
+      Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CleanTag."
 
 before_build:
 - cmd: >-
@@ -26,10 +31,10 @@ before_build:
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '{version}'
-  assembly_version: '{version}'
-  file_version: '{version}'
-  informational_version: '{version}'
+  version: '{CleanTag}'
+  assembly_version: '{CleanTag}'
+  file_version: '{CleanTag}'
+  informational_version: '{CleanTag}'
   package_version: '{version}'
 
 
