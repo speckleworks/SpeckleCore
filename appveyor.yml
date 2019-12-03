@@ -8,7 +8,7 @@ init:
         Write-Host "Tag is $Env:APPVEYOR_REPO_TAG_NAME"
         $cleanTag = $env:APPVEYOR_REPO_TAG_NAME.split('-')[0]
         
-        [Environment]::SetEnvironmentVariable("CleanTag", $cleanTag, "Machine")
+        [Environment]::SetEnvironmentVariable("CleanTag", "$cleanTag", "Machine")
         
         $env:APPVEYOR_BUILD_VERSION=$env:APPVEYOR_REPO_TAG_NAME
         Update-AppveyorBuild -Version "$Env:APPVEYOR_REPO_TAG_NAME"
@@ -19,7 +19,7 @@ init:
         $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
         $spl = $tag.Split("-")[0]
         Update-AppveyorBuild -Version "$spl.$Env:APPVEYOR_BUILD_VERSION-wip"
-        [Environment]::SetEnvironmentVariable("CleanTag", $spl, "Machine")
+        [Environment]::SetEnvironmentVariable("CleanTag", "$spl", "Machine")
       }
       Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CleanTag."
 
