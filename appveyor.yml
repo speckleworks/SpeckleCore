@@ -36,7 +36,7 @@ build:
   publish_nuget: true
   publish_nuget_symbols: true
   use_snupkg_format: true
-  project: SpeckleCore.sln
+  project: SpeckleCore\SpeckleCore.sln
   verbosity: minimal
 deploy:
   provider: NuGet
