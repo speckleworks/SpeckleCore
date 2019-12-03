@@ -14,7 +14,7 @@ init:
         $releases = "https://api.github.com/repos/$env:APPVEYOR_REPO_NAME/releases"
         $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
         $spl = $tag.Split("-")[0]
-        Update-AppveyorBuild -Version "$spl.$Env:APPVEYOR_BUILD_VERSION-wip"
+        Update-AppveyorBuild -Version "$spl.$Env:APPVEYOR_BUILD_VERSION"
       }
       Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION"
 
@@ -27,10 +27,11 @@ dotnet_csproj:
   patch: true
   file: '**\*.csproj'
   version: '{version}'
-  package_version: '{version}'
   assembly_version: '{version}'
   file_version: '{version}'
   informational_version: '{version}'
+  package_version: '{version}'
+
 
 build:
   publish_nuget: true
