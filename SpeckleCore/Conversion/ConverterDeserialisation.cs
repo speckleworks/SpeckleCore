@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpeckleCore.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace SpeckleCore
     /// <returns>an object, a SpeckleAbstract or null.</returns>
     public static object Deserialise( SpeckleObject obj, object root = null, IEnumerable<string> excludeAssebmlies = null )
     {
+      var t = obj.GetType();
       try
       {
         // null check
@@ -43,8 +45,8 @@ namespace SpeckleCore
             return toNativeMethods[ typeString ].Invoke( obj, new object[ ] { obj } );
           }
 
-          var methods = new List<MethodInfo>();
           var currentType = obj.GetType();
+          var methods = new List<MethodInfo>();
           var baseTypes = new List<Type>();
 
           // create a list of base types for this object
@@ -72,6 +74,7 @@ namespace SpeckleCore
           // iterate through the ToNative method array
           if ( methods.Count > 0 )
           {
+            Data.SpeckleException ex = null;
             foreach ( var method in methods )
             {
               try
@@ -86,174 +89,201 @@ namespace SpeckleCore
               catch ( Exception e )
               {
                 // to native method failed, try another one if present!
+                if(e.InnerException!=null && e.InnerException is Data.SpeckleException)
+                  ex = e.InnerException as Data.SpeckleException;
               }
+            }
+
+            if(ex!=null)
+            {
+              return new SpeckleConversionError
+              {
+                Message = $"Could not convert object of type '{t}'",
+                Details = ex.Message,
+                SourceObject = obj
+              };
             }
           }
 
-          // last, but not least, try and return the original object (?)
-          return obj;
+          return new SpeckleConversionError
+          {
+            Message = $"Could not convert object of type '{t}'",
+            Details = $"No Speckle kit capable of converting objects of type '{t}' was found, this either means we haven't developed it yet or that you're missing the required kit ¯\\_(ツ)_/¯",
+            SourceObject = obj
+          };
         }
         else
         {
-          // we have a speckle abstract object
-          var absObj = obj as SpeckleAbstract;
-
-          if ( absObj._type == "ref" )
-            return null;
-
-          //var shortName = absObj._assembly.Split( ',' )[ 0 ];
-
-          var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName == absObj._assembly );
-
-          //try again, without version control
-          if ( assembly == null )
-          {
-            var shortName = absObj._assembly.Split( ',' )[ 0 ];
-            assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault( a => a.FullName.Contains( shortName ) );
-          }
-
-          if ( assembly == null ) // we can't deserialise for sure
-            return Converter.ShallowConvert( absObj );
-
-          var type = assembly.GetTypes().FirstOrDefault( t => t.Name == absObj._type );
-          if ( type == null ) // type not present in the assembly
-            return Converter.ShallowConvert( absObj );
-
-          object myObject = null;
-
-          try
-          {
-            var constructor = type.GetConstructor( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[ ] { }, null );
-            if ( constructor != null )
-              myObject = constructor.Invoke( new object[ ] { } );
-            if ( myObject == null )
-              myObject = Activator.CreateInstance( type );
-          }
-          catch
-          {
-            myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject( type );
-          }
-
-          if ( myObject == null )
-            return absObj;
-
-          if ( root == null )
-            root = myObject;
-
-          var keys = absObj.Properties.Keys;
-          foreach ( string key in keys )
-          {
-            var prop = TryGetProperty( type, key );
-            var field = type.GetField( key );
-
-            if ( prop == null && field == null ) continue;
-
-            if ( absObj.Properties[ key ] == null ) continue;
-
-            var value = ReadValue( absObj.Properties[ key ], root );
-
-            // handles both hashsets and lists or whatevers
-            if ( value is IEnumerable && !( value is IDictionary ) && value.GetType() != typeof( string ) )
-            {
-              try
-              {
-
-                if ( ( prop != null && prop.PropertyType.IsArray ) || ( field != null && field.FieldType.IsArray ) )
-                {
-                  value = ( ( List<object> ) value ).ToArray();
-                }
-                else
-                {
-                  var mySubList = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
-                  foreach ( var myObj in ( ( IEnumerable<object> ) value ) )
-                    mySubList.GetType().GetMethod( "Add" ).Invoke( mySubList, new object[ ] { Convert.ChangeType( myObj, mySubList.GetType().GetGenericArguments().Single() ) } );
-
-                  value = mySubList;
-                }
-              }
-              catch { }
-            }
-
-            // handles dictionaries of all sorts (kind-of!)
-            if ( value is IDictionary )
-            {
-              try
-              {
-                var MyDict = Activator.CreateInstance( prop != null ? prop.PropertyType : field.FieldType );
-
-                foreach ( DictionaryEntry kvp in ( IDictionary ) value )
-                  MyDict.GetType().GetMethod( "Add" ).Invoke( MyDict, new object[ ] { Convert.ChangeType( kvp.Key, MyDict.GetType().GetGenericArguments()[ 0 ] ), kvp.Value } );
-
-                value = MyDict;
-              }
-              catch ( Exception e )
-              {
-                System.Diagnostics.Debug.WriteLine( e.Message );
-              }
-            }
-
-            // guids are a pain
-            if ( ( prop != null && prop.PropertyType == typeof( Guid ) ) || ( field != null && field.FieldType == typeof( Guid ) ) )
-              value = new Guid( ( string ) value );
-
-            // Actually set the value below, whether it's a property or field
-            // if it is a property
-            if ( prop != null && prop.CanWrite )
-            {
-              if ( prop.PropertyType.IsEnum )
-                prop.SetValue( myObject, Enum.ToObject( prop.PropertyType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
-              else
-              {
-                try
-                {
-                  prop.SetValue( myObject, value );
-                }
-                catch
-                {
-                  try
-                  {
-                    prop.SetValue( myObject, Convert.ChangeType( value, prop.PropertyType ) );
-                  }
-                  catch
-                  {
-                  }
-                }
-              }
-            }
-            // if it is a field
-            else if ( field != null )
-            {
-              if ( field.FieldType.IsEnum )
-                field.SetValue( myObject, Enum.ToObject( field.FieldType, Convert.ChangeType( value, TypeCode.Int32 ) ) );
-              else
-              {
-                try
-                {
-                  field.SetValue( absObj, value );
-                }
-                catch
-                {
-                  try
-                  {
-                    field.SetValue( myObject, Convert.ChangeType( value, field.FieldType ) );
-                  }
-                  catch { }
-                }
-              }
-            }
-          }
-
-          //  set references too.
-          if ( root == myObject )
-            Converter.ResolveRefs( absObj, myObject, "root" );
-
-          return myObject;
+          return DeserializeSpeckleAbstract(obj, root);
         }
+        
+      }
+      catch (Exception e)
+      {
+        return new SpeckleConversionError
+        {
+          Message = $"Failed to convert object of type '{t}'",
+          Details = e.Message,
+          SourceObject = obj
+        };
+      }
+    }
+
+    private static object DeserializeSpeckleAbstract(object obj, object root)
+    {
+      // we have a speckle abstract object
+      var absObj = obj as SpeckleAbstract;
+
+      if (absObj._type == "ref")
+        return null;
+
+      //var shortName = absObj._assembly.Split( ',' )[ 0 ];
+
+      var assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == absObj._assembly);
+
+      //try again, without version control
+      if (assembly == null)
+      {
+        var shortName = absObj._assembly.Split(',')[0];
+        assembly = System.AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName.Contains(shortName));
+      }
+
+      if (assembly == null) // we can't deserialise for sure
+        return Converter.ShallowConvert(absObj);
+
+      var type = assembly.GetTypes().FirstOrDefault(t => t.Name == absObj._type);
+      if (type == null) // type not present in the assembly
+        return Converter.ShallowConvert(absObj);
+
+      object myObject = null;
+
+      try
+      {
+        var constructor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[] { }, null);
+        if (constructor != null)
+          myObject = constructor.Invoke(new object[] { });
+        if (myObject == null)
+          myObject = Activator.CreateInstance(type);
       }
       catch
       {
-        return obj;
+        myObject = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
       }
+
+      if (myObject == null)
+        return absObj;
+
+      if (root == null)
+        root = myObject;
+
+      var keys = absObj.Properties.Keys;
+      foreach (string key in keys)
+      {
+        var prop = TryGetProperty(type, key);
+        var field = type.GetField(key);
+
+        if (prop == null && field == null) continue;
+
+        if (absObj.Properties[key] == null) continue;
+
+        var value = ReadValue(absObj.Properties[key], root);
+
+        // handles both hashsets and lists or whatevers
+        if (value is IEnumerable && !(value is IDictionary) && value.GetType() != typeof(string))
+        {
+          try
+          {
+
+            if ((prop != null && prop.PropertyType.IsArray) || (field != null && field.FieldType.IsArray))
+            {
+              value = ((List<object>)value).ToArray();
+            }
+            else
+            {
+              var mySubList = Activator.CreateInstance(prop != null ? prop.PropertyType : field.FieldType);
+              foreach (var myObj in ((IEnumerable<object>)value))
+                mySubList.GetType().GetMethod("Add").Invoke(mySubList, new object[] { Convert.ChangeType(myObj, mySubList.GetType().GetGenericArguments().Single()) });
+
+              value = mySubList;
+            }
+          }
+          catch { }
+        }
+
+        // handles dictionaries of all sorts (kind-of!)
+        if (value is IDictionary)
+        {
+          try
+          {
+            var MyDict = Activator.CreateInstance(prop != null ? prop.PropertyType : field.FieldType);
+
+            foreach (DictionaryEntry kvp in (IDictionary)value)
+              MyDict.GetType().GetMethod("Add").Invoke(MyDict, new object[] { Convert.ChangeType(kvp.Key, MyDict.GetType().GetGenericArguments()[0]), kvp.Value });
+
+            value = MyDict;
+          }
+          catch (Exception e)
+          {
+            System.Diagnostics.Debug.WriteLine(e.Message);
+          }
+        }
+
+        // guids are a pain
+        if ((prop != null && prop.PropertyType == typeof(Guid)) || (field != null && field.FieldType == typeof(Guid)))
+          value = new Guid((string)value);
+
+        // Actually set the value below, whether it's a property or field
+        // if it is a property
+        if (prop != null && prop.CanWrite)
+        {
+          if (prop.PropertyType.IsEnum)
+            prop.SetValue(myObject, Enum.ToObject(prop.PropertyType, Convert.ChangeType(value, TypeCode.Int32)));
+          else
+          {
+            try
+            {
+              prop.SetValue(myObject, value);
+            }
+            catch
+            {
+              try
+              {
+                prop.SetValue(myObject, Convert.ChangeType(value, prop.PropertyType));
+              }
+              catch
+              {
+              }
+            }
+          }
+        }
+        // if it is a field
+        else if (field != null)
+        {
+          if (field.FieldType.IsEnum)
+            field.SetValue(myObject, Enum.ToObject(field.FieldType, Convert.ChangeType(value, TypeCode.Int32)));
+          else
+          {
+            try
+            {
+              field.SetValue(absObj, value);
+            }
+            catch
+            {
+              try
+              {
+                field.SetValue(myObject, Convert.ChangeType(value, field.FieldType));
+              }
+              catch { }
+            }
+          }
+        }
+      }
+
+      //  set references too.
+      if (root == myObject)
+        Converter.ResolveRefs(absObj, myObject, "root");
+
+      return myObject;
     }
 
     private static object ShallowConvert( SpeckleAbstract obj )
