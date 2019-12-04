@@ -6,23 +6,26 @@ init:
       {
         Write-Host "We now have a tagged release. Proper."
         Write-Host "Tag is $Env:APPVEYOR_REPO_TAG_NAME"
-        $cleanTag = $env:APPVEYOR_REPO_TAG_NAME.split('-')[0]
-        $env:APPVEYOR_BUILD_VERSION=$env:APPVEYOR_REPO_TAG_NAME
-        Update-AppveyorBuild -Version "$Env:APPVEYOR_REPO_TAG_NAME"
-        $env:CLEANTAG=$cleanTag
+        $base = $env:APPVEYOR_REPO_TAG_NAME.split('-')[0]
+        $arr = $base.split(".")
+        $major = $arr[0]
+        $minor = $arr[1]
+        $patch = $arr[2]
+        Update-AppveyorBuild -Version "$major.$minor.$patch.$Env:APPVEYOR_BUILD_VERSION"
+        $env:CLEANTAG=$base
       } 
       else 
       {
         $releases = "https://api.github.com/repos/$env:APPVEYOR_REPO_NAME/releases"
         $tag = (Invoke-WebRequest $releases | ConvertFrom-Json)[0].tag_name
         
-        $spl = $tag.Split("-")[0]
-        $arr = $spl.split(".")
+        $base = $tag.Split("-")[0]
+        $arr = $base.split(".")
         $major = $arr[0]
         $minor = $arr[1]
-        $build = $arr[2]
-        Update-AppveyorBuild -Version "$major.$minor.$build.$Env:APPVEYOR_BUILD_VERSION-wip"
-        $env:CLEANTAG=$spl
+        $patch = $arr[2]
+        Update-AppveyorBuild -Version "$major.$minor.$patch.$Env:APPVEYOR_BUILD_VERSION-wip"
+        $env:CLEANTAG=$base
       }
       Write-Host "Hello. Build version is: $Env:APPVEYOR_BUILD_VERSION; Clean Tag: $Env:CLEANTAG"
 
