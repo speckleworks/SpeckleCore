@@ -18,21 +18,7 @@ Pretty much all of speckle's connectors are using this library, including:
 
 ## Example usage
 
-// TODO
-
-### Note: Newtonsoft.Json Aliasing 
-
-Because of quite a few conflicts with other libraries, we are aliasing newtonsoftjson. Consequently, to preserve expected behaviour, if referencing speckle core in your libraries, do use the bundled "SpeckleNewtonsoft" (original v.12). To do so, add a reference to the dll from inside the SpeckleCore solution folder in your project, and then you can use it by doing 
-
-```cs
-extern alias SpeckleNewtonsoft;
-using SNJ = SpeckleNewtonsoft.Newtonsoft.Json; // for convenience
-
-// thereafter, in your code, you can use it like this:
-
-SNJ.JsonConvert.SerializeObject( e.EventData, Interop.camelCaseSettings )
-
-```
+Please check [out the docs and sample starter project on the speckle website](https://speckle.systems/docs/developers/dotnet-sdk)!
 
 ## License 
 MIT
