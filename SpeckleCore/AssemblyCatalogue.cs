@@ -83,7 +83,8 @@ namespace SpeckleCore
             var relfectionLoadAssembly = Assembly.LoadFrom( assemblyPath );
             var isReferencingCore = relfectionLoadAssembly.IsReferencing( SpeckleAssemblyName );
 
-            if ( isReferencingCore )
+            //if ( isReferencingCore )
+            if(true)
             {
               Debug.WriteLine( "Load converter: " + unloadedAssemblyName );
               var assembly = SafeLoadAssembly( AppDomain.CurrentDomain, unloadedAssemblyName );
