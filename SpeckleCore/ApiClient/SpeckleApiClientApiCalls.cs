@@ -3024,6 +3024,104 @@ namespace SpeckleCore
       }
     }
 
+    /// <summary>ObjectCreate</summary>
+    /// <returns>All the users's projects.</returns>
+    /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    public System.Threading.Tasks.Task<ResponseObject> ObjectDeriveAsync(System.Collections.Generic.IEnumerable<SpeckleObject> objects)
+    {
+      return ObjectDeriveAsync(objects, System.Threading.CancellationToken.None);
+    }
+
+    /// <summary>ObjectCreate</summary>
+    /// <returns>All the users's projects.</returns>
+    /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+    public async System.Threading.Tasks.Task<ResponseObject> ObjectDeriveAsync(System.Collections.Generic.IEnumerable<SpeckleObject> objects, System.Threading.CancellationToken cancellationToken)
+    {
+      var urlBuilder_ = new System.Text.StringBuilder();
+      urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/objects/derive");
+
+      var client_ = GetHttpClient();
+      try
+      {
+        using (var request_ = new System.Net.Http.HttpRequestMessage())
+        {
+          var content_ = new System.Net.Http.StringContent(JsonConvert.SerializeObject(objects, _settings.Value));
+          content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+          request_.Content = content_;
+          request_.Method = new System.Net.Http.HttpMethod("POST");
+          request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+          PrepareRequest(client_, request_, urlBuilder_);
+          var url_ = urlBuilder_.ToString();
+          request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+          PrepareRequest(client_, request_, url_);
+
+          var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+          try
+          {
+            var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+            if (response_.Content != null && response_.Content.Headers != null)
+            {
+              foreach (var item_ in response_.Content.Headers)
+                headers_[item_.Key] = item_.Value;
+            }
+
+            ProcessResponse(client_, response_);
+
+            var status_ = ((int)response_.StatusCode).ToString();
+            if (status_ == "200")
+            {
+              var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+              var result_ = default(ResponseObject);
+              try
+              {
+                result_ = JsonConvert.DeserializeObject<ResponseObject>(responseData_, _settings.Value);
+                return result_;
+              }
+              catch (System.Exception exception_)
+              {
+                throw new SpeckleException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+              }
+            }
+            else
+            if (status_ == "400")
+            {
+              var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+              var result_ = default(ResponseBase);
+              try
+              {
+                result_ = JsonConvert.DeserializeObject<ResponseBase>(responseData_, _settings.Value);
+              }
+              catch (System.Exception exception_)
+              {
+                throw new SpeckleException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception_);
+              }
+              throw new SpeckleException<ResponseBase>("Fail whale.", (int)response_.StatusCode, responseData_, headers_, result_, null);
+            }
+            else
+            if (status_ != "200" && status_ != "204")
+            {
+              var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+              throw new SpeckleException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
+            }
+
+            return default(ResponseObject);
+          }
+          finally
+          {
+            if (response_ != null)
+              response_.Dispose();
+          }
+        }
+      }
+      finally
+      {
+        if (client_ != null)
+          client_.Dispose();
+      }
+    }
+
     /// <summary>ObjectUpdate</summary>
     /// <returns>All the users's projects.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
