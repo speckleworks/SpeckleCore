@@ -516,4 +516,48 @@ namespace SpeckleCore
 
   }
 
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)")]
+    [Serializable]
+  public partial class SpeckleDelta
+    {
+        [Newtonsoft.Json.JsonProperty("streamId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string StreamId { get; }
+
+        [Newtonsoft.Json.JsonProperty("toBeCreated", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public List<string> ToBeCreated { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("toBeUpdated", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public List<string> ToBeUpdated { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("toBeDeleted", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public List<string> ToBeDeleted { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("revision_from", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Revision_from { get; }
+
+        [Newtonsoft.Json.JsonProperty("revision_to", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Revision_to { get; }
+
+        [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public long Timestamp { get; }
+
+        [Newtonsoft.Json.JsonProperty("signature", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Signature { get; }
+
+        [Newtonsoft.Json.JsonProperty("signature", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Sender { get; }
+
+        [Newtonsoft.Json.JsonProperty("comment", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Comment { get; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+        public static SpeckleDelta FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<SpeckleDelta>(data);
+        }
+
+    }
 }
