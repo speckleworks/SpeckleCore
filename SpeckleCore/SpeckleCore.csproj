@@ -1,16 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFrameworks>net45;netstandard2.0</TargetFrameworks>
     <Authors>https://speckle.works</Authors>
+    <LangVersion>8.0</LangVersion>
+    <Authors>Speckle</Authors>
+    <Company>Speckle</Company>
+    <Product>SpeckleCore</Product>
+    <Description>.NET base for the speckle api</Description>
+    <Summary>.NET base for the speckle api</Summary>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Copyright>Copyright © Speckle</Copyright>
+    <AssemblyName>SpeckleCore</AssemblyName>
+    <RootNamespace>SpeckleCore</RootNamespace>
     <PackageProjectUrl>https://speckle.works</PackageProjectUrl>
     <RepositoryUrl>https://github.com/speckleworks/SpeckleCore</RepositoryUrl>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Version>1.0.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <InformationalVersion>1.0.0.0</InformationalVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <PackageVersion>1.0.0.0</PackageVersion>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Countly" Version="19.8.0">
     </PackageReference>
@@ -20,5 +34,10 @@
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="WebSocketSharp-NonPreRelease" Version="1.0.0" />
+  </ItemGroup>
+
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <PackageReference Include="System.Net.Http" Version="$(MicrosoftCSharpPackageVersion)" />
   </ItemGroup>
 </Project>
