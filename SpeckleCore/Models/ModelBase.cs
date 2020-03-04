@@ -521,34 +521,48 @@ namespace SpeckleCore
   public partial class SpeckleDelta
     {
         [Newtonsoft.Json.JsonProperty("streamId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string StreamId { get; }
+        public string StreamId { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("toBeCreated", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<string> ToBeCreated { get; set; }
+        public List<SpeckleObject> ToBeCreated { get; private set;}
 
         [Newtonsoft.Json.JsonProperty("toBeUpdated", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<string> ToBeUpdated { get; set; }
+        public List<SpeckleObject> ToBeUpdated { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("toBeDeleted", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<string> ToBeDeleted { get; set; }
+        public List<SpeckleObject> ToBeDeleted { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("revision_from", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Revision_from { get; }
+        public string Revision_from { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("revision_to", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Revision_to { get; }
+        public string Revision_to { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("timestamp", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public long Timestamp { get; }
+        public long Timestamp { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("signature", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Signature { get; }
+        public string Signature { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("signature", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Sender { get; }
+        public string Sender { get; private set; }
 
         [Newtonsoft.Json.JsonProperty("comment", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Comment { get; }
+        public string Comment { get; private set; }
+
+        public SpeckleDelta(string streamId, List<SpeckleObject> toBeCreated, List<SpeckleObject> toBeUpdated, List<SpeckleObject> toBeDeleted, string revision_from, string revision_to, long timestamp, string signature, string sender, string comment)
+        {
+            StreamId = streamId;
+            ToBeCreated = toBeCreated;
+            ToBeUpdated = toBeUpdated;
+            ToBeDeleted = toBeDeleted;
+            Revision_from = revision_from;
+            Revision_to = revision_to;
+            Timestamp = timestamp;
+            Signature = signature;
+            Sender = sender;
+            Comment = comment;
+        }
 
         public string ToJson()
         {
