@@ -453,6 +453,35 @@ namespace SpeckleCore
     }
   }
 
+  [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)")]
+  [Serializable]
+  public partial class SpeckleDelta : SpeckleObject
+  {
+    [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public List<SpeckleObject> Created { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("deleted", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public List<SpecklePlaceholder> Deleted { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public List<SpecklePlaceholder> Common { get; set; }
+
+    [Newtonsoft.Json.JsonProperty("revision_A", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string revision_A { get; set; } // the streamid you want to apply this delta to
+
+    public string ToJson()
+    {
+      return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+    }
+
+    public static DiffObjectsResult FromJson(string data)
+    {
+      return Newtonsoft.Json.JsonConvert.DeserializeObject<DiffObjectsResult>(data);
+    }
+
+  }
+
+
   [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
   public partial class SpeckleAbstract : SpeckleObject

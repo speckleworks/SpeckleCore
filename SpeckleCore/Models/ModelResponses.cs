@@ -218,7 +218,7 @@ namespace SpeckleCore
     public partial class ResponseStreamDeltaDiff : ResponseBase
     {
         [Newtonsoft.Json.JsonProperty("delta", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public DeltaDiffObjectsResult Delta { get; set; }
+        public SpeckleDelta Delta { get; set; }
 
         public string ToJson()
         {
@@ -342,30 +342,6 @@ namespace SpeckleCore
 
   }
 
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)")]
-    [Serializable]
-    public partial class DeltaDiffObjectsResult
-    {
-        [Newtonsoft.Json.JsonProperty("created", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<string> Created { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("deleted", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<string> Deleted { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public List<string> Common { get; set; }
-
-        public string ToJson()
-        {
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
-        }
-
-        public static DiffObjectsResult FromJson(string data)
-        {
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<DiffObjectsResult>(data);
-        }
-
-    }
 
     [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
