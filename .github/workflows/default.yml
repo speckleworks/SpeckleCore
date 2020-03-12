@@ -18,4 +18,12 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: Build with dotnet
-      run: dotnet build SpeckleCore\SpeckleCore.sln --configuration Release
+      run: dotnet build SpeckleCore\SpeckleCore.sln --configuration Release --verbosity minimal
+#     - name: Publish NuGet
+#       uses: rohith/publish-nuget@v2.1.2
+#       with:
+#         PROJECT_FILE_PATH: SpeckleCore\SpeckleCore.csproj
+#         NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+
+#${{ github.run_id }}
+    
