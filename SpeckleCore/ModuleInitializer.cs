@@ -27,14 +27,15 @@ namespace SpeckleCore
     private static IReadOnlyCollection<Assembly> Assembiles;
     private static IReadOnlyCollection<Type> Types;
 
-    public static void Initialize( string pathToKits = null)
+    public static void Initialize(bool useLocalContext = true, bool kitsAlreadyLoaded = false, string pathToKits = null)
     {
       if ( IsInit ) return;
 
       IsInit = true;
 
-      LocalContext.Init();
-      Assembiles = new SpeckleKitLoader(pathToKits).GetAssemblies();
+      if (useLocalContext) LocalContext.Init();
+
+      Assembiles = new SpeckleKitLoader(kitsAlreadyLoaded, pathToKits).GetAssemblies();
 
       var types = new List<Type>();
       foreach ( var assembly in Assembiles )
@@ -44,22 +45,22 @@ namespace SpeckleCore
       types.Add( typeof( SpeckleObject ) );
       Types = types;
 
-      ////////////////////////////////////////////////////////////////////////////////////////////////////
-      ///                                                                                              ///
-      ///                                                                                              ///
-      /// Hello devs! Uncomment the line below to disable telemetry.                                   ///
-      /// This will make speckle sad, but it's your call.                                              ///
-      /// See community discussions here:                                                              ///
-      /// https://speckle-works.slack.com/archives/C4TE17LGH/p1567520201017900                         ///
-      /// https://discourse.speckle.works/t/community-consultation-time-telemetry/410                  ///
-      ///                                                                                              ///
-      ///                                                                                              ///
-      ////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///                                                                                              ///
+            ///                                                                                              ///
+            /// Hello devs! Uncomment the line below to disable telemetry.                                   ///
+            /// This will make speckle sad, but it's your call.                                              ///
+            /// See community discussions here:                                                              ///
+            /// https://speckle-works.slack.com/archives/C4TE17LGH/p1567520201017900                         ///
+            /// https://discourse.speckle.works/t/community-consultation-time-telemetry/410                  ///
+            ///                                                                                              ///
+            ///                                                                                              ///
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      // LocalContext.SetTelemetrySettings( false );
+            // LocalContext.SetTelemetrySettings( false );
 
-      // Note: if telemetry settings is set to false, then this will do nothing.
-      SpeckleTelemetry.Initialize();
+            // Note: if telemetry settings is set to false, then this will do nothing.
+            if (useLocalContext) SpeckleTelemetry.Initialize();
     }
 
     /// <summary>
