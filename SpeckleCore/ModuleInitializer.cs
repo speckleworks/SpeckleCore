@@ -27,15 +27,15 @@ namespace SpeckleCore
     private static IReadOnlyCollection<Assembly> Assembiles;
     private static IReadOnlyCollection<Type> Types;
 
-    public static void Initialize(bool useLocalContext = true, bool kitsAlreadyLoaded = false, string pathToKits = null)
+    public static void Initialize(bool useLocalReferences = true, string pathToKits = null)
     {
       if ( IsInit ) return;
 
       IsInit = true;
 
-      if (useLocalContext) LocalContext.Init();
+      if (useLocalReferences) LocalContext.Init();
 
-      Assembiles = new SpeckleKitLoader(kitsAlreadyLoaded, pathToKits).GetAssemblies();
+      Assembiles = new SpeckleKitLoader(useLocalReferences, pathToKits).GetAssemblies();
 
       var types = new List<Type>();
       foreach ( var assembly in Assembiles )
@@ -60,7 +60,7 @@ namespace SpeckleCore
             // LocalContext.SetTelemetrySettings( false );
 
             // Note: if telemetry settings is set to false, then this will do nothing.
-            if (useLocalContext) SpeckleTelemetry.Initialize();
+            if (useLocalReferences) SpeckleTelemetry.Initialize();
     }
 
     /// <summary>

@@ -20,11 +20,11 @@ namespace SpeckleCore
     private readonly Lazy<IReadOnlyCollection<Assembly>> assemblies;
 
     public string SpeckleKitsDirectory;
-    private bool kitsAlreadyLoaded = false;
+    private bool useLocalReferences = false;
 
-    public SpeckleKitLoader(bool kitsAlreadyLoaded = false, string pathToKits = null)
+    public SpeckleKitLoader(bool useLocalReferences = false, string pathToKits = null)
     {
-      this.kitsAlreadyLoaded = kitsAlreadyLoaded;
+      this.useLocalReferences = useLocalReferences;
       SpeckleKitsDirectory = pathToKits != null ? pathToKits : System.Environment.GetFolderPath( System.Environment.SpecialFolder.LocalApplicationData ) + @"\SpeckleKits\";
 
       SpeckleAssemblyName = typeof( SpeckleObject ).GetTypeInfo().Assembly.GetName();
@@ -40,16 +40,16 @@ namespace SpeckleCore
     {
       var assemblies = GetLoadedSpeckleReferencingAssemblies();
 
-        if (kitsAlreadyLoaded)
+        if (useLocalReferences)
         {
-            return assemblies.ToArray ();
+			var loaded = LoadSpeckleReferencingAssemblies (assemblies);
+
+			return assemblies.Union (loaded).ToArray ();
         }
         else
         {
-            var loaded = LoadSpeckleReferencingAssemblies (assemblies);
-
-            return assemblies.Union (loaded).ToArray ();
-        }
+			return assemblies.ToArray ();
+		}
     }
 
     private List<Assembly> GetLoadedSpeckleReferencingAssemblies( )
