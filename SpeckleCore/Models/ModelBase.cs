@@ -466,8 +466,8 @@ namespace SpeckleCore
     [Newtonsoft.Json.JsonProperty("common", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
     public List<SpecklePlaceholder> Common { get; set; }
 
-    [Newtonsoft.Json.JsonProperty("revision_A", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-    public string revision_A { get; set; } // the streamid you want to apply this delta to
+    [Newtonsoft.Json.JsonProperty("revisionA", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+    public string revisionA { get; set; } // the streamid you want to apply this delta to
 
     public string ToJson()
     {
