@@ -259,7 +259,7 @@ namespace SpeckleCore
 
     /// <summary>Units, tolerances, etc.</summary>
     [Newtonsoft.Json.JsonProperty( "baseProperties", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]
-    public dynamic BaseProperties { get; set; }
+    public Newtonsoft.Json.Linq.JObject BaseProperties { get; set; }
 
     /// <summary>Any performance measures can go in here.</summary>
     [Newtonsoft.Json.JsonProperty( "globalMeasures", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore )]

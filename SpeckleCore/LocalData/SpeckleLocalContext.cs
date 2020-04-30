@@ -492,6 +492,7 @@ namespace SpeckleCore
     /// <returns></returns>
     public static bool GetTelemetrySettings( )
     {
+            return false;
       LocalContext.Init();
       var settings = Database.Query<TelemetrySettings>( "SELECT * FROM TelemetrySettings" ).FirstOrDefault();
       if ( settings != null )
