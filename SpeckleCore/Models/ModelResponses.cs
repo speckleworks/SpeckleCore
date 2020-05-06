@@ -213,8 +213,27 @@ namespace SpeckleCore
 
   }
 
-  /// <summary>The resource type you want to comment on.</summary>
-  [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)")]
+    [Serializable]
+    public partial class ResponseStreamDeltaDiff : ResponseBase
+    {
+        [Newtonsoft.Json.JsonProperty("delta", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SpeckleDelta Delta { get; set; }
+
+        public string ToJson()
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+        }
+
+        public static ResponseStreamDeltaDiff FromJson(string data)
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<ResponseStreamDeltaDiff>(data);
+        }
+
+    }
+
+    /// <summary>The resource type you want to comment on.</summary>
+    [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
   public enum ResourceType
   {
@@ -323,7 +342,8 @@ namespace SpeckleCore
 
   }
 
-  [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
+
+    [System.CodeDom.Compiler.GeneratedCode( "NJsonSchema", "9.10.41.0 (Newtonsoft.Json v9.0.0.0)" )]
   [Serializable]
   public partial class DiffLayersResult
   {
