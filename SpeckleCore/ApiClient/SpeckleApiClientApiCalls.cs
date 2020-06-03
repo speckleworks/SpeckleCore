@@ -3030,21 +3030,23 @@ namespace SpeckleCore
         /// <summary>ObjectCreate</summary>
         /// <returns>All the users's projects.</returns>
         /// <exception cref="SpeckleException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<ResponseObject> ObjectCreateAsync( System.Collections.Generic.IEnumerable<SpeckleObject> objects )
+        public Task<ResponseObject> ObjectCreateAsync( IEnumerable<SpeckleObject> objects, int timeoutMillisecondsOverride = 0 )
     {
-      return ObjectCreateAsync( objects, System.Threading.CancellationToken.None );
+      return ObjectCreateAsync( objects, System.Threading.CancellationToken.None, timeoutMillisecondsOverride);
     }
 
     /// <summary>ObjectCreate</summary>
     /// <returns>All the users's projects.</returns>
     /// <exception cref="SpeckleException">A server side error occurred.</exception>
+    /// <param name="objects"></param>
     /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-    public async System.Threading.Tasks.Task<ResponseObject> ObjectCreateAsync( System.Collections.Generic.IEnumerable<SpeckleObject> objects, System.Threading.CancellationToken cancellationToken )
+    /// <param name="timeoutMillisecondsOverride">Length of time in milliseconds to set as the timeout for this call</param>
+    public async Task<ResponseObject> ObjectCreateAsync(IEnumerable<SpeckleObject> objects, System.Threading.CancellationToken cancellationToken, int timeoutMillisecondsOverride = 0)
     {
       var urlBuilder_ = new System.Text.StringBuilder();
       urlBuilder_.Append( BaseUrl != null ? BaseUrl.TrimEnd( '/' ) : "" ).Append( "/objects" );
 
-      var client_ = GetHttpClient();
+      var client_ = (timeoutMillisecondsOverride == 0) ? GetHttpClient() : GetHttpClient(timeoutMillisecondsOverride);
       try
       {
         using ( var request_ = new System.Net.Http.HttpRequestMessage() )
