@@ -89,10 +89,7 @@ namespace SpeckleCore
               var assembly = SafeLoadAssembly( AppDomain.CurrentDomain, unloadedAssemblyName );
               if ( assembly != null )
               {
-                var res = assembly.GetTypes();
-                var copy = res;
-
-                assemblies.Add( assembly );
+                assemblies.Add(assembly);
               }
             }
           }
@@ -117,7 +114,10 @@ namespace SpeckleCore
     {
       try
       {
-        return domain.Load( assemblyName );
+        var assembly = domain.Load( assemblyName );
+        //Check that types can be loaded and there are no missing references etc
+        var res = assembly.GetTypes();
+        return assembly;
       }
       catch
       {
