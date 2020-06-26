@@ -79,8 +79,7 @@ namespace SpeckleCore
 
           if ( !loadedSpeckleReferencingAssemblyNames.Any( loadedSpeckleReferencingAssemblyName => AssemblyName.ReferenceMatchesDefinition( loadedSpeckleReferencingAssemblyName, unloadedAssemblyName ) ) )
           {
-            //var relfectionLoadAssembly = Assembly.ReflectionOnlyLoadFrom( assemblyPath );
-            var relfectionLoadAssembly = Assembly.LoadFrom( assemblyPath );
+            var relfectionLoadAssembly = Assembly.ReflectionOnlyLoadFrom( assemblyPath );
             var isReferencingCore = relfectionLoadAssembly.IsReferencing( SpeckleAssemblyName );
 
             if ( isReferencingCore )
