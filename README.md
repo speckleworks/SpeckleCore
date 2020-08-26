@@ -1,9 +1,14 @@
 # SpeckleCore
 [![Build status](https://ci.appveyor.com/api/projects/status/k0n0853v26f1thl4/branch/master?svg=true)](https://ci.appveyor.com/project/SpeckleWorks/specklecore/branch/master) [![DOI](https://zenodo.org/badge/100398062.svg)](https://zenodo.org/badge/latestdoi/100398062)
 
+
+
 ⚠️ **IMPORTANT** ⚠️
+
 Speckle 2.0 is in the works, 👉 [check it out here](https://github.com/specklesystems)!
 Speckle 1.0 is currently in LTS (lifetime support), read more about the announcemnt [here](https://speckle.systems/blog/speckle2-vision-and-faq) and [here](https://speckle.systems/blog/insider-speckle2).
+
+
 
 ## Overview
 
